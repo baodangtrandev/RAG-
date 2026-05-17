@@ -3,7 +3,6 @@
 ## 1. Tạo `venv` trong repo
 
 ```powershell
-cd D:\Projects\RAG-
 python -m venv .venv
 ```
 
@@ -35,12 +34,12 @@ python .\convert_pdfs_to_md.py
 
 Mặc định script sẽ:
 - Đọc PDF trong `documents`
-- Tạo thư mục `paper-md` (nếu chưa có)
-- Xuất file `.md` vào `paper-md`
+- Tạo thư mục `documents\paper-md` (nếu chưa có)
+- Xuất file `.md` vào `documents\paper-md`
 
 Tùy chọn:
 
 ```powershell
-python .\convert_pdfs_to_md.py -i .\documents -o .\paper-md --overwrite
+python .\convert_pdfs_to_md.py -i .\documents -o .\documents\paper-md --overwrite
 python .\convert_pdfs_to_md.py -i .\documents -r
 ```

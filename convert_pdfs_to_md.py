@@ -89,7 +89,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--output",
         type=Path,
         default=None,
-        help="Output directory for Markdown files (default: paper-md).",
+        help="Output directory for Markdown files (default: documents/paper-md).",
     )
     parser.add_argument(
         "-r",
@@ -108,7 +108,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
-    output_dir = args.output or Path("paper-md")
+    output_dir = args.output or args.input / "paper-md"
     return convert_directory(
         input_dir=args.input,
         output_dir=output_dir,
