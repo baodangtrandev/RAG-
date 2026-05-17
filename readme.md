@@ -29,17 +29,17 @@ pip install pypdf
 ## 4. Chạy script convert
 
 ```powershell
-python .\convert_pdfs_to_md.py
+python .\documents\convert_pdfs_to_md.py
 ```
 
 Mặc định script sẽ:
-- Đọc PDF trong `documents`
+- Quét toàn bộ PDF trong các thư mục con của `documents`
 - Tạo thư mục `documents\paper-md` (nếu chưa có)
-- Xuất file `.md` vào `documents\paper-md`
+- Xuất file `.md` vào `documents\paper-md` và giữ nguyên cấu trúc thư mục con
 
 Tùy chọn:
 
 ```powershell
-python .\convert_pdfs_to_md.py -i .\documents -o .\documents\paper-md --overwrite
-python .\convert_pdfs_to_md.py -i .\documents -r
+python .\documents\convert_pdfs_to_md.py --overwrite
+python .\documents\convert_pdfs_to_md.py -i .\documents -o .\documents\paper-md --overwrite
 ```

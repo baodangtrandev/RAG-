@@ -40,7 +40,6 @@ def _pdf_to_markdown(pdf_path: Path) -> str:
 def convert_directory(
     input_dir: Path,
     output_dir: Path,
-    recursive: bool = False,
     overwrite: bool = False,
 ) -> int:
     if not input_dir.exists() or not input_dir.is_dir():
@@ -49,7 +48,9 @@ def convert_directory(
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    pdf_files = sorted(input_dir.rglob("*.pdf") if recursive else input_dir.glob("*.pdf"))
+    output_dir_resolved = output_dir.resolve()
+    pdf_files = sorted(input_dir.rglob("*.pdf"))
+    pdf_files = [pdf for pdf in pdf_files if output_dir_resolved not in pdf.resolve().parents]
     if not pdf_files:
         print(f"No PDF files found in: {input_dir}")
         return 0
@@ -58,7 +59,9 @@ def convert_directory(
     skipped = 0
 
     for pdf_file in pdf_files:
-        out_file = output_dir / f"{pdf_file.stem}.md"
+        relative_parent = pdf_file.relative_to(input_dir).parent
+        out_file = output_dir / relative_parent / f"{pdf_file.stem}.md"
+        out_file.parent.mkdir(parents=True, exist_ok=True)
         if out_file.exists() and not overwrite:
             skipped += 1
             print(f"Skipped (already exists): {out_file}")
@@ -81,8 +84,8 @@ def build_parser() -> argparse.ArgumentParser:
         "-i",
         "--input",
         type=Path,
-        default=Path("documents"),
-        help="Input directory containing PDF files (default: documents).",
+        default=None,
+        help="Input directory containing PDF files (default: script directory).",
     )
     parser.add_argument(
         "-o",
@@ -90,12 +93,6 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         default=None,
         help="Output directory for Markdown files (default: documents/paper-md).",
-    )
-    parser.add_argument(
-        "-r",
-        "--recursive",
-        action="store_true",
-        help="Recursively search for PDF files in subdirectories.",
     )
     parser.add_argument(
         "--overwrite",
@@ -108,11 +105,12 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
-    output_dir = args.output or args.input / "paper-md"
+    script_dir = Path(__file__).resolve().parent
+    input_dir = args.input or script_dir
+    output_dir = args.output or input_dir / "paper-md"
     return convert_directory(
-        input_dir=args.input,
+        input_dir=input_dir,
         output_dir=output_dir,
-        recursive=args.recursive,
         overwrite=args.overwrite,
     )
 
