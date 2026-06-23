@@ -1,0 +1,107 @@
+% ============================================================
+% AI/ML Research Beamer Template — Package Configuration
+% Author: Bang Nguyen Dinh (github/bawfng04)
+% ============================================================
+
+% req pkgs
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+
+% clean modern font (available in all LaTeX distributions)
+\usepackage{lmodern}
+
+% math stuff
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{bm}
+
+% pics & figs
+\usepackage{graphicx}
+\usepackage{subcaption}
+
+% tbls
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+
+% draw nn & charts
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows.meta, positioning, calc, shadows, decorations.pathreplacing, backgrounds}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% code
+\usepackage{listings}
+\usepackage{xcolor}
+
+% icons
+\usepackage{fontawesome5}
+
+% premium ui blocks
+\usepackage[most]{tcolorbox}
+
+% biblio (uncomment & add references.bib to enable)
+%\usepackage[backend=biber,style=authoryear,maxnames=2,natbib=true]{biblatex}
+%\addbibresource{references.bib}
+
+% appendix section helper
+\usepackage{appendixnumberbeamer}
+
+% ============================================================
+% color palette
+% ============================================================
+\definecolor{myprimary}{HTML}{7B1113} % elegant burgundy / red-brown
+\definecolor{myaccent}{HTML}{B7410E}  % rust / dark orange for alerts
+\definecolor{mygreen}{HTML}{2E7D32}   % professional green for success
+\definecolor{mygrey}{HTML}{F4F4F6}    % soft grey for blocks
+
+% ============================================================
+% tcolorbox ui components
+% ============================================================
+
+% modern info block (blue-ish burgundy — neutral info)
+\newtcolorbox{infobox}[1][]{
+    enhanced,
+    colback=myprimary!4,
+    colframe=myprimary,
+    boxrule=0.5pt,
+    leftrule=4pt,
+    arc=3pt,
+    drop fuzzy shadow,
+    fonttitle=\bfseries,
+    coltitle=myprimary,
+    colbacktitle=myprimary!4,
+    title=#1
+}
+
+% modern alert block (rust orange — warnings / gaps)
+\newtcolorbox{alertbox}[1][]{
+    enhanced,
+    colback=myaccent!4,
+    colframe=myaccent,
+    boxrule=0.5pt,
+    leftrule=4pt,
+    arc=3pt,
+    drop fuzzy shadow,
+    fonttitle=\bfseries,
+    coltitle=myaccent,
+    colbacktitle=myaccent!4,
+    title=#1
+}
+
+% modern success block (green — positive results / SOTA)
+\newtcolorbox{successbox}[1][]{
+    enhanced,
+    colback=mygreen!4,
+    colframe=mygreen,
+    boxrule=0.5pt,
+    leftrule=4pt,
+    arc=3pt,
+    drop fuzzy shadow,
+    fonttitle=\bfseries,
+    coltitle=mygreen,
+    colbacktitle=mygreen!4,
+    title=#1
+}

@@ -1,0 +1,56 @@
+# Core latex/pdflatex auxiliary files:
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+.*.lb
+
+# Intermediate documents:
+*.dvi
+*.xdv
+*-converted-to.*
+# these rules might exclude image files for figures etc.
+# *.eps
+# *.ps
+
+# Generated pdfs (uncomment to ignore)
+# *.pdf
+
+# Bibliography auxiliary files (bibtex/biblatex/biber):
+*.bbl
+*.bcf
+*.blg
+*-blx.aux
+*-blx.bib
+*.run.xml
+
+# Core latexmk generating:
+*.fdb_latexmk
+*.synctex
+*.synctex(busy)
+*.synctex.gz
+*.synctex.gz(busy)
+*.pdfsync
+
+# Build tool hidden dir:
+.texpadtmp
+
+# Windows editor files:
+*.bak
+*.sav
+
+# IDEs
+.vscode/
+.idea/
+
+# Beamer specific auxiliary files:
+*.nav
+*.snm
+*.vrb

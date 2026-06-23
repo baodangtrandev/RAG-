@@ -1,0 +1,367 @@
+% ============================================================
+% AI/ML Research Beamer Template — Main Document
+% ============================================================
+
+% 16:9 ratio
+\documentclass[aspectratio=169, xcolor=table]{beamer}
+
+% load pkgs
+\input{pakete}
+
+% use modern metropolis theme
+\usetheme[progressbar=frametitle,block=transparent,titleformat=smallcaps]{metropolis}
+
+% ================================
+% custom colors & styling
+% ================================
+\setbeamercolor{normal text}{fg=darkgray,bg=white}
+\setbeamercolor{frametitle}{bg=myprimary,fg=white}
+\setbeamercolor{progress bar}{fg=myaccent,bg=myprimary!50}
+\setbeamercolor{alerted text}{fg=myaccent}
+
+% footer with page numbers
+\setbeamertemplate{footline}{%
+    \hfill%
+    \usebeamerfont{page number in head/foot}%
+    \textcolor{myprimary!70}{\insertframenumber\,/\,\inserttotalframenumber}%
+    \hspace*{6pt}\vspace{4pt}%
+}
+
+% background watermark for all slides
+\usebackgroundtemplate{%
+    \begin{tikzpicture}[overlay, remember picture]
+        \begin{scope}[shift={(current page.south east)}, xshift=-1cm, yshift=2.5cm, opacity=0.04, color=myprimary]
+            \draw[line width=1.5pt] (0,0) -- (-2.5,-1) -- (-3.5,1.5) -- (-1,2.5) -- cycle;
+            \draw[line width=1.5pt] (0,0) -- (-1,2.5) -- (1.5,1) -- cycle;
+            \draw[line width=1.5pt] (-2.5,-1) -- (-1.5, -3) -- (0.5, -2) -- (0,0);
+            \fill (-2.5,-1) circle (4pt);
+            \fill (-3.5,1.5) circle (4pt);
+            \fill (-1,2.5) circle (4pt);
+            \fill (0,0) circle (4pt);
+            \fill (1.5,1) circle (4pt);
+            \fill (-1.5,-3) circle (4pt);
+            \fill (0.5,-2) circle (4pt);
+        \end{scope}
+    \end{tikzpicture}
+}
+
+% ================================
+% meta info setup
+% ================================
+\title[T-RAG]{T-RAG: Temporal \& Targeted RAG}
+\subtitle{Khắc phục hạn chế của RAG trên tập dữ liệu quy mô lớn (EnterpriseRAG-Bench)}
+
+% config authors
+\def\authorOne{Người trình bày: Bảo \& Bằng}
+\def\authorTwo{} 
+\def\authorThree{} 
+\def\emptyString{}
+
+\author[\authorOne]{
+    \textbf{\authorOne}
+}
+
+\institute[]{
+    Hệ thống RAG Benchmark \& Research
+}
+\date[\today]{\today}
+
+% title graphic
+\titlegraphic{
+    \begin{tikzpicture}[overlay, remember picture]
+        \begin{scope}[shift={(current page.north east)}, xshift=-2cm, yshift=-2cm, opacity=0.1, color=myprimary]
+            \draw[line width=2pt] (0,0) -- (-4,1) -- (-6,-3) -- (-2,-5) -- (2,-2) -- cycle;
+            \draw[line width=2pt] (0,0) -- (-2,-5);
+            \draw[line width=2pt] (-4,1) -- (2,-2);
+            \draw[line width=2pt] (-4,1) -- (-2,-5);
+            \fill (0,0) circle (6pt);
+            \fill (-4,1) circle (6pt);
+            \fill (-6,-3) circle (6pt);
+            \fill (-2,-5) circle (6pt);
+            \fill (2,-2) circle (6pt);
+        \end{scope}
+    \end{tikzpicture}
+}
+
+% ================================
+% custom title page layout
+% ================================
+\makeatletter
+\setbeamertemplate{title page}{
+  \begin{minipage}[b][\paperheight]{\textwidth}
+    \ifx\inserttitlegraphic\@empty\else\usebeamertemplate*{title graphic}\fi
+    \vfill%
+    \ifx\inserttitle\@empty\else\usebeamertemplate*{title}\fi
+    \ifx\insertsubtitle\@empty\else\usebeamertemplate*{subtitle}\fi
+    \usebeamertemplate*{title separator}
+    \ifx\beamer@shortauthor\@empty\else\usebeamertemplate*{author}\fi
+    \ifx\insertinstitute\@empty\else\usebeamertemplate*{institute}\vspace*{3mm}\fi
+    \vspace*{5mm}
+    \ifx\insertdate\@empty\else\usebeamertemplate*{date}\fi
+    \vfill
+    \vspace*{1mm}
+  \end{minipage}
+}
+\makeatother
+
+% ============================================================
+%                      BEGIN DOCUMENT
+% ============================================================
+\begin{document}
+
+% title
+\begin{frame}[plain, noframenumbering]
+    \titlepage
+\end{frame}
+
+% toc
+\begin{frame}{Nội dung trình bày}
+    \tableofcontents[hideallsubsections]
+\end{frame}
+
+% ============================================================
+%  SECTION 1: Introduction & Pain Points
+% ============================================================
+\section{Bối cảnh \& Thách thức}
+
+\begin{frame}{Đặc tả tập dữ liệu EnterpriseRAG-Bench}
+    \begin{infobox}[\faDatabase \hspace{2pt} Tính chất của dữ liệu thực tế]
+        \small Khác với Wikipedia, tập dữ liệu nội bộ bao gồm nhiều định dạng đa dạng, cấu trúc không đồng nhất và có tần suất cập nhật cao.
+    \end{infobox}
+    
+    \vspace{0.4cm}
+    
+    \begin{center}
+    \begin{tikzpicture}[
+        box/.style={rectangle, draw=myprimary, fill=myprimary!5, thick, rounded corners=2mm, minimum width=2.2cm, minimum height=1.2cm, align=center, font=\small},
+        node distance=0.5cm and 1cm
+    ]
+        \node[box] (slack) {\textbf{Slack}\\(285k docs)};
+        \node[box, right=of slack] (gmail) {\textbf{Gmail}\\(121k docs)};
+        \node[box, right=of gmail] (jira) {\textbf{Linear/Jira}\\(41k docs)};
+        \node[box, right=of jira] (wiki) {\textbf{Confluence}\\(5k docs)};
+        
+        \node[below=0.4cm of slack, font=\footnotesize, color=darkgray] {Hội thoại ngắn};
+        \node[below=0.4cm of gmail, font=\footnotesize, color=darkgray] {Luồng email (Thread)};
+        \node[below=0.4cm of jira, font=\footnotesize, color=darkgray] {Tiến độ dự án};
+        \node[below=0.4cm of wiki, font=\footnotesize, color=darkgray] {Văn bản cấu trúc dài};
+    \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.4cm}
+    \begin{center}
+        \textbf{Quy mô tập dữ liệu:} Hơn \alert{\textbf{500.000 văn bản}} từ 9 nguồn dữ liệu khác nhau.
+    \end{center}
+\end{frame}
+
+\begin{frame}{Phân tích phương pháp RAG Tiêu chuẩn (Standard RAG)}
+    \begin{center}
+    \begin{tikzpicture}[
+        node distance=0.8cm and 1cm,
+        box/.style={rectangle, draw=darkgray, fill=gray!10, thick, rounded corners=1mm, minimum width=3cm, minimum height=1cm, align=center, font=\small},
+        arrow/.style={-{Latex[scale=1.2]}, thick, darkgray}
+    ]
+        \node[box] (step1) {1. Trích xuất đặc trưng\\(Embedding)};
+        \node[box, right=of step1] (step2) {2. Lưu trữ toàn bộ\\vào Vector DB};
+        \node[box, right=of step2] (step3) {3. Truy xuất ANN\\(Top-K)};
+        
+        \draw[arrow] (step1) -- (step2);
+        \draw[arrow] (step2) -- (step3);
+    \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Các nguyên nhân dẫn đến suy giảm hiệu suất:}
+    \vspace{0.1cm}
+    \begin{itemize}
+        \item[\faTimesCircle] \textbf{Mật độ Vector cao:} Với 500.000 tài liệu, khoảng cách Cosine giữa các vector trở nên kém phân biệt. Nhiều tài liệu chung chủ đề dễ bị truy xuất nhầm.
+        \item[\faTimesCircle] \textbf{Thiếu nhận thức thời gian (Temporal Blindness):} Tương đồng ngữ nghĩa không phản ánh tính mới của thông tin (ví dụ: Quyết định năm 2022 so với 2024).
+        \item[\faTimesCircle] \textbf{Bất đồng từ vựng (Vocabulary Mismatch):} Truy vấn của người dùng thường mang tính ngữ cảnh (contextual), trong khi văn bản gốc chứa mã định danh hoặc tên kỹ thuật.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Giải pháp đề xuất: Mô hình T-RAG}
+    \begin{successbox}[\faCheckCircle \hspace{2pt} Phương pháp tiếp cận]
+        \small T-RAG đề xuất kiến trúc xử lý tuần tự, tích hợp tiền xử lý có định hướng (\textbf{Targeted}) và xếp hạng theo trục thời gian (\textbf{Temporal}).
+    \end{successbox}
+    
+    \vspace{0.3cm}
+    
+    \begin{itemize}
+        \item \textbf{Tiền lọc Metadata (Pre-filtering):} Sử dụng cơ sở dữ liệu quan hệ (SQL) để thu hẹp không gian tìm kiếm, loại bỏ sớm các tài liệu không liên quan trước khi tính toán độ tương đồng.
+        \item \textbf{Phân bổ trọng số thời gian (Time Decay):} Áp dụng hàm suy giảm để giảm trọng số các tài liệu cũ, đảm bảo tính cập nhật của thông tin truy xuất.
+        \item \textbf{Truy xuất lai (Hybrid Retrieval):} Kết hợp kỹ thuật Sparse (BM25) và Dense (Embedding) nhằm tối ưu khả năng đối khớp từ vựng và ngữ nghĩa.
+    \end{itemize}
+\end{frame}
+
+
+% ============================================================
+%  SECTION 2: Proposed Methodology (T-RAG)
+% ============================================================
+\section{Kiến trúc Đề xuất: T-RAG Pipeline}
+
+\begin{frame}{Cấu trúc Tổng quan T-RAG}
+    \vspace{0.2cm}
+    \begin{center}
+    \resizebox{\textwidth}{!}{
+    \begin{tikzpicture}[
+        node distance=1.2cm and 1cm,
+        box/.style={rectangle, draw=myprimary, fill=myprimary!10, thick, rounded corners=1mm, minimum width=2.5cm, minimum height=1.2cm, align=center, font=\small},
+        arrow/.style={-{Latex[scale=1.2]}, thick, myprimary}
+    ]
+        % Nodes
+        \node[box, fill=mygrey] (query) {User Query};
+        \node[box, right=of query] (parser) {\textbf{1. Query Parser}\\(Soft-Filtering)};
+        \node[box, right=of parser] (retriever) {\textbf{2. Hybrid Retriever}\\(Dense + BM25)};
+        \node[box, right=of retriever] (reranker) {\textbf{3. Temporal Reranker}\\(Time \& Diversity)};
+        \node[box, fill=mygreen!10, draw=mygreen, right=of reranker] (answer) {\textbf{4. Generation}\\Final Answer};
+    
+        % Arrows
+        \draw[arrow] (query) -- (parser);
+        \draw[arrow] (parser) -- (retriever) node[midway, above, font=\scriptsize] {~500 IDs};
+        \draw[arrow] (retriever) -- (reranker) node[midway, above, font=\scriptsize] {Top 50};
+        \draw[arrow] (reranker) -- (answer) node[midway, above, font=\scriptsize] {Top 10};
+        
+        % DBs
+        \node[box, fill=mygreen!10, draw=mygreen, below=1cm of parser] (sqldb) {SQLite (Metadata)};
+        \node[box, fill=mygreen!10, draw=mygreen, below=1cm of retriever] (vectordb) {Vector DB};
+        
+        \draw[arrow, dashed, mygreen] (parser) -- (sqldb) node[midway, right, font=\tiny] {SQL Lookup};
+        \draw[arrow, dashed, mygreen] (sqldb) -| (retriever);
+        \draw[arrow, dashed, mygreen] (vectordb) -- (retriever);
+        
+    \end{tikzpicture}
+    }
+    \end{center}
+\end{frame}
+
+\begin{frame}{Phân hệ 1: Phân tách Lưu trữ (Storage Isolation)}
+    \begin{columns}[T]
+        \begin{column}{.48\textwidth}
+            \begin{infobox}[\faDatabase \hspace{2pt} Relational DB (SQLite)]
+                \footnotesize
+                \begin{itemize}
+                    \setlength\itemsep{0.3em}
+                    \item \textbf{Lưu trữ Metadata:} Ngày tạo, Tác giả, Trạng thái tài liệu.
+                    \item \textbf{Cập nhật hiệu quả:} Cho phép cập nhật trạng thái văn bản nhanh chóng bằng truy vấn SQL mà không cần tính toán lại Vector.
+                    \item \textbf{Chỉ mục văn bản:} Tích hợp FTS5 hỗ trợ thuật toán BM25.
+                \end{itemize}
+            \end{infobox}
+        \end{column}%
+        \hfill%
+        \begin{column}{.48\textwidth}
+            \begin{infobox}[\faVectorSquare \hspace{2pt} Vector DB (LanceDB)]
+                \footnotesize
+                \begin{itemize}
+                    \setlength\itemsep{0.3em}
+                    \item \textbf{Lưu trữ Embeddings:} Chuyên biệt cho biểu diễn vector và mã định danh (\texttt{doc\_id}).
+                    \item \textbf{Tính ổn định:} Giảm thiểu tần suất ghi (write operations); chỉ cập nhật khi nội dung cốt lõi thay đổi.
+                    \item Giảm thiểu đáng kể chi phí tính toán trong quá trình Indexing.
+                \end{itemize}
+            \end{infobox}
+        \end{column}%
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Phân hệ 2: Truy vấn \& Cơ chế Nới lỏng (Soft-Filtering)}
+    \begin{infobox}[\faFilter \hspace{1pt} Logic Lọc Nới lỏng (Soft-Filtering)]
+        \footnotesize Việc áp dụng các điều kiện cứng (Hard-filter) thường trả về tập rỗng do lỗi trích xuất thực thể. T-RAG áp dụng cơ chế tự động nới lỏng giới hạn nhằm duy trì một tập ứng viên (Candidate List) ổn định.
+    \end{infobox}
+    
+    \vspace{0.1cm}
+    
+    \textbf{\small Minh họa quá trình Fallback:}
+    \vspace{0.1cm}
+    \begin{itemize}
+        \small
+        \item[\faFilter] Bước 1: Khớp toàn bộ điều kiện (\texttt{Date='2025'} AND \texttt{Author='A'} AND \texttt{Type='Meeting'}) 
+        \item[] $\rightarrow$ Lượng kết quả thấp $\rightarrow$ Kích hoạt Fallback (Bỏ qua \texttt{Date}).
+        \item[\faFilter] Bước 2: Khớp một phần (\texttt{Author='A'} AND \texttt{Type='Meeting'}) 
+        \item[] $\rightarrow$ Lượng kết quả thấp $\rightarrow$ Kích hoạt Fallback (Bỏ qua \texttt{Author}).
+        \item[\faFilter] Bước 3: Chỉ giữ thuộc tính cốt lõi (\texttt{Type='Meeting'})
+        \item[] $\rightarrow$ \textcolor{mygreen}{\textbf{Đạt ngưỡng ứng viên (Ví dụ: 500 documents) $\rightarrow$ Chuyển tiếp tới Hybrid Retriever.}}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Phân hệ 3: Truy xuất Lai (Hybrid Retriever)}
+    \begin{successbox}[\faSearch \hspace{2pt} Tích hợp Dense \& Sparse]
+        \small Hoạt động truy xuất chỉ được thực hiện trên tập ứng viên giới hạn (Candidate List) thay vì toàn bộ cơ sở dữ liệu.
+    \end{successbox}
+    
+    \vspace{0.3cm}
+    
+    \begin{itemize}
+        \small
+        \item \textbf{Dense Search (Semantic):} Đánh giá độ tương đồng Cosine, cho phép ánh xạ các khái niệm tương đương dù không trùng khớp từ vựng.
+        \item \textbf{Sparse Search (Lexical - BM25):} Cần thiết để nhận diện chính xác các mã định danh, ID đặc thù (như mã lỗi, số ticket) mà Dense Search thường bỏ sót.
+        \item \textbf{Hợp nhất bằng RRF (Reciprocal Rank Fusion):} Kết hợp thứ hạng từ cả hai phương pháp để trích xuất tập tài liệu liên quan nhất.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Phân hệ 4: Mô hình Reranker (Temporal \& Diversity)}
+    \begin{alertbox}[\faCalculator \hspace{2pt} Hàm phạt thời gian (Time Decay)]
+        \vspace{-0.2cm}
+        \begin{equation}
+            \text{Final\_Score} = \text{Relevance} \times e^{-\lambda \Delta t} \times \text{Diversity\_Penalty}
+        \end{equation}
+    \end{alertbox}
+    
+    \vspace{0.2cm}
+    
+    \begin{itemize}
+        \small
+        \item \textbf{Relevance ($0 \to 1$):} Điểm đánh giá mức độ liên quan ngữ nghĩa từ mô hình Cross-Encoder (ví dụ: BGE-Reranker).
+        \item \textbf{Time Penalty ($e^{-\lambda \Delta t}$):} Với $\Delta t$ là khoảng lùi thời gian. Hệ số này làm suy giảm theo hàm mũ điểm số của các tài liệu cũ, ưu tiên thứ hạng cho thông tin hiện hành.
+        \item \textbf{Diversity Penalty (MMR):} Áp dụng thuật toán Maximal Marginal Relevance nhằm phạt các tài liệu có nội dung trùng lặp, đảm bảo tính đa dạng trong tập kết quả cuối.
+    \end{itemize}
+\end{frame}
+
+
+% ============================================================
+%  SECTION 3: Implementation Setup
+% ============================================================
+\section{Thiết lập Môi trường \& Đo lường (Benchmark Setup)}
+
+\begin{frame}{Mô hình Triển khai trên GPU H100 (1)}
+    \begin{itemize}
+        \item[\faMicrochip] \textbf{Phần cứng:} 1 Node GPU H100 (40GB - 80GB VRAM).
+        \item[\faCode] \textbf{Nền tảng (Native Python + Asyncio):} Xây dựng luồng thực thi bất đồng bộ nhằm tối ưu hóa độ trễ (Latency) và tính minh bạch của quy trình.
+        \item[\faTrophy] \textbf{Mục tiêu Đánh giá:} Tối đa hóa thông lượng (Throughput) trên tập dữ liệu EnterpriseRAG-Bench để phục vụ công bố kết quả thực nghiệm.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Mô hình Triển khai trên GPU H100 (2)}
+    \begin{infobox}[\faCogs \hspace{2pt} Phân bổ Tài nguyên VRAM]
+        \begin{itemize}
+            \item \textbf{LLM Engine (vLLM):} Vận hành mô hình Llama-3-8B / Qwen2.5-7B, xử lý tác vụ \textit{Query Parsing} và \textit{Generation}. (Yêu cầu $\sim 16\text{GB}$). Sử dụng PagedAttention để tăng Batch Size.
+            \item \textbf{Cross-Encoder:} Vận hành BGE-Reranker-v2 thông qua thư viện \texttt{Sentence-Transformers}. (Yêu cầu $\sim 4\text{GB}$).
+            \item \textbf{Cơ sở Dữ liệu cục bộ:} 
+            \begin{itemize}
+                \item SQLite FTS5 (In-memory/SSD)
+                \item LanceDB (In-memory/SSD)
+                \item Các DB hoạt động bên ngoài VRAM nhằm tránh gây hiện tượng OOM (Out Of Memory).
+            \end{itemize}
+        \end{itemize}
+    \end{infobox}
+\end{frame}
+
+% ============================================================
+%  THANK YOU SLIDE
+% ============================================================
+\begin{frame}[plain, noframenumbering]
+    \begin{center}
+        \vspace{2cm}
+        \begin{tikzpicture}
+            \fill[myprimary!5] (0,0) circle (1.5cm);
+            \node[inner sep=0pt, text=myprimary] at (0,0) {\fontsize{50}{50}\selectfont \faHandshake};
+        \end{tikzpicture}
+        
+        \vspace{0.8cm}
+        {\Huge \textbf{\textcolor{myprimary}{Thank you!}}} \\
+        \vspace{0.3cm}
+        {\large Hệ thống T-RAG}
+    \end{center}
+\end{frame}
+
+\end{document}
