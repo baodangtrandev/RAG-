@@ -29,7 +29,7 @@ def run_benchmark():
     
     parsed_queries = pipeline.batch_parse_queries(questions)
     retrieved_docs = pipeline.batch_hybrid_retrieval(questions, parsed_queries, top_k=50)
-    top_k_docs = pipeline.batch_temporal_reranking(questions, retrieved_docs, top_k=10, lambda_val=0.0)
+    top_k_docs = pipeline.batch_temporal_reranking(questions, retrieved_docs, parsed_queries, top_k=10)
     answers = pipeline.batch_generate_answers(questions, top_k_docs)
     
     end_time = time.time()

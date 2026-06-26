@@ -1,4 +1,6 @@
 import os
+import re
+from datetime import datetime
 import lancedb
 import pyarrow as pa
 from sentence_transformers import SentenceTransformer
@@ -25,6 +27,7 @@ def ingest_data():
     schema = pa.schema([
         pa.field("doc_id", pa.string()),
         pa.field("source_type", pa.string()),
+        pa.field("timestamp", pa.float64()),
         pa.field("title", pa.string()),
         pa.field("content", pa.string()),
         pa.field("vector", pa.list_(pa.float32(), 1024))
@@ -63,6 +66,22 @@ def ingest_data():
         else:
             doc_id = filename.split('_')[0] if filename.startswith("dsid_") else filename
             
+        # Extract Timestamp using Regex
+        doc_timestamp = 0.0
+        if source_type == 'slack':
+            match = re.search(r'__(\d{10})', filename)
+            if match: doc_timestamp = float(match.group(1))
+        elif source_type == 'gmail':
+            match = re.search(r'__(\d{8})-', filename)
+            if match:
+                try: doc_timestamp = datetime.strptime(match.group(1), '%Y%m%d').timestamp()
+                except: pass
+        else:
+            match = re.search(r'__(\d{4}-\d{2}-\d{2})-', filename)
+            if match:
+                try: doc_timestamp = datetime.strptime(match.group(1), '%Y-%m-%d').timestamp()
+                except: pass
+                
         try:
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 text = f.read()
@@ -79,6 +98,7 @@ def ingest_data():
         doc_entry = {
             "doc_id": doc_id,
             "source_type": source_type,
+            "timestamp": doc_timestamp,
             "title": title,
             "content": text
         }
