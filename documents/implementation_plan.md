@@ -1,96 +1,56 @@
-# Kế hoạch triển khai T-RAG Pipeline (Benchmark & Academic Setup)
+# Kế hoạch triển khai T-RAG Pipeline (Phiên bản Tối ưu H100 Offline Batching)
 
-Bản kế hoạch này mô tả kiến trúc và các bước triển khai hệ thống T-RAG, được thiết kế đặc biệt cho mục tiêu **chạy benchmark (EnterpriseRAG-Bench)** và **viết paper**, chạy trên **1 node GPU H100 (40GB - 80GB VRAM)**.
-
-Vì mục tiêu là nghiên cứu và công bố khoa học (không phải production microservices), kiến trúc sẽ ưu tiên:
-- **Dễ tái tạo (Reproducibility):** Hạn chế tối đa các dependencies phức tạp (như Docker services riêng rẽ).
-- **Tốc độ (Throughput):** Tối ưu vRAM và batching để chạy benchmark nhanh.
-- **Minh bạch (Transparency):** Code native Python để dễ dàng đo lường độ trễ (latency), ablation studies, và log lại các bước trung gian phục vụ viết báo.
+Bản kế hoạch này mô tả kiến trúc và các bước triển khai hệ thống T-RAG, được thiết kế đặc biệt để **tối đa hóa hiệu năng (Throughput)** trên **GPU H100 (40GB - 80GB VRAM)**, phục vụ mục tiêu chạy tập dữ liệu **EnterpriseRAG-Bench**.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> Dưới đây là các quyết định (Tech Stack Decisions) được lựa chọn dựa trên ngữ cảnh Benchmark & H100 của bạn. Xin hãy review và phê duyệt để tôi bắt đầu code.
-
-## Tech Stack Decisions (Khuyến nghị cho Benchmark/Paper)
-
-**1. Database Stack (Local & Lightweight)**
-- **Relational DB & Sparse Search:** Sử dụng **SQLite** kết hợp module **FTS5** (Full-Text Search).
-  - *Lý do:* Không cần cài đặt server (như Postgres/Elasticsearch), chỉ là một file local, cực kỳ dễ share code để người khác tái tạo kết quả paper. FTS5 hỗ trợ thuật toán BM25 trực tiếp trong SQLite, giải quyết luôn cả bài toán Metadata Filtering và Sparse Search trong cùng một câu query SQL.
-- **Vector DB:** Sử dụng **LanceDB** hoặc **Qdrant (Local/In-memory mode)**.
-  - *Lý do:* Chạy trực tiếp trong memory/disk bằng Python mà không cần spin up Docker container. Xử lý 500k vectors rất mượt.
-
-**2. LLM Stack (Tối ưu cho H100 40-80GB)**
-Với H100, tài nguyên tính toán rất mạnh nhưng VRAM (nếu là 40GB) cần được quy hoạch kỹ:
-- **Engine Suy luận:** Chắc chắn phải dùng **vLLM** (hoặc TensorRT-LLM) để đạt throughput tối đa (cần thiết khi chạy benchmark với hàng nghìn câu hỏi).
-- **Mô hình (Models):**
-  - *Parser & Generator:* Chỉ nên dùng 1 mô hình duy nhất (ví dụ: `Meta-Llama-3-8B-Instruct` hoặc `Qwen2.5-7B-Instruct`) cho cả việc parse câu hỏi và sinh câu trả lời để tiết kiệm VRAM (chiếm khoảng 15-18GB ở bf16).
-  - *Reranker:* Dùng thư viện `sentence-transformers` hoặc `vLLM` cho `BGE-Reranker-v2-m3` (chiếm khoảng 4-6GB).
-  - *Embedder (nếu cần tự nhúng):* `text-embedding-3-large` (như bài báo) hoặc model open-source `BGE-m3`. Nếu bài báo đã cung cấp sẵn file nhúng, ta có thể bỏ qua việc load model này.
-  *-> Tổng VRAM dự kiến: ~25GB, chạy rất an toàn và thoải mái trên H100 40GB, cho phép Batch Size lớn.*
-
-**3. Framework**
-- **Native Python + asyncio**: KHÔNG dùng LangChain hay LlamaIndex.
-  - *Lý do:* Khi viết paper, bạn cần đo chính xác thời gian ở từng module (Ablation study) và ghi log mọi thứ để phân tích lỗi. Việc dùng Native Python giúp bạn kiểm soát hoàn toàn data flow và thuật toán (nhất là cái công thức Decay Function bạn tự định nghĩa).
+> Dựa trên góp ý cực kỳ chính xác của bạn về vLLM Offline Batching, tôi đã thiết kế lại luồng thực thi (Execution Flow) từ dạng tuần tự (Sequential) sang dạng **Theo giai đoạn (Stage-based Batching)**. Mời bạn xem xét!
 
 ---
 
-## Proposed Architecture & Changes (T-RAG Core)
+## 1. Phân tích: Vì sao bạn/người bạn đó nói đúng 100%?
 
-Hệ thống sẽ được chia thành 4 phân hệ (Modules) chính, bám sát các fix từ `TRAG-N.md`:
+Người khuyên bạn câu đó là một kỹ sư hệ thống rất am hiểu! 
+1. **Overhead của HTTP API:** Việc chạy server và gọi qua HTTP (dù là `localhost`) yêu cầu JSON Serialization, Deserialization, HTTP header parsing, và quan trọng nhất là bị giới hạn bởi connection pool.
+2. **Quyền năng của Offline Batching:** `vLLM` sinh ra là để tối ưu hóa Memory Bound qua cơ chế **PagedAttention**. Khi dùng class `LLM(model="...")` và truyền vào list 500 prompts cùng lúc (`llm.generate(prompts)`), engine sẽ tự động xếp lịch (schedule), nhét đầy các token vào các block VRAM trống của H100, tạo ra Batch Size khổng lồ (vài trăm câu hỏi cùng lúc). Tốc độ có thể **nhanh gấp 10 - 50 lần** so với việc for-loop từng câu qua API.
 
-### 1. Phân hệ Ingestion & Lưu trữ (Storage Layer)
-- **SQLite Database:** Bảng `documents` chứa `doc_id`, `metadata` (JSON), và `content`. Index FTS5 ảo trên bảng này.
-- **Vector Index:** LanceDB/Qdrant map `doc_id` với Vector Embedding.
+## 2. Kiến trúc Data Flow Mới (Tối đa hóa H100)
 
-### 2. Phân hệ Phân tích Truy vấn (Query Parser với Soft-Filtering)
-- **Entity Extraction (vLLM):** Prompt LLM trả về JSON chứa `entities`, `timeframe`, `doc_type`.
-- **Soft-Filtering & Fallback Logic (SQLite):** 
-  - Translate JSON thành SQLite Query với logic LIKE/FTS.
-  - **Fallback:** Nếu `COUNT(doc_id) < 50`, tự động thả lỏng các điều kiện lọc trong SQL (bỏ filter thời gian, bỏ filter tác giả) cho đến khi lấy đủ ~500 Candidate IDs.
+Để xài được Offline Batching, chúng ta **KHÔNG THỂ** làm theo cách truyền thống (for-loop từng câu: bóc tách $\rightarrow$ tìm kiếm $\rightarrow$ rerank $\rightarrow$ trả lời). Vì như thế batch_size ở LLM luôn = 1.
+Chúng ta sẽ thiết kế Pipeline xử lý **toàn bộ 500 câu hỏi cùng lúc** qua từng trạm (Stage):
 
-### 3. Phân hệ Tìm kiếm Kết hợp (Hybrid Retriever)
-- Sparse Search: Query bằng FTS5 (BM25) trên SQLite, lấy điểm `bm25_score`.
-- Dense Search: Query Qdrant/LanceDB với ID nằm trong danh sách Candidate IDs. Lấy `cosine_score`.
-- Merge bằng RRF (Reciprocal Rank Fusion).
+### Stage 1: Batch Query Parsing (LLM)
+- Đưa cùng lúc 500 câu hỏi trong `questions.jsonl` vào vLLM thông qua `llm.generate(prompts)`.
+- vLLM trả về 500 kết quả JSON (chứa `source_type`, keyword...).
 
-### 4. Phân hệ Reranker (Temporal & Diversity Decay)
-- **Relevance:** Chạy qua `BGE-Reranker-v2` để lấy điểm gốc.
-- **Áp dụng Decay Function:**
-  - `Final_Score = Relevance * exp(-λ * Δt) * Diversity_Penalty`
-  - Logic tính `Diversity_Penalty` sử dụng thuật toán MMR (Maximal Marginal Relevance) chạy trên CPU (numpy/torch-cpu) vì ma trận nhỏ (top 50).
-- Lấy Top 10 đưa vào vLLM để sinh câu trả lời cuối cùng.
+### Stage 2: Batch Hybrid Retrieval (LanceDB)
+- Dùng vòng lặp (hoặc Async) truy vấn 500 queries vừa bóc tách vào **LanceDB** (áp dụng luôn Metadata Filtering + Hybrid BM25/Vector).
+- Kết quả trả về danh sách 500 x Top 50 documents.
+
+### Stage 3: Batch Temporal Reranking (Cross-Encoder)
+- Gom 500 x 50 = 25.000 cặp (Query, Document) ném vào model `BGE-Reranker-v2-m3` với `batch_size=256` (GPU H100 dư sức tính 25k phép tính này trong vài giây).
+- Áp dụng công thức phạt thời gian **Time Decay** ($e^{-\lambda \Delta t}$) cho toàn bộ ma trận điểm.
+- Cắt lại Top 10 documents cho mỗi câu.
+
+### Stage 4: Batch Answer Generation (LLM)
+- Ghép 500 câu hỏi gốc với Top 10 documents tương ứng tạo thành 500 prompts khổng lồ.
+- Đưa vào `llm.generate(prompts)` lần 2. H100 sẽ xả toàn bộ sức mạnh để sinh ra 500 câu trả lời cùng lúc.
 
 ---
 
-## Các File Sẽ Được Tạo (Cấu trúc Codebase dự kiến)
+## 3. Lựa chọn Tech Stack (Chốt)
 
-Chúng ta sẽ thiết kế codebase dạng script chạy benchmark:
+1. **Storage (Ingestion):** Chỉ sử dụng duy nhất **LanceDB** (Hỗ trợ Native Vector Search + BM25 Tantivy + Hybrid RRF + Metadata Filtering).
+2. **LLM Engine:** `vllm.LLM` chạy in-memory (Offline Batching mode).
+3. **Reranker Engine:** `sentence-transformers` (Chạy batch processing).
+4. **Data:** File `all_documents.zip` đã có sẵn, chúng ta sẽ viết script giải nén và nạp thẳng vào LanceDB.
 
-#### `d:\Projects\RAG-\TRAG\database.py`
-Xử lý setup SQLite (FTS5) và LanceDB/Qdrant. Gồm hàm load bộ dữ liệu 500k docs của EnterpriseRAG-Bench.
+## 4. Kế hoạch Code (Các files)
 
-#### `d:\Projects\RAG-\TRAG\llm_engine.py`
-Khởi tạo và quản lý `vLLM` instance. Chứa các helper func để generate text và parse JSON.
+1. `ingest.py`: Đọc file `all_documents.zip`, tạo embedding, và nạp vào LanceDB.
+2. `vllm_engine.py`: Wrapper chứa object `LLM` và các hàm helper gọi `generate()`.
+3. `trag_pipeline.py`: Chứa logic của 4 Stage trên. Xử lý input là list, output là list.
+4. `run_benchmark.py`: Script khởi chạy toàn bộ luồng, ghi log throughput, và xuất ra `answers.jsonl` chuẩn hóa.
 
-#### `d:\Projects\RAG-\TRAG\retriever.py`
-Thực thi Fallback SQL, Dense Search, Sparse Search và RRF.
-
-#### `d:\Projects\RAG-\TRAG\reranker.py`
-Chạy Cross-encoder model và tính công thức Decay/MMR.
-
-#### `d:\Projects\RAG-\TRAG\benchmark_runner.py`
-File thực thi chính, load tập câu hỏi (`questions.jsonl`), chạy luồng T-RAG (Parser -> Retrieve -> Rerank -> Generate) cho từng câu, đo đạc thời gian (latency) và ghi kết quả ra file `answers.jsonl` chuẩn format của paper.
-
-## Verification Plan
-
-### Automated Benchmark Test
-- Chạy thử `benchmark_runner.py` trên tập nhỏ (10-20 câu hỏi) của EnterpriseRAG-Bench.
-- Log chi tiết các chỉ số:
-  - Thời gian parse.
-  - Số lượng tài liệu lọc được ở bước Fallback.
-  - Thời gian reranking.
-  - Điểm Rerank trước và sau khi áp dụng Time Decay.
-
-### Manual Verification
-- Bạn kiểm tra file output `answers.jsonl` đảm bảo đúng định dạng yêu cầu của EnterpriseRAG-Bench leaderboards.
+Mọi thứ đã rất logic và sẵn sàng cho H100! Đợi bạn xác nhận để chúng ta bắt đầu code `ingest.py` tải dữ liệu vào DB!
