@@ -206,81 +206,63 @@
     \begin{center}
     \resizebox{\textwidth}{!}{
     \begin{tikzpicture}[
-        node distance=1.2cm and 1cm,
+        node distance=1.2cm and 1.8cm,
         box/.style={rectangle, draw=myprimary, fill=myprimary!10, thick, rounded corners=1mm, minimum width=2.5cm, minimum height=1.2cm, align=center, font=\small},
         arrow/.style={-{Latex[scale=1.2]}, thick, myprimary}
     ]
         % Nodes
         \node[box, fill=mygrey] (query) {User Query};
-        \node[box, right=of query] (parser) {\textbf{1. Query Parser}\\(Soft-Filtering)};
+        \node[box, right=of query] (parser) {\textbf{1. Query Parser}\\(Query Expansion)};
         \node[box, right=of parser] (retriever) {\textbf{2. Hybrid Retriever}\\(Dense + BM25)};
-        \node[box, right=of retriever] (reranker) {\textbf{3. Temporal Reranker}\\(Time \& Diversity)};
+        \node[box, right=of retriever] (reranker) {\textbf{3. Temporal Reranker}\\(Conditional Decay)};
         \node[box, fill=mygreen!10, draw=mygreen, right=of reranker] (answer) {\textbf{4. Generation}\\Final Answer};
     
         % Arrows
         \draw[arrow] (query) -- (parser);
-        \draw[arrow] (parser) -- (retriever) node[midway, above, font=\scriptsize] {~500 IDs};
+        \draw[arrow] (parser) -- (retriever) node[midway, above, font=\scriptsize, align=center] {Expanded\\Query};
         \draw[arrow] (retriever) -- (reranker) node[midway, above, font=\scriptsize] {Top 50};
         \draw[arrow] (reranker) -- (answer) node[midway, above, font=\scriptsize] {Top 10};
         
         % DBs
-        \node[box, fill=mygreen!10, draw=mygreen, below=1cm of parser] (sqldb) {SQLite (Metadata)};
-        \node[box, fill=mygreen!10, draw=mygreen, below=1cm of retriever] (vectordb) {Vector DB};
+        \node[box, fill=mygreen!10, draw=mygreen, below=1cm of retriever] (lancedb) {LanceDB (Vector + FTS + Metadata)};
         
-        \draw[arrow, dashed, mygreen] (parser) -- (sqldb) node[midway, right, font=\tiny] {SQL Lookup};
-        \draw[arrow, dashed, mygreen] (sqldb) -| (retriever);
-        \draw[arrow, dashed, mygreen] (vectordb) -- (retriever);
+        \draw[arrow, dashed, mygreen] (lancedb) -- (retriever);
         
     \end{tikzpicture}
     }
     \end{center}
 \end{frame}
 
-\begin{frame}{Phân hệ 1: Phân tách Lưu trữ (Storage Isolation)}
-    \begin{columns}[T]
-        \begin{column}{.48\textwidth}
-            \begin{infobox}[\faDatabase \hspace{2pt} Relational DB (SQLite)]
-                \footnotesize
-                \begin{itemize}
-                    \setlength\itemsep{0.3em}
-                    \item \textbf{Lưu trữ Metadata:} Ngày tạo, Tác giả, Trạng thái tài liệu.
-                    \item \textbf{Cập nhật hiệu quả:} Cho phép cập nhật trạng thái văn bản nhanh chóng bằng truy vấn SQL mà không cần tính toán lại Vector.
-                    \item \textbf{Chỉ mục văn bản:} Tích hợp FTS5 hỗ trợ thuật toán BM25.
-                \end{itemize}
-            \end{infobox}
-        \end{column}%
-        \hfill%
-        \begin{column}{.48\textwidth}
-            \begin{infobox}[\faVectorSquare \hspace{2pt} Vector DB (LanceDB)]
-                \footnotesize
-                \begin{itemize}
-                    \setlength\itemsep{0.3em}
-                    \item \textbf{Lưu trữ Embeddings:} Chuyên biệt cho biểu diễn vector và mã định danh (\texttt{doc\_id}).
-                    \item \textbf{Tính ổn định:} Giảm thiểu tần suất ghi (write operations); chỉ cập nhật khi nội dung cốt lõi thay đổi.
-                    \item Giảm thiểu đáng kể chi phí tính toán trong quá trình Indexing.
-                \end{itemize}
-            \end{infobox}
-        \end{column}%
-    \end{columns}
+\begin{frame}{Phân hệ 1: Hợp nhất Lưu trữ (Unified Storage với LanceDB)}
+    \begin{successbox}[\faDatabase \hspace{2pt} Cơ sở dữ liệu hợp nhất (Unified Database)]
+        \small Kiến trúc T-RAG đồng nhất hóa quy trình quản lý dữ liệu thông qua LanceDB, loại bỏ độ trễ và sự phân mảnh của kiến trúc đa cơ sở dữ liệu.
+    \end{successbox}
+    
+    \vspace{0.3cm}
+    
+    \begin{itemize}
+        \small
+        \item \textbf{Dense Vector Index:} Chuyên biệt hóa cho biểu diễn nhúng (Embedding) nhằm phục vụ tìm kiếm ngữ nghĩa (Semantic Search).
+        \item \textbf{Sparse FTS Index (Tantivy):} Tích hợp cơ chế tìm kiếm toàn văn bản (Full-Text Search) trực tiếp trên cùng một phân vùng dữ liệu.
+        \item \textbf{SQL Metadata Filtering:} Hỗ trợ truy vấn siêu dữ liệu (\texttt{source\_type}, thời gian) với khả năng tích hợp tự động vào thuật toán lai (RRF).
+        \item \textbf{Tối ưu hiệu năng:} Triệt tiêu hoàn toàn nút thắt cổ chai I/O (I/O Bottleneck) khi đồng bộ hóa dữ liệu.
+    \end{itemize}
 \end{frame}
 
-\begin{frame}{Phân hệ 2: Truy vấn \& Cơ chế Nới lỏng (Soft-Filtering)}
-    \begin{infobox}[\faFilter \hspace{1pt} Logic Lọc Nới lỏng (Soft-Filtering)]
-        \footnotesize Việc áp dụng các điều kiện cứng (Hard-filter) thường trả về tập rỗng do lỗi trích xuất thực thể. T-RAG áp dụng cơ chế tự động nới lỏng giới hạn nhằm duy trì một tập ứng viên (Candidate List) ổn định.
+\begin{frame}{Phân hệ 2: Tự động Mở rộng \& Trích xuất (Self-Query Expansion)}
+    \begin{infobox}[\faMagic \hspace{1pt} Bộ tiền xử lý ngôn ngữ (LLM-based Query Parser)]
+        \footnotesize Ứng dụng Mô hình Ngôn ngữ Lớn để phân tích truy vấn, trích xuất siêu dữ liệu và tự động sinh truy vấn tối ưu (HyDE - Hypothetical Document Embeddings).
     \end{infobox}
     
-    \vspace{0.1cm}
+    \vspace{0.2cm}
     
-    \textbf{\small Minh họa quá trình Fallback:}
+    \textbf{\small Quá trình xử lý truy vấn:}
     \vspace{0.1cm}
     \begin{itemize}
         \small
-        \item[\faFilter] Bước 1: Khớp toàn bộ điều kiện (\texttt{Date='2025'} AND \texttt{Author='A'} AND \texttt{Type='Meeting'}) 
-        \item[] $\rightarrow$ Lượng kết quả thấp $\rightarrow$ Kích hoạt Fallback (Bỏ qua \texttt{Date}).
-        \item[\faFilter] Bước 2: Khớp một phần (\texttt{Author='A'} AND \texttt{Type='Meeting'}) 
-        \item[] $\rightarrow$ Lượng kết quả thấp $\rightarrow$ Kích hoạt Fallback (Bỏ qua \texttt{Author}).
-        \item[\faFilter] Bước 3: Chỉ giữ thuộc tính cốt lõi (\texttt{Type='Meeting'})
-        \item[] $\rightarrow$ \textcolor{mygreen}{\textbf{Đạt ngưỡng ứng viên (Ví dụ: 500 documents) $\rightarrow$ Chuyển tiếp tới Hybrid Retriever.}}
+        \item[\faCode] \textbf{Trích xuất siêu dữ liệu định hướng (Targeted Metadata):} Phân loại và nhận diện nguồn tài liệu tương ứng (Ví dụ: \texttt{github}, \texttt{gmail}).
+        \item[\faClock] \textbf{Nhận diện yếu tố thời gian (Temporal Intent):} Kích hoạt cờ \texttt{requires\_latest=True} đối với các truy vấn đòi hỏi thông tin cập nhật, nhằm giảm thiểu sai số đối với các câu hỏi mang tính lịch sử.
+        \item[\faExpand] \textbf{Mở rộng truy vấn (Query Expansion):} Tái cấu trúc truy vấn, bổ sung từ đồng nghĩa và diễn giải từ viết tắt, góp phần nâng cao độ phủ (Recall) trong tìm kiếm lai.
     \end{itemize}
 \end{frame}
 
@@ -299,11 +281,11 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Phân hệ 4: Mô hình Reranker (Temporal \& Diversity)}
-    \begin{alertbox}[\faCalculator \hspace{2pt} Hàm phạt thời gian (Time Decay)]
+\begin{frame}{Phân hệ 4: Mô hình Reranker (Conditional Time Decay)}
+    \begin{alertbox}[\faCalculator \hspace{2pt} Hàm suy giảm thời gian (Time Decay Function)]
         \vspace{-0.2cm}
         \begin{equation}
-            \text{Final\_Score} = \text{Relevance} \times e^{-\lambda \Delta t} \times \text{Diversity\_Penalty}
+            \text{Final\_Score} = \text{Relevance} \times e^{-\lambda \Delta t}
         \end{equation}
     \end{alertbox}
     
@@ -311,9 +293,14 @@
     
     \begin{itemize}
         \small
-        \item \textbf{Relevance ($0 \to 1$):} Điểm đánh giá mức độ liên quan ngữ nghĩa từ mô hình Cross-Encoder (ví dụ: BGE-Reranker).
-        \item \textbf{Time Penalty ($e^{-\lambda \Delta t}$):} Với $\Delta t$ là khoảng lùi thời gian. Hệ số này làm suy giảm theo hàm mũ điểm số của các tài liệu cũ, ưu tiên thứ hạng cho thông tin hiện hành.
-        \item \textbf{Diversity Penalty (MMR):} Áp dụng thuật toán Maximal Marginal Relevance nhằm phạt các tài liệu có nội dung trùng lặp, đảm bảo tính đa dạng trong tập kết quả cuối.
+        \item \textbf{Relevance ($0 \to 1$):} Điểm số tương đồng ngữ nghĩa trích xuất từ mạng Cross-Encoder.
+        \item \textbf{Hệ số suy giảm có điều kiện (Conditional Time Penalty):} 
+        \begin{itemize}
+            \footnotesize
+            \item Khi \texttt{requires\_latest = True}: $\lambda > 0$, áp dụng suy giảm hàm mũ đối với các tài liệu cũ.
+            \item Khi \texttt{requires\_latest = False}: $\lambda = 0$ (Hệ số = 1.0), bảo toàn tính toàn vẹn của kết quả truy xuất cho các truy vấn tra cứu sự kiện lịch sử.
+        \end{itemize}
+        \item \textbf{Giới hạn ngữ cảnh (Context Truncation):} Thuật toán tự động cắt tỉa văn bản nhằm ngăn chặn hiện tượng tràn bộ nhớ (Out-of-Memory) khi chiều dài ngữ cảnh vượt ngưỡng cho phép của LLM.
     \end{itemize}
 \end{frame}
 
@@ -323,24 +310,28 @@
 % ============================================================
 \section{Thiết lập Môi trường \& Đo lường (Benchmark Setup)}
 
-\begin{frame}{Mô hình Triển khai trên GPU H100 (1)}
+\begin{frame}{Mô hình Triển khai: Kiến trúc Stage-Based Batching}
     \begin{itemize}
         \item[\faMicrochip] \textbf{Phần cứng:} 1 Node GPU H100 (40GB - 80GB VRAM).
-        \item[\faCode] \textbf{Nền tảng (Native Python + Asyncio):} Xây dựng luồng thực thi bất đồng bộ nhằm tối ưu hóa độ trễ (Latency) và tính minh bạch của quy trình.
-        \item[\faTrophy] \textbf{Mục tiêu Đánh giá:} Tối đa hóa thông lượng (Throughput) trên tập dữ liệu EnterpriseRAG-Bench để phục vụ công bố kết quả thực nghiệm.
+        \item[\faTrophy] \textbf{Mục tiêu Đánh giá:} Tối đa hóa thông lượng (Throughput) trên 500k tài liệu thuộc EnterpriseRAG-Bench.
+        \item[\faCode] \textbf{Kiến trúc xử lý lô (Batching Architecture):} 
+        \begin{itemize}
+            \footnotesize
+            \item Giải quyết độ trễ mạng (Network Overhead) bằng phương pháp xử lý lô đồng loạt cho từng luồng (Stage).
+            \item Khai thác tối đa kỹ thuật \textit{PagedAttention} của \textbf{vLLM}, gia tăng khả năng lấp đầy VRAM và tăng tốc độ sinh văn bản (Generation Speed).
+        \end{itemize}
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Mô hình Triển khai trên GPU H100 (2)}
-    \begin{infobox}[\faCogs \hspace{2pt} Phân bổ Tài nguyên VRAM]
+\begin{frame}{Phân bổ Tài nguyên VRAM trên Kiến trúc H100}
+    \begin{infobox}[\faCogs \hspace{2pt} Quy hoạch Tài nguyên Cục bộ (Local Resource Allocation)]
         \begin{itemize}
-            \item \textbf{LLM Engine (vLLM):} Vận hành mô hình Llama-3-8B / Qwen2.5-7B, xử lý tác vụ \textit{Query Parsing} và \textit{Generation}. (Yêu cầu $\sim 16\text{GB}$). Sử dụng PagedAttention để tăng Batch Size.
-            \item \textbf{Cross-Encoder:} Vận hành BGE-Reranker-v2 thông qua thư viện \texttt{Sentence-Transformers}. (Yêu cầu $\sim 4\text{GB}$).
-            \item \textbf{Cơ sở Dữ liệu cục bộ:} 
+            \item \textbf{LLM Engine (vLLM Offline Batching):} Vận hành Llama-3-8B (Yêu cầu $\sim 16\text{GB}$). Đảm nhiệm đồng thời \textit{Query Expansion} và \textit{Answer Generation}.
+            \item \textbf{Mạng Cross-Encoder:} Vận hành BGE-Reranker thông qua \texttt{Sentence-Transformers} ($\sim 4\text{GB}$). Áp dụng Batch-size lớn nhằm tối ưu hóa thời gian tính toán ma trận tương đồng.
+            \item \textbf{Cơ sở dữ liệu Hợp nhất (Unified LanceDB):} 
             \begin{itemize}
-                \item SQLite FTS5 (In-memory/SSD)
-                \item LanceDB (In-memory/SSD)
-                \item Các DB hoạt động bên ngoài VRAM nhằm tránh gây hiện tượng OOM (Out Of Memory).
+                \item Lưu trữ ngoại vi (In-memory / SSD) nhằm giải phóng bộ nhớ GPU.
+                \item Tận dụng kiến trúc backend Rust để tối ưu thời gian phản hồi cho các truy vấn Hybrid Search.
             \end{itemize}
         \end{itemize}
     \end{infobox}
