@@ -1,0 +1,5 @@
+\babel@toc {vietnamese}{}\relax 
+\beamer@sectionintoc {1}{Bối cảnh \& Bài toán}{3}{0}{1}
+\beamer@sectionintoc {2}{Tính Mới \& Đóng góp (Academic Novelty)}{4}{0}{2}
+\beamer@sectionintoc {3}{Kiến trúc Pipeline Đề xuất}{5}{0}{3}
+\beamer@sectionintoc {4}{Kế hoạch Thực thi Kỹ thuật}{9}{0}{4}
