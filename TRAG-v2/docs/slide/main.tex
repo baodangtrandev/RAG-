@@ -59,16 +59,16 @@
     \item \textbf{511,962 documents} từ 9 nguồn khác nhau
     \item Slack (285k), Gmail (121k), Jira (41k),\\Confluence (5k), GitHub, Fireflies...
     \item \textbf{500 câu hỏi} benchmark, 10 loại
-    \item Dữ liệu "messy": xung đột, trùng lặp, ngôn ngữ kỹ thuật
+    \item Dữ liệu nhiễu (Noisy Data): Xung đột ngữ nghĩa, trùng lặp thông tin
 \end{itemize}
 \end{block}
 \end{column}
 \begin{column}{0.5\textwidth}
 \begin{alertblock}{3 Vấn đề của Standard RAG}
 \begin{enumerate}
-    \item \textbf{Source Ambiguity \& Vector Density}: Không phân biệt nguồn làm không gian tìm kiếm khổng lồ
-    \item \textbf{Vocabulary Mismatch}: Truy vấn tự nhiên vs. mã lỗi, thuật ngữ (PR 482, PROJ-102)
-    \item \textbf{Multi-source Queries}: Câu hỏi yêu cầu thông tin chéo nguồn
+    \item \textbf{Sự mơ hồ về nguồn (Source Ambiguity)}: Gây phân tán không gian đặc trưng và tăng độ nhiễu.
+    \item \textbf{Bất đồng từ vựng (Vocabulary Mismatch)}: Sự sai lệch giữa ngôn ngữ tự nhiên và thuật ngữ kỹ thuật.
+    \item \textbf{Truy vấn đa nguồn (Multi-source Queries)}: Đòi hỏi năng lực suy luận chéo nguồn phức tạp.
 \end{enumerate}
 \end{alertblock}
 \end{column}
@@ -76,27 +76,27 @@
 
 \vspace{0.4cm}
 \begin{center}
-\textit{Standard RAG tìm kiếm mù quáng trên 511k documents --- tốn kém, thiếu chính xác.}
+\textit{Kiến trúc Standard RAG bộc lộ hạn chế về độ phức tạp tính toán và khả năng định chuẩn khi đối sánh trên toàn cục không gian dữ liệu.}
 \end{center}
 \end{frame}
 
 %------------------------------------------------
-\section{Tính Mới \& Đóng góp (Academic Novelty)}
+\section{Tính Mới \& Đóng góp}
 
-\begin{frame}{3 Đóng góp Học thuật (Novelty)}
+\begin{frame}{3 Đóng góp Học thuật}
 
 \begin{block}{\#1 --- Probabilistic Source Router (PSR) + Database Sharding}
-\textbf{System-ML Co-design}: Phân vùng vật lý Vector DB theo nguồn. PSR dự đoán xác suất định tuyến, giúp giảm không gian tìm kiếm (Search Space) từ \textbf{50--90\%}.
+\textbf{System-ML Co-design}: Tích hợp phân vùng hệ quản trị Vector DB và mô hình dự báo xác suất định tuyến, tối ưu hóa không gian tìm kiếm từ \textbf{50--90\%}.
 \end{block}
 
 \vspace{0.2cm}
 \begin{block}{\#2 --- Source-Weighted RRF (SW-RRF)}
-\textbf{Đề xuất toán học mới}: Tích hợp \textbf{Bayesian Prior} (xác suất nguồn) trực tiếp vào công thức Reciprocal Rank Fusion truyền thống để tối ưu lai ghép đa nguồn.
+\textbf{Cải tiến mô hình toán học}: Đề xuất tích hợp \textbf{Bayesian Prior} trực tiếp vào công thức Reciprocal Rank Fusion nhằm tối ưu hóa tính điểm xếp hạng tài liệu đa nguồn.
 \end{block}
 
 \vspace{0.2cm}
 \begin{block}{\#3 --- Cross-Source Entity Propagation (CSEP)}
-\textbf{Thuật toán Multi-hop mới}: Giải quyết bài toán truy vấn chéo nguồn bằng cách lấy thông tin mỏ neo (Anchor) từ một nguồn để mở rộng tìm kiếm sang nguồn khác.
+\textbf{Phương pháp suy luận đa bước}: Khắc phục giới hạn truy vấn chéo bằng kỹ thuật trích xuất thực thể mỏ neo (Anchor Entity) để định hướng chuỗi suy luận thứ cấp.
 \end{block}
 \end{frame}
 
@@ -117,20 +117,20 @@
 ]
 
 \node[graybox] (q) {User Query $Q$};
-\node[bluebox, right=0.5cm of q] (psr) {Giai đoạn 1\\PSR Router};
-\node[bluebox, right=0.5cm of psr] (shard) {DB Sharding\\Sub-space};
-\node[orangebox, right=0.5cm of shard] (hybrid) {Giai đoạn 2\\SW-RRF\\Hybrid Search};
-\node[orangebox, right=0.5cm of hybrid] (csep) {Giai đoạn 3\\CSEP\\Multi-hop};
-\node[greenbox, below=0.6cm of csep] (rerank) {Giai đoạn 4\\Cross-Encoder\\Reranker};
-\node[greenbox, left=0.5cm of rerank] (gen) {LLM\\Generation};
-\node[graybox, left=0.5cm of gen] (ans) {Answer};
+\node[bluebox, right=1.2cm of q] (psr) {Giai đoạn 1\\PSR Router};
+\node[bluebox, right=1.2cm of psr] (shard) {DB Sharding\\Sub-space};
+\node[orangebox, right=1.2cm of shard] (hybrid) {Giai đoạn 2\\SW-RRF\\Hybrid Search};
+\node[orangebox, right=1.2cm of hybrid] (csep) {Giai đoạn 3\\CSEP\\Multi-hop};
+\node[greenbox, below=1.0cm of csep] (rerank) {Giai đoạn 4\\Cross-Encoder\\Reranker};
+\node[greenbox, left=1.2cm of rerank] (gen) {LLM\\Generation};
+\node[graybox, left=1.2cm of gen] (ans) {Answer};
 
 \draw[arrow] (q) -- (psr);
-\draw[arrow] (psr) -- node[above,font=\tiny]{$P(s_i|Q)$} (shard);
-\draw[arrow] (shard) -- node[above,font=\tiny]{$S_{active}$} (hybrid);
-\draw[arrow] (hybrid) -- node[above,font=\tiny]{candidates} (csep);
-\draw[arrow] (csep) -- node[right,font=\tiny]{multi-hop docs} (rerank);
-\draw[arrow] (rerank) -- node[below,font=\tiny]{top-K filtered} (gen);
+\draw[arrow] (psr) -- node[above,font=\scriptsize]{$P(s_i|Q)$} (shard);
+\draw[arrow] (shard) -- node[above,font=\scriptsize]{$S_{active}$} (hybrid);
+\draw[arrow] (hybrid) -- node[above,font=\scriptsize]{candidates} (csep);
+\draw[arrow] (csep) -- node[right,font=\scriptsize,text width=1.8cm,align=center]{multi-hop\\docs} (rerank);
+\draw[arrow] (rerank) -- node[above,font=\scriptsize]{top-K} (gen);
 \draw[arrow] (gen) -- (ans);
 
 \node[font=\tiny\itshape, below=0.15cm of psr, text=traggray] {Semantic Routing};
@@ -144,15 +144,15 @@
 \begin{columns}
 \begin{column}{0.33\textwidth}
 \centering\small
-\textcolor{tragblue}{\textbf{Xanh = Pre-Retrieval}}\\Định tuyến \& Thu hẹp
+\textcolor{tragblue}{\textbf{Xanh = Pre-Retrieval}}\\Phân loại \& Định tuyến
 \end{column}
 \begin{column}{0.33\textwidth}
 \centering\small
-\textcolor{tragorange}{\textbf{Cam = Retrieval}}\\Tìm kiếm lai \& Multi-hop
+\textcolor{tragorange}{\textbf{Cam = Retrieval}}\\Lai ghép \& Suy luận đa bước
 \end{column}
 \begin{column}{0.33\textwidth}
 \centering\small
-\textcolor{traggreen}{\textbf{Xanh lá = Post-Retrieval}}\\Đánh giá độ tin cậy
+\textcolor{traggreen}{\textbf{Xanh lá = Post-Retrieval}}\\Kiểm soát ảo giác
 \end{column}
 \end{columns}
 \end{frame}
@@ -179,16 +179,16 @@ Dự báo xác suất có điều kiện của nguồn:
 Độ phức tạp giảm từ $O(|D_{total}|)$ xuống $O(\sum_{i \in S_{active}} |D_{s_i}|)$. Giảm I/O đáng kể.
 \end{column}
 \begin{column}{0.44\textwidth}
-\begin{exampleblock}{Ví dụ}
+\begin{exampleblock}{Ví dụ minh họa định tuyến}
 Truy vấn: \textit{"What did the team say about the GPU budget meeting?"}
 
 \vspace{0.1cm}
-PSR output:
+Kết quả phân phối xác suất từ PSR:
 \begin{itemize}
-    \item $P(\text{Fireflies}|Q) = 0.81 \rightarrow$ Chọn
-    \item $P(\text{Slack}|Q) = 0.72 \rightarrow$ Chọn
-    \item $P(\text{Jira}|Q) = 0.04 \rightarrow$ Bỏ
-    \item $P(\text{GitHub}|Q) = 0.02 \rightarrow$ Bỏ
+    \item $P(\text{Fireflies}|Q) = 0.81 > \tau \rightarrow$ Kích hoạt
+    \item $P(\text{Slack}|Q) = 0.72 > \tau \rightarrow$ Kích hoạt
+    \item $P(\text{Jira}|Q) = 0.04 \le \tau \rightarrow$ Loại bỏ
+    \item $P(\text{GitHub}|Q) = 0.02 \le \tau \rightarrow$ Loại bỏ
 \end{itemize}
 \end{exampleblock}
 \end{column}
@@ -216,15 +216,15 @@ PSR output:
 \end{itemize}
 \end{column}
 \begin{column}{0.48\textwidth}
-\begin{block}{Tại sao SW-RRF hiệu quả?}
-Tài liệu thuộc nguồn có xác suất cao (từ PSR) sẽ được \textbf{"boost"} điểm toán học. Ép các tài liệu đúng nguồn trồi lên top, đánh bại các tài liệu đồng nghĩa nhưng nằm sai nguồn.
+\begin{block}{Cơ sở lý thuyết của SW-RRF}
+Tối ưu hóa thứ hạng tài liệu mục tiêu thông qua trọng số phân phối xác suất ($P(s_d|Q)$), triệt tiêu nhiễu từ các văn bản có tính tương đồng bề mặt nhưng sai lệch ngữ cảnh nguồn.
 \end{block}
 
 \vspace{0.1cm}
-\begin{exampleblock}{Sự cần thiết của Hybrid}
+\begin{exampleblock}{Khả năng bổ trợ của Hybrid Search}
 \begin{itemize}
-    \item \textbf{Dense Search}: Khớp ngữ nghĩa
-    \item \textbf{Sparse (BM25)}: Bắt chính xác (Exact match)
+    \item \textbf{Dense Search}: Trích xuất và đối sánh biểu diễn ngữ nghĩa trừu tượng.
+    \item \textbf{Sparse (BM25)}: Ràng buộc tính chính xác từ vựng (Exact match).
 \end{itemize}
 \end{exampleblock}
 \end{column}
@@ -236,24 +236,24 @@ Tài liệu thuộc nguồn có xác suất cao (từ PSR) sẽ được \textbf
 \small
 \begin{columns}[T]
 \begin{column}{0.52\textwidth}
-\begin{block}{Giai đoạn 3: CSEP (Multi-hop)}
-Dành cho truy vấn đa nguồn phức tạp.
+\begin{block}{Giai đoạn 3: CSEP (Suy luận đa bước)}
+Mô phỏng cơ chế đồ thị hai phía (Bipartite Graph Random Walk).
 \begin{enumerate}
-    \item \textbf{Hop 1:} Tìm trên nguồn có $P(s|Q)$ cao nhất $\rightarrow$ Lấy tài liệu mỏ neo ($D_{anchor}$).
-    \item \textbf{Entity Extract:} Trích xuất thực thể $E$ từ $D_{anchor}$.
-    \item \textbf{Hop 2:} Cập nhật truy vấn $Q^{(2)} = Q \oplus E$, tìm trên nguồn thứ 2.
+    \item \textbf{Hop 1:} Khởi tạo truy xuất trên nguồn tối ưu nhất $\rightarrow$ Định vị tài liệu mỏ neo ($D_{anchor}$).
+    \item \textbf{Entity Extraction:} Phân tách và nhận diện tập thực thể $E$ từ $D_{anchor}$.
+    \item \textbf{Hop 2:} Mở rộng không gian truy vấn $Q^{(2)} = Q \oplus E$ để đối sánh chéo nguồn.
 \end{enumerate}
 \end{block}
 \end{column}
 \begin{column}{0.46\textwidth}
-\begin{block}{Giai đoạn 4: Đánh giá độ tin cậy}
-Dùng \textbf{Cross-Encoder} tính toán hàm liên kết $CE(Q, d_{final})$.
+\begin{block}{Giai đoạn 4: Kiểm soát ngưỡng tin cậy}
+Sử dụng \textbf{Cross-Encoder} tối ưu hóa hàm đánh giá $CE(Q, d_{final})$.
 
 \vspace{0.1cm}
-Áp dụng \textbf{Hard Thresholding}: Lọc bỏ tài liệu nếu $CE(Q, d) < \theta$.
+Áp dụng \textbf{Hard Thresholding}: Lọc nhiễu triệt để nếu $CE(Q, d) < \theta$.
 
 \vspace{0.1cm}
-Nếu rỗng $\rightarrow$ Trả về "Unanswerable" $\rightarrow$ \textbf{Giảm Hallucination triệt để!}
+Trong điều kiện $D_{final} = \emptyset$, hệ thống ngắt luồng LLM và trả về "Unanswerable", hỗ trợ giảm thiểu hiện tượng ảo giác (Hallucination).
 \end{block}
 \end{column}
 \end{columns}
@@ -266,9 +266,9 @@ Nếu rỗng $\rightarrow$ Trả về "Unanswerable" $\rightarrow$ \textbf{Giả
 
 \begin{block}{Các bước Triển khai}
 \begin{enumerate}
-    \item \textbf{Chuẩn bị Dữ liệu}: Sharding 511k documents thành các bảng độc lập trong \textbf{LanceDB} theo \texttt{source\_type}.
-    \item \textbf{Train PSR Router}: Fine-tune LLM nhỏ (Llama-3-8B hoặc BERT) để làm bộ Classifier.
-    \item \textbf{Cài đặt SW-RRF}: Lập trình hàm Retriever theo đúng phương trình toán học đã đề xuất.
+    \item \textbf{Tiền xử lý Dữ liệu}: Áp dụng mô hình Sharding chia 511k documents thành các bảng phân mảnh độc lập theo \texttt{source\_type}.
+    \item \textbf{Huấn luyện PSR Router}: Tinh chỉnh (Fine-tune) mô hình Encoder gọn nhẹ thành bộ phân loại xác suất (Soft Classifier).
+    \item \textbf{Triển khai SW-RRF}: Xây dựng hàm lai ghép truy xuất (Retriever) tích hợp công thức toán học hệ số.
 \end{enumerate}
 \end{block}
 

@@ -4,7 +4,7 @@
 Bắt đầu dự án hoặc khi cần xác định lại research direction.
 
 ## Goal
-Hoàn thành research proposal 2 trang, xác định baselines, và lên danh sách 20+ related papers.
+Hoàn thành research proposal học thuật, xác định baselines, và lên danh sách 20+ related papers tập trung vào Semantic Routing, Hybrid Search, và Multi-hop Reasoning.
 
 ---
 
@@ -13,39 +13,9 @@ Hoàn thành research proposal 2 trang, xác định baselines, và lên danh s�
 ### STEP 1.1 — Đọc EnterpriseRAG-Bench Paper
 
 **Action:**
-```bash
-# Tìm paper gốc
-# Search: "EnterpriseRAG-Bench" on arXiv or Semantic Scholar
-# URL: https://arxiv.org/search/?searchtype=all&query=EnterpriseRAG-Bench
-```
+- Tìm hiểu dataset EnterpriseRAG-Bench với 511k documents.
 
-**Output:** File `docs/lit_review/enterprise_rag_bench_notes.md`
-
-**Template notes:**
-```markdown
-## EnterpriseRAG-Bench — Reading Notes
-
-**Paper:** [Title, Authors, Year]
-**Link:** [arXiv URL]
-
-### Dataset Characteristics
-- Scale: 500k+ documents
-- Sources: Slack (285k), Gmail (121k), Jira (41k), Confluence (5k)
-- ...
-
-### Evaluation Protocol
-- Metrics: [list metrics used]
-- Split: [train/val/test details]
-
-### Key Findings
-1. ...
-
-### Limitations mentioned by authors
-1. ...
-
-### Research Gap (our angle)
-- Standard RAG fails because: ...
-```
+**Output:** File `docs/lit_review/enterprise_rag_bench_notes.md` (Đã cập nhật sau EDA: Không có timestamp).
 
 ---
 
@@ -53,30 +23,25 @@ Hoàn thành research proposal 2 trang, xác định baselines, và lên danh s�
 
 **Search queries để dùng:**
 ```
-"RAG survey" site:arxiv.org
-"temporal-aware retrieval" site:arxiv.org
-"hybrid search BM25 dense retrieval"
-"query expansion LLM"
-"reciprocal rank fusion"
-"time decay document retrieval"
-"cross-encoder reranker"
-"HyDE hypothetical document embedding"
+"Semantic routing" "RAG" site:arxiv.org
+"Multi-hop reasoning" "Retrieval-Augmented Generation"
+"Hybrid search BM25 dense retrieval"
+"Cross-encoder reranker"
+"Reciprocal rank fusion"
 ```
 
 **Target papers cần đọc (mandatory):**
 
 | # | Paper | Relevance |
 |---|-------|---------|
-| 1 | Lewis et al. (2020) — RAG original | Core |
-| 2 | Gao et al. (2023) — RAG survey | Core |
-| 3 | Robertson et al. (2009) — BM25 | Sparse retrieval |
-| 4 | Nogueira et al. (2019) — mono/duo BERT reranker | Reranker |
-| 5 | Ma et al. (2023) — HyDE | Query expansion |
-| 6 | Cormack et al. (2009) — Reciprocal Rank Fusion | RRF |
-| 7 | Shi et al. (2023) — REPLUG | Retrieval-LLM integration |
-| 8 | Asai et al. (2023) — Self-RAG | Adaptive RAG |
-| 9 | Adlakha et al. (2023) — EnterpriseRAG-Bench | Dataset |
-| 10+ | Papers liên quan đến temporal search | Temporal |
+| 1 | Qiao et al. (2024) — Route Before Retrieve | Semantic Routing |
+| 2 | Wang et al. (2024) — RAGRouter | Semantic Routing |
+| 3 | Cormack et al. (2009) — Reciprocal Rank Fusion | RRF (Foundation for SW-RRF) |
+| 4 | Tang et al. (2024) — MultiHop-RAG | Multi-hop reasoning (CSEP) |
+| 5 | Zhang et al. (2025) — HopRAG | Multi-hop reasoning |
+| 6 | Nogueira et al. (2019) — Passage Re-ranking with BERT | Reranker |
+| 7 | Lewis et al. (2020) — RAG original | Baseline |
+| 8 | Sun et al. (2026) — EnterpriseRAG-Bench | Dataset |
 
 **Output:** File `docs/lit_review/literature_review.md`
 
@@ -86,54 +51,20 @@ Hoàn thành research proposal 2 trang, xác định baselines, và lên danh s�
 
 **Output:** File `docs/research_gap.md`
 
-**Template:**
-```markdown
-# Research Gap Analysis
-
-## Problem Statement
-Retrieval-Augmented Generation (RAG) systems face significant challenges
-when deployed on large-scale enterprise datasets (500k+ documents).
-
-## Identified Gaps
-
-### Gap 1: Temporal Blindness
-- **Symptom:** Standard RAG returns outdated information for time-sensitive queries
-- **Root cause:** Cosine similarity ignores document timestamps
-- **Our solution:** Conditional Time Decay reranking with λ parameter
-
-### Gap 2: Vector Space Density at Scale
-- **Symptom:** At 500k documents, cosine distances cluster → poor discrimination
-- **Root cause:** Standard RAG searches entire vector space
-- **Our solution:** Metadata pre-filtering reduces search space before embedding search
-
-### Gap 3: Vocabulary Mismatch in Enterprise Contexts
-- **Symptom:** Queries use natural language; docs contain IDs, ticket numbers, jargon
-- **Root cause:** Dense-only search misses exact term matches
-- **Our solution:** Hybrid search (Dense + BM25/Tantivy) via RRF
-
-## T-RAG Contributions
-1. **Unified Storage (LanceDB):** Single DB for vector, FTS, and metadata
-2. **Self-Query Expansion:** LLM-based query understanding + HyDE
-3. **Hybrid Retrieval:** Dense + Sparse with RRF fusion
-4. **Conditional Temporal Reranking:** Time decay only when required
-```
+- **Khoảng trống 1:** Mật độ Không gian Vector & Sự nhập nhằng nguồn (Vector Density + Source Ambiguity).
+- **Khoảng trống 2:** Bất đồng từ vựng trong văn cảnh doanh nghiệp (Vocabulary Mismatch).
+- **Khoảng trống 3:** Suy giảm hiệu suất ở Multi-Source Retrieval (Cross-Source Context).
 
 ---
 
 ### STEP 1.4 — Viết Research Proposal
 
-**Output:** File `docs/research_proposal.md` (2 trang)
+**Output:** File `docs/proposal.md` (Đã hoàn thành)
 
-**Sections bắt buộc:**
-1. **Title:** T-RAG: Temporal and Targeted Retrieval-Augmented Generation for Large-Scale Enterprise Documents
-2. **Research Questions (RQ):**
-   - RQ1: Can temporal-aware reranking improve retrieval for time-sensitive queries?
-   - RQ2: Does metadata pre-filtering improve both precision and latency at 500k scale?
-   - RQ3: How much does each component contribute individually? (ablation)
-3. **Hypothesis:** T-RAG will outperform Standard RAG on MRR@10 by >10% on temporal query subsets
-4. **Planned Baselines:** Standard RAG, BM25-only, Dense-only, Hybrid-only
-5. **Proposed Metrics:** MRR@10, Recall@5, NDCG@10, Latency P50/P95
-6. **Timeline estimate**
+**Đóng góp cốt lõi:**
+1. **Probabilistic Source Router (PSR):** Giảm search space từ 50-90%.
+2. **Source-Weighted RRF (SW-RRF):** Tích hợp Bayesian Prior vào RRF.
+3. **Cross-Source Entity Propagation (CSEP):** Multi-hop retrieval cho đa nguồn.
 
 ---
 
@@ -144,23 +75,22 @@ Tạo file `docs/table1_draft.md`:
 ```markdown
 # Table 1 (Draft — No numbers yet)
 
-| System              | MRR@10 | Recall@5 | NDCG@10 | Latency P50 |
-|---------------------|--------|---------|---------|-------------|
-| BM25-only           | —      | —       | —       | —           |
-| Dense-only (DPR)    | —      | —       | —       | —           |
-| Standard RAG        | —      | —       | —       | —           |
-| T-RAG (Ours)        | **—**  | **—**   | **—**   | —           |
+| System              | Recall@10 | NDCG@10 | Search Space | Latency P50 |
+|---------------------|-----------|---------|--------------|-------------|
+| Standard RAG        | —         | —       | 100% (511k)  | —           |
+| + Metadata Filter   | —         | —       | ~50%         | —           |
+| + SW-RRF            | —         | —       | ~30%         | —           |
+| **T-RAG (Full)**    | **—**     | **—**   | **~10-20%**  | **—**       |
 ```
 
 ---
 
 ## ✅ Phase 1 Done Criteria
 
-- [ ] `docs/lit_review/literature_review.md` — ≥ 20 papers với notes
-- [ ] `docs/research_gap.md` — 3 gaps được phân tích rõ
-- [ ] `docs/research_proposal.md` — 2 trang, đủ RQ + hypothesis
-- [ ] `docs/table1_draft.md` — Có cấu trúc bảng (chưa có số)
-- [ ] Xác định được ít nhất 3 baselines
-- [ ] Identify được target venue đầu tiên và deadline
+- [x] `docs/lit_review/enterprise_rag_bench_notes.md` — Hoàn thành (Cập nhật sau EDA)
+- [x] `docs/lit_review/literature_review.md` — Hoàn thành (Hướng Semantic Routing)
+- [x] `docs/research_gap.md` — Hoàn thành (Dựa trên 3 điểm yếu cốt lõi)
+- [x] `docs/proposal.md` — Hoàn thành (Academic format, có công thức)
+- [x] `docs/table1_draft.md` — Đã setup bảng
 
 ## Estimated Time: 2 tuần

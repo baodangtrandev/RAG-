@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.5.13)  4 JUL 2026 09:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.5.13)  4 JUL 2026 10:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1363,13 +1363,13 @@ LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: D2F4BFD38F81226B09AA97659892178C;843.
+(rerunfilecheck)             Checksum: 7AFF981DBDCC1BCFE71B6B176763237B;736.
  ) 
 Here is how much of TeX's memory you used:
- 27836 strings out of 475597
- 555647 string characters out of 5783339
+ 27839 strings out of 475597
+ 555876 string characters out of 5783339
  1945975 words of memory out of 5000000
- 49404 multiletter control sequences out of 15000+600000
+ 49407 multiletter control sequences out of 15000+600000
  586449 words of font info for 97 fonts, out of 8000000 for 9000
  309 hyphenation exceptions out of 8191
  128i,15n,123p,396b,1153s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1384,8 +1384,8 @@ pe1/public/amsfonts/cm/cmss9.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
 lic/amsfonts/cm/cmssi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmssi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
 s/cm/cmssi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
-msy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></us
+msy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share
 /texlive/texmf-dist/fonts/type1/vntex/vnr/vnss10.pfb></usr/share/texlive/texmf-
 dist/fonts/type1/vntex/vnr/vnss12.pfb></usr/share/texlive/texmf-dist/fonts/type
@@ -1394,10 +1394,10 @@ dist/fonts/type1/vntex/vnr/vnss12.pfb></usr/share/texlive/texmf-dist/fonts/type
 hare/texlive/texmf-dist/fonts/type1/vntex/vnr/vnssi10.pfb></usr/share/texlive/t
 exmf-dist/fonts/type1/vntex/vnr/vnssi8.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/vntex/vnr/vntt10.pfb>
-Output written on main.pdf (10 pages, 287392 bytes).
+Output written on main.pdf (10 pages, 289985 bytes).
 PDF statistics:
- 605 PDF objects out of 1000 (max. 8388607)
- 440 compressed objects within 5 object streams
+ 608 PDF objects out of 1000 (max. 8388607)
+ 442 compressed objects within 5 object streams
  25 named destinations out of 1000 (max. 500000)
- 585 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 591 words of extra memory for PDF output out of 10000 (max. 10000000)
 
