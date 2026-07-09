@@ -17,3 +17,5 @@ dependencies:
     - scikit-learn>=1.4.0
     - tqdm>=4.66.0
     - ipykernel>=6.0.0
+    - llama-index
+    - llama-index-embeddings-huggingface
