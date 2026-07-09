@@ -160,14 +160,13 @@ def main(input_file, output_file, model_name, batch_size):
                 sim = np.dot(context_embeddings[i], context_embeddings[i+1])
                 distances.append(1.0 - sim)
                 
-            # --- Tính Ngưỡng Cắt (Dynamic kết hợp Absolute Min) ---
-            # Ngưỡng = Mean + Standard Deviation. Nhưng KHÔNG được nhỏ hơn 0.3
-            # BGE-Large: distance 0.3 <=> cosine sim 0.7. Độ tương đồng < 0.7 mới cho phép cắt.
+            # --- Tính Ngưỡng Cắt (Dynamic) ---
+            # Vì Moving Average (window=3) làm khoảng cách distance cực kỳ nhỏ (thường < 0.05),
+            # ta dùng `mean + std` linh động thay vì chặn dưới bằng 0.3.
             mean_dist = np.mean(distances)
             std_dist = np.std(distances)
-            absolute_min_dist = 0.3 
             
-            threshold = max(absolute_min_dist, mean_dist + std_dist)
+            threshold = mean_dist + std_dist
             
             # --- Bắt đầu cắt ---
             chunks = []
