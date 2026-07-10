@@ -1,0 +1,11 @@
+============================================================
+🏆 KẾT QUẢ ĐÁNH GIÁ TRÊN TẬP TEST THỰC TẾ (GOLD STANDARD)
+============================================================
+
+Ngưỡng Tau = 0.10 | Hit Rate (Tỷ lệ trúng): 97.9% | Số Shards truy vấn trung bình: 6.82/9
+Ngưỡng Tau = 0.15 | Hit Rate (Tỷ lệ trúng): 94.9% | Số Shards truy vấn trung bình: 5.83/9
+Ngưỡng Tau = 0.20 | Hit Rate (Tỷ lệ trúng): 91.7% | Số Shards truy vấn trung bình: 4.98/9
+Ngưỡng Tau = 0.25 | Hit Rate (Tỷ lệ trúng): 88.5% | Số Shards truy vấn trung bình: 4.24/9
+Ngưỡng Tau = 0.30 | Hit Rate (Tỷ lệ trúng): 84.0% | Số Shards truy vấn trung bình: 3.62/9
+Ngưỡng Tau = 0.40 | Hit Rate (Tỷ lệ trúng): 76.2% | Số Shards truy vấn trung bình: 2.64/9
+Ngưỡng Tau = 0.50 | Hit Rate (Tỷ lệ trúng): 64.3% | Số Shards truy vấn trung bình: 1.93/9
