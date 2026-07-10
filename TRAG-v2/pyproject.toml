@@ -1,9 +1,23 @@
 [build-system]
-requires = ["setuptools>=68.0"]
-build-backend = "setuptools.backends.legacy:build"
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "trag"
 version = "0.1.0"
 description = "T-RAG: Targeted RAG System"
 requires-python = ">=3.10"
+
+[tool.black]
+line-length = 120
+target-version = ['py310']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 120
+multi_line_output = 3
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"

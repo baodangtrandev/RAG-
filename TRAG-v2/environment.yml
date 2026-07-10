@@ -19,3 +19,10 @@ dependencies:
     - ipykernel>=6.0.0
     - llama-index
     - llama-index-embeddings-huggingface
+    # Core RAG dependencies
+    - langchain-text-splitters>=0.2.0
+    # CI/CD and Formatting Tools
+    - black
+    - isort
+    - flake8
+    - pytest-cov
