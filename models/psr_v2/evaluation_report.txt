@@ -1,0 +1,32 @@
+Độ chính xác khớp hoàn toàn (Exact Match Accuracy): 0.4534
+Log-Loss: 0.3050
+
+--- Multi-Label Classification Report ---
+              precision    recall  f1-score   support
+
+  confluence       0.59      0.89      0.71       233
+   fireflies       0.68      0.88      0.77       224
+      github       0.54      0.92      0.68       222
+       gmail       0.59      0.84      0.69       224
+google_drive       0.60      0.78      0.68       225
+     hubspot       0.74      0.91      0.81       219
+        jira       0.55      0.91      0.68       232
+      linear       0.55      0.81      0.65       221
+       slack       0.38      0.86      0.53       205
+
+   micro avg       0.57      0.87      0.68      2005
+   macro avg       0.58      0.87      0.69      2005
+weighted avg       0.58      0.87      0.69      2005
+ samples avg       0.65      0.87      0.71      2005
+
+
+
+=== ĐÁNH GIÁ CHUYÊN SÂU CHO HỆ THỐNG RAG ROUTER (MULTI-LABEL) ===
+--- Phân tích Hiệu suất Routing (Theo Threshold Tau) ---
+Ngưỡng Tau = 0.10 | Hit Rate (Tỷ lệ trúng đích): 99.6% | Số Shards truy vấn trung bình: 6.20/9
+Ngưỡng Tau = 0.15 | Hit Rate (Tỷ lệ trúng đích): 99.1% | Số Shards truy vấn trung bình: 4.98/9
+Ngưỡng Tau = 0.20 | Hit Rate (Tỷ lệ trúng đích): 98.4% | Số Shards truy vấn trung bình: 4.04/9
+Ngưỡng Tau = 0.25 | Hit Rate (Tỷ lệ trúng đích): 97.3% | Số Shards truy vấn trung bình: 3.34/9
+Ngưỡng Tau = 0.30 | Hit Rate (Tỷ lệ trúng đích): 96.0% | Số Shards truy vấn trung bình: 2.80/9
+Ngưỡng Tau = 0.40 | Hit Rate (Tỷ lệ trúng đích): 92.5% | Số Shards truy vấn trung bình: 2.05/9
+Ngưỡng Tau = 0.50 | Hit Rate (Tỷ lệ trúng đích): 87.2% | Số Shards truy vấn trung bình: 1.56/9

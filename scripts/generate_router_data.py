@@ -36,6 +36,10 @@ def generate_queries_for_chunk(chunk_content: str, source_type: str, num_queries
         f"I will provide you with a source document extracted from: '{source_type}'.\n\n"
         f"Your task is to role-play as a company employee and generate {num_queries} realistic, practical questions "
         f"whose answers can be directly found within this document.\n"
+        f"CRITICAL INSTRUCTION FOR HARD NEGATIVE MINING: You MUST formulate some of these questions to include distractor terms "
+        f"from OTHER platforms. For example, if the true source is '{source_type}', you might deliberately mention terms like "
+        f"'Jira ticket', 'Slack thread', or 'Google Doc' in the question, but the TRUE context still relies purely on the {source_type} document. "
+        f"This prevents the router model from relying on simple keyword matching.\n\n"
         f"For each question, you MUST also provide the 'gold_answer' (a comprehensive answer based on the document) "
         f"and 'answer_facts' (a list of atomic facts extracted from the gold_answer).\n\n"
         f"Please return ONLY a valid JSON array of objects. Do not include markdown formatting blocks like ```json.\n"
@@ -154,9 +158,9 @@ def main(input_file: str, output_file: str, samples_per_source: int, max_workers
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Synthetic Router Data Generation")
     parser.add_argument("--input-file", type=str, default="data/EnterpriseRAG-Bench/data/documents/test.parquet")
-    parser.add_argument("--output-file", type=str, default="data/router_training_data.jsonl")
-    parser.add_argument("--samples-per-source", type=int, default=150, help="Số lượng chunks lấy từ mỗi nguồn để sinh câu hỏi")
-    parser.add_argument("--max-workers", type=int, default=10, help="Số luồng gọi API song song (Tăng lên nếu API mạnh)")
+    parser.add_argument("--output-file", type=str, default="data/router_training_data_v1.jsonl")
+    parser.add_argument("--samples-per-source", type=int, default=600, help="Số lượng chunks lấy từ mỗi nguồn để sinh câu hỏi")
+    parser.add_argument("--max-workers", type=int, default=15, help="Số luồng gọi API song song (Tăng lên nếu API mạnh)")
     
     args = parser.parse_args()
     main(args.input_file, args.output_file, args.samples_per_source, args.max_workers)

@@ -1,0 +1,43 @@
+Độ chính xác (Accuracy): 0.4940
+Log-Loss: 1.6085
+
+--- Classification Report ---
+              precision    recall  f1-score   support
+
+  confluence       0.48      0.54      0.51        50
+   fireflies       0.39      0.39      0.39        56
+      github       0.52      0.83      0.64        54
+       gmail       0.49      0.54      0.52        57
+google_drive       0.45      0.22      0.30        58
+     hubspot       0.61      0.74      0.67        57
+        jira       0.55      0.69      0.61        58
+      linear       0.42      0.30      0.35        56
+       slack       0.38      0.20      0.26        56
+
+    accuracy                           0.49       502
+   macro avg       0.48      0.50      0.47       502
+weighted avg       0.48      0.49      0.47       502
+
+
+--- Confusion Matrix ---
+                  confluence     fireflies        github         gmail  google_drive       hubspot          jira        linear         slack
+    confluence            27             4             8             1             2             0             2             5             1
+     fireflies             4            22             1             6             4            12             3             2             2
+        github             2             0            45             0             3             0             3             1             0
+         gmail             2            11             0            31             1             4             4             2             2
+  google_drive             8             9             7             4            13             3             6             3             5
+       hubspot             0             2             3             8             1            42             0             1             0
+          jira             2             1             1             3             0             3            40             4             4
+        linear             7             3            14             3             4             3             1            17             4
+         slack             4             4             8             7             1             2            14             5            11
+
+=== ĐÁNH GIÁ CHUYÊN SÂU CHO HỆ THỐNG RAG ROUTER ===
+Top-1 Accuracy (Dự đoán cứng): 0.4940
+Top-2 Accuracy (Độ phủ Top 2): 0.6952
+
+--- Phân tích Hiệu suất Routing (Theo Threshold Tau) ---
+Ngưỡng Tau = 0.10 | Hit Rate (Tỷ lệ trúng đích): 87.1% | Số Shards truy vấn trung bình: 3.79/9
+Ngưỡng Tau = 0.15 | Hit Rate (Tỷ lệ trúng đích): 69.3% | Số Shards truy vấn trung bình: 1.96/9
+Ngưỡng Tau = 0.20 | Hit Rate (Tỷ lệ trúng đích): 55.8% | Số Shards truy vấn trung bình: 1.21/9
+Ngưỡng Tau = 0.25 | Hit Rate (Tỷ lệ trúng đích): 50.4% | Số Shards truy vấn trung bình: 1.03/9
+Ngưỡng Tau = 0.30 | Hit Rate (Tỷ lệ trúng đích): 49.4% | Số Shards truy vấn trung bình: 1.00/9
