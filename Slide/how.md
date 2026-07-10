@@ -1,1 +1,0 @@
-rm *.aux *.toc *.nav *.out; pdflatex main.tex
