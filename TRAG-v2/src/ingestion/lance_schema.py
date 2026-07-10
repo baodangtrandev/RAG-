@@ -1,5 +1,5 @@
-import lancedb
 from lancedb.pydantic import LanceModel, Vector
+
 
 class DocumentSchema(LanceModel):
     doc_id: str
