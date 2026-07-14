@@ -24,7 +24,7 @@ Kiến trúc T-RAG được chia thành 3 giai đoạn toán học cụ thể:
 
 - **Toán học:** Gọi $Q$ là truy vấn của người dùng, và $S = \{s_1, s_2, \dots, s_N\}$ là tập hợp các nguồn (Slack, Jira, Github...). 
 Mô hình PSR (có thể là một encoder nhỏ được fine-tune) sẽ tính toán phân bố xác suất có điều kiện:
-$$P(s_i | Q) = \text{Softmax}(W \cdot \text{Encoder}(Q) + b)_i$$
+$$P(s_i | Q) = \text{Sigmoid}(W \cdot \text{Encoder}(Q) + b)_i$$
 
 *(Phát triển dựa trên tư tưởng của Semantic Routing trong RAG [1, 2])*
 - **Thuật toán Phân vùng (Sharding):** Thay vì lưu toàn bộ 511k docs vào một index khổng lồ, Vector DB (LanceDB) được **sharding vật lý** thành $N$ bảng độc lập.
