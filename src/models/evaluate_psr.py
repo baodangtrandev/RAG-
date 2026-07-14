@@ -47,7 +47,7 @@ def evaluate(model_dir, test_file, embedding_model):
     sorted_probs = np.argsort(y_pred_proba, axis=1)[:, ::-1]
     
     report_str = "="*60 + "\n"
-    report_str += "🏆 KẾT QUẢ ĐÁNH GIÁ TRÊN TẬP TEST THỰC TẾ (GOLD STANDARD)\n"
+    report_str += "🏆 EVALUATION RESULTS ON HOLD-OUT TEST SET (GOLD STANDARD)\n"
     report_str += "="*60 + "\n\n"
     
     print(report_str, end="")
@@ -82,14 +82,14 @@ def evaluate(model_dir, test_file, embedding_model):
                 
         if valid_queries > 0:
             hit_rate = hits / valid_queries
-            line = f"Ngưỡng Tau = {tau:.2f} | Hit Rate (Tỷ lệ trúng): {hit_rate*100:.1f}% | Số Shards truy vấn trung bình: {avg_shards:.2f}/9\n"
+            line = f"Threshold (Tau) = {tau:.2f} | Routing Hit Rate: {hit_rate*100:.1f}% | Avg. Active Shards: {avg_shards:.2f}/9\n"
             report_str += line
             print(line, end="")
 
     out_file = os.path.join(model_dir, "test_evaluation_report.txt")
     with open(out_file, "w", encoding="utf-8") as f:
         f.write(report_str)
-    print(f"\n✅ Đã lưu toàn bộ kết quả vào file: {out_file}")
+    print(f"\n✅ Evaluation results successfully saved to: {out_file}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

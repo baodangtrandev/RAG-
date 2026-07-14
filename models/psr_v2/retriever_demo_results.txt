@@ -1,0 +1,29 @@
+
+================================================================================
+🚀 KẾT QUẢ TÌM KIẾM PIPELINE (SW-RRF)
+================================================================================
+
+❓ Câu hỏi: How do I fix the CI/CD pipeline out of memory error?
+  [1] Nguồn: CONFLUENCE (Độ tin cậy Router: 0.95) | Điểm SW-RRF: 0.014815
+      Text snippet: ### Logs (common strings) - `CUDA out of memory` / `c10::Error` / `CUDA error: an illegal memory access was encountered` - `Killed process ... (OOMKilled)` (container/pod events) - `assert failed` / `shape mismatch` / `unexpected dtype` (often model artifact / quant profile issues) - `scheduler loop took` / `no eligible requests` / `queue stalled` (scheduler anomalies)...
+  [2] Nguồn: CONFLUENCE (Độ tin cậy Router: 0.95) | Điểm SW-RRF: 0.014576
+      Text snippet: ## The system will attempt the following fast-path remediations before manual review: - Restart the offending CI job(s) up to 2 times with reduced parallelism and smaller batch size env vars (CI_REDUCE_BATCH=true). - If GPU driver/kernel instability detected, attempt a privileged driver daemon restart with rolling driver reload script: `/opt/infra/bin/driver-reload --grace 30s` - If memory pressure is persistent, attempt to live-migrate ephemeral pods to warm-pool nodes with spare capacity (via node selector `gpu-pool=warm`)....
+  [3] Nguồn: CONFLUENCE (Độ tin cậy Router: 0.95) | Điểm SW-RRF: 0.014345
+      Text snippet: [Title: Ephemeral GPU Pools for CI and Short-lived Evaluation Runs] . "ci-ephemeral-nv16") |\n| gpu_type | string | "a100-80gb" | GPU SKU variant (a100-80gb, a10, h100) |\n| gpu_count | number | 1 | GPUs per node |\n| node_count_min | number | 0 | Lower bound for autoscaling (usually 0) |\n| node_count_max | number | 4 | Upper bound for pool size |\n| ttl_minutes | number | 30 | Default TTL after creation |\n| subnet_id | string | (required) | Subnet to attach nodes to |\n| iam_role | string | (required) | IAM role for node instances |\n| tags | map | {} | Resource tags for billing and ownership |\n\nRecommended defaults (module input guidance):\n- gpu_type: prefer cost-effective GPUs for CI (a10 or a100-40gb) unless the evaluation explicitly needs larger memory.\n- node_count_max: 4 for multi-job runs; set to 1 for isolated single-job runs to limit cost.\n\nCI/CD integration (Jenkins / Buildkite / GitHub Actions patterns):\n1...
+
+❓ Câu hỏi: What are the pricing tiers for HubSpot?
+  [1] Nguồn: HUBSPOT (Độ tin cậy Router: 0.99) | Điểm SW-RRF: 0.016202
+      Text snippet: ## Clarify Dedicated pricing tiers and burst policy...
+  [2] Nguồn: HUBSPOT (Độ tin cậy Router: 0.99) | Điểm SW-RRF: 0.015941
+      Text snippet: ## Clarify Dedicated burst capacity and pricing tiers...
+  [3] Nguồn: HUBSPOT (Độ tin cậy Router: 0.99) | Điểm SW-RRF: 0.015688
+      Text snippet: ## Need definitive pricing for Dedicated tier at expected qps...
+
+❓ Câu hỏi: Can someone send me the meeting notes from yesterday?
+  [1] Nguồn: FIREFLIES (Độ tin cậy Router: 0.89) | Điểm SW-RRF: 0.012961
+      Text snippet: [Title: Compass Reset and Leadership Open Mic] . We'll follow up with a short notes doc and recording.\n\n[55:33] (meeting ends)\n\nNotes about transcript fidelity: occasional mis-typed terms (e.g., \"KV cash\" instead of \"KV cache\") and truncated names are present; timestamps approximate only....
+  [2] Nguồn: FIREFLIES (Độ tin cậy Router: 0.89) | Điểm SW-RRF: 0.012752
+      Text snippet: [Title: Cadet Deck and Priority Tuning - All Hands > transcript:] after this meeting \n[00:13:00] Maya: ok meeting adjourned, we'll follow up in threads, thanks all\n\nPost-call notes (auto):\n- Recording saved to drives/all-hands/2026-10-25-cadet-deck-and-priority-tuning.mp4\n- Slides and trimmed roadmap attached in the meeting chat (links)\n- Leaders committed to posting action items and follow-up links within 48 hours\n\nEnd of transcript...
+  [3] Nguồn: FIREFLIES (Độ tin cậy Router: 0.89) | Điểm SW-RRF: 0.012549
+      Text snippet: ## Post-meeting notes: - Links shared: runbook draft (internal link), incident timeline (to be published), pilot brief template (will be shared by Sara). - Tone: pragmatic, a little urgent on reliability and cost. - Transcription notes: some words mis-transcribed (K V cache vs kv-cache), occasional speaker overlap in Q&A....
+================================================================================
