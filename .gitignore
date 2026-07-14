@@ -10,3 +10,5 @@ all_documents.zip
 .env
 
 data
+
+.log

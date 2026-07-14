@@ -1,0 +1,459 @@
+2026-07-14 12:16:22 | INFO | trag.benchmark | ============================================================
+2026-07-14 12:16:22 | INFO | trag.benchmark | T-RAG BENCHMARK CONFIG
+2026-07-14 12:16:22 | INFO | trag.benchmark |   Model            : Qwen/Qwen2.5-14B-Instruct
+2026-07-14 12:16:22 | INFO | trag.benchmark |   Tau              : 0.15
+2026-07-14 12:16:22 | INFO | trag.benchmark |   top_k_retrieve   : 20
+2026-07-14 12:16:22 | INFO | trag.benchmark |   top_k_final      : 5
+2026-07-14 12:16:22 | INFO | trag.benchmark |   CSEP             : True
+2026-07-14 12:16:22 | INFO | trag.benchmark |   Questions file   : data/EnterpriseRAG-Bench/data/questions/test.parquet
+2026-07-14 12:16:22 | INFO | trag.benchmark |   Output file      : answers.jsonl
+2026-07-14 12:16:22 | INFO | trag.benchmark | ============================================================
+2026-07-14 12:16:22 | INFO | trag.benchmark | [Stage 1] Loading questions from: data/EnterpriseRAG-Bench/data/questions/test.parquet
+2026-07-14 12:16:23 | INFO | trag.benchmark | [Stage 1] Loaded 1 questions in 0.79s.
+2026-07-14 12:16:23 | INFO | trag.benchmark | [Stage 2] Starting CSEP Retrieval for 1 queries...
+2026-07-14 12:16:23 | INFO | trag.benchmark | [Stage 2] Initializing vLLM Generator (loads LLM onto GPU)...
+2026-07-14 12:16:23 | INFO | src.generation.generator | [Generator] Init vLLM: model='Qwen/Qwen2.5-14B-Instruct', gpu_util=0.80, top_k_final=5
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 07-14 12:16:43 config.py:350] This model supports multiple tasks: {'embedding', 'generate'}. Defaulting to 'generate'.
+INFO 07-14 12:16:43 llm_engine.py:249] Initializing an LLM engine (v0.6.4.post1) with config: model='Qwen/Qwen2.5-14B-Instruct', speculative_config=None, tokenizer='Qwen/Qwen2.5-14B-Instruct', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, override_neuron_config=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=32768, download_dir=None, load_format=LoadFormat.AUTO, tensor_parallel_size=1, pipeline_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=False, kv_cache_dtype=auto, quantization_param_path=None, device_config=cuda, decoding_config=DecodingConfig(guided_decoding_backend='outlines'), observability_config=ObservabilityConfig(otlp_traces_endpoint=None, collect_model_forward_time=False, collect_model_execute_time=False), seed=0, served_model_name=Qwen/Qwen2.5-14B-Instruct, num_scheduler_steps=1, chunked_prefill_enabled=False multi_step_stream_outputs=True, enable_prefix_caching=False, use_async_output_proc=True, use_cached_outputs=False, chat_template_text_format=string, mm_processor_kwargs=None, pooler_config=None)
+INFO 07-14 12:16:45 selector.py:135] Using Flash Attention backend.
+INFO 07-14 12:16:45 model_runner.py:1072] Starting to load model Qwen/Qwen2.5-14B-Instruct...
+[rank0]: ╭──── Traceback (most recent call last) ─────╮
+[rank0]: │ /network-volume/RAG-/src/run_benchmark.py: │
+[rank0]: │ 192 in run                                 │
+[rank0]: │                                            │
+[rank0]: │   189 │                                    │
+[rank0]: │   190 │   # Khoi tao Generator TRUOC TIEN  │
+[rank0]: │       de dam bao vLLM chiem VRAM uu tien   │
+[rank0]: │   191 │   logger.info("[Stage 2]           │
+[rank0]: │       Initializing vLLM Generator (loads   │
+[rank0]: │       LLM onto GPU)...")                   │
+[rank0]: │ ❱ 192 │   generator = VLLMGenerator()      │
+[rank0]: │   193 │                                    │
+[rank0]: │   194 │   # Dung ham generate cua          │
+[rank0]: │       generator lam llm_generate_fn cho    │
+[rank0]: │       CSEP                                 │
+[rank0]: │   195 │   def csep_llm_fn(prompts):        │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/RAG-/src/generation/genera │
+[rank0]: │ tor.py:104 in __init__                     │
+[rank0]: │                                            │
+[rank0]: │   101 │   │                                │
+[rank0]: │   102 │   │   from vllm import LLM,        │
+[rank0]: │       SamplingParams                       │
+[rank0]: │   103 │   │                                │
+[rank0]: │ ❱ 104 │   │   self.llm = LLM(              │
+[rank0]: │   105 │   │   │   model=self.model_name,   │
+[rank0]: │   106 │   │   │                            │
+[rank0]: │       gpu_memory_utilization=self.gpu_memo │
+[rank0]: │       ry_utilization,                      │
+[rank0]: │   107 │   │   │   trust_remote_code=True,  │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/utils.py:1028 │
+[rank0]: │  in inner                                  │
+[rank0]: │                                            │
+[rank0]: │   1025 │   │   │   │   │   │               │
+[rank0]: │        stacklevel=3,  # The inner function │
+[rank0]: │        takes up one level                  │
+[rank0]: │   1026 │   │   │   │   │   )               │
+[rank0]: │   1027 │   │   │                           │
+[rank0]: │ ❱ 1028 │   │   │   return fn(*args,        │
+[rank0]: │        **kwargs)                           │
+[rank0]: │   1029 │   │                               │
+[rank0]: │   1030 │   │   return inner  # type:       │
+[rank0]: │        ignore                              │
+[rank0]: │   1031                                     │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/entrypoints/l │
+[rank0]: │ lm.py:210 in __init__                      │
+[rank0]: │                                            │
+[rank0]: │   207 │   │   self.engine_class =          │
+[rank0]: │       self.get_engine_class()              │
+[rank0]: │   208 │   │                                │
+[rank0]: │   209 │   │   # TODO(rob): enable mp by    │
+[rank0]: │       default (issue with fork vs spawn)   │
+[rank0]: │ ❱ 210 │   │   self.llm_engine =            │
+[rank0]: │       self.engine_class.from_engine_args(  │
+[rank0]: │   211 │   │   │   engine_args,             │
+[rank0]: │       usage_context=UsageContext.LLM_CLASS │
+[rank0]: │       )                                    │
+[rank0]: │   212 │   │                                │
+[rank0]: │   213 │   │   self.request_counter =       │
+[rank0]: │       Counter()                            │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/engine/llm_en │
+[rank0]: │ gine.py:585 in from_engine_args            │
+[rank0]: │                                            │
+[rank0]: │    582 │   │   engine_config =             │
+[rank0]: │        engine_args.create_engine_config()  │
+[rank0]: │    583 │   │   executor_class =            │
+[rank0]: │        cls._get_executor_cls(engine_config │
+[rank0]: │        )                                   │
+[rank0]: │    584 │   │   # Create the LLM engine.    │
+[rank0]: │ ❱  585 │   │   engine = cls(               │
+[rank0]: │    586 │   │   │                           │
+[rank0]: │        vllm_config=engine_config,          │
+[rank0]: │    587 │   │   │                           │
+[rank0]: │        executor_class=executor_class,      │
+[rank0]: │    588 │   │   │   log_stats=not           │
+[rank0]: │        engine_args.disable_log_stats,      │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/engine/llm_en │
+[rank0]: │ gine.py:347 in __init__                    │
+[rank0]: │                                            │
+[rank0]: │    344 │   │   self.input_processor =      │
+[rank0]: │        input_registry.create_input_process │
+[rank0]: │        or(                                 │
+[rank0]: │    345 │   │   │   model_config)           │
+[rank0]: │    346 │   │                               │
+[rank0]: │ ❱  347 │   │   self.model_executor =       │
+[rank0]: │        executor_class(vllm_config=vllm_con │
+[rank0]: │        fig, )                              │
+[rank0]: │    348 │   │                               │
+[rank0]: │    349 │   │   if self.model_config.task   │
+[rank0]: │        != "embedding":                     │
+[rank0]: │    350 │   │   │                           │
+[rank0]: │        self._initialize_kv_caches()        │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/executor/exec │
+[rank0]: │ utor_base.py:36 in __init__                │
+[rank0]: │                                            │
+[rank0]: │    33 │   │   self.speculative_config =    │
+[rank0]: │       vllm_config.speculative_config       │
+[rank0]: │    34 │   │   self.prompt_adapter_config = │
+[rank0]: │       vllm_config.prompt_adapter_config    │
+[rank0]: │    35 │   │   self.observability_config =  │
+[rank0]: │       vllm_config.observability_config     │
+[rank0]: │ ❱  36 │   │   self._init_executor()        │
+[rank0]: │    37 │                                    │
+[rank0]: │    38 │   @abstractmethod                  │
+[rank0]: │    39 │   def _init_executor(self) ->      │
+[rank0]: │       None:                                │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/executor/gpu_ │
+[rank0]: │ executor.py:40 in _init_executor           │
+[rank0]: │                                            │
+[rank0]: │    37 │   │                                │
+[rank0]: │    38 │   │   self.driver_worker =         │
+[rank0]: │       self._create_worker()                │
+[rank0]: │    39 │   │                                │
+[rank0]: │       self.driver_worker.init_device()     │
+[rank0]: │ ❱  40 │   │                                │
+[rank0]: │       self.driver_worker.load_model()      │
+[rank0]: │    41 │                                    │
+[rank0]: │    42 │   def _get_worker_kwargs(          │
+[rank0]: │    43 │   │   │   self,                    │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/worker/worker │
+[rank0]: │ .py:152 in load_model                      │
+[rank0]: │                                            │
+[rank0]: │   149 │   │                                │
+[rank0]: │       set_random_seed(self.model_config.se │
+[rank0]: │       ed)                                  │
+[rank0]: │   150 │                                    │
+[rank0]: │   151 │   def load_model(self):            │
+[rank0]: │ ❱ 152 │   │                                │
+[rank0]: │       self.model_runner.load_model()       │
+[rank0]: │   153 │                                    │
+[rank0]: │   154 │   def save_sharded_state(          │
+[rank0]: │   155 │   │   self,                        │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/worker/model_ │
+[rank0]: │ runner.py:1074 in load_model               │
+[rank0]: │                                            │
+[rank0]: │   1071 │   def load_model(self) -> None:   │
+[rank0]: │   1072 │   │   logger.info("Starting to    │
+[rank0]: │        load model %s...",                  │
+[rank0]: │        self.model_config.model)            │
+[rank0]: │   1073 │   │   with DeviceMemoryProfiler() │
+[rank0]: │        as m:                               │
+[rank0]: │ ❱ 1074 │   │   │   self.model =            │
+[rank0]: │        get_model(vllm_config=self.vllm_con │
+[rank0]: │        fig)                                │
+[rank0]: │   1075 │   │                               │
+[rank0]: │   1076 │   │   self.model_memory_usage =   │
+[rank0]: │        m.consumed_memory                   │
+[rank0]: │   1077 │   │   logger.info("Loading model  │
+[rank0]: │        weights took %.4f GB",              │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/model_executo │
+[rank0]: │ r/model_loader/__init__.py:12 in get_model │
+[rank0]: │                                            │
+[rank0]: │    9                                       │
+[rank0]: │   10 def get_model(*, vllm_config:         │
+[rank0]: │      VllmConfig) -> nn.Module:             │
+[rank0]: │   11 │   loader =                          │
+[rank0]: │      get_model_loader(vllm_config.load_con │
+[rank0]: │      fig)                                  │
+[rank0]: │ ❱ 12 │   return                            │
+[rank0]: │      loader.load_model(vllm_config=vllm_co │
+[rank0]: │      nfig)                                 │
+[rank0]: │   13                                       │
+[rank0]: │   14                                       │
+[rank0]: │   15 __all__ = [                           │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/model_executo │
+[rank0]: │ r/model_loader/loader.py:332 in load_model │
+[rank0]: │                                            │
+[rank0]: │    329 │   │   target_device =             │
+[rank0]: │        torch.device(device_config.device)  │
+[rank0]: │    330 │   │   with                        │
+[rank0]: │        set_default_torch_dtype(model_confi │
+[rank0]: │        g.dtype):                           │
+[rank0]: │    331 │   │   │   with target_device:     │
+[rank0]: │ ❱  332 │   │   │   │   model =             │
+[rank0]: │        _initialize_model(vllm_config=vllm_ │
+[rank0]: │        config)                             │
+[rank0]: │    333 │   │   │                           │
+[rank0]: │    334 │   │   │                           │
+[rank0]: │        model.load_weights(self._get_all_we │
+[rank0]: │        ights(model_config, model))         │
+[rank0]: │    335                                     │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/model_executo │
+[rank0]: │ r/model_loader/loader.py:100 in            │
+[rank0]: │ _initialize_model                          │
+[rank0]: │                                            │
+[rank0]: │     97 │   all_params = [param.name for    │
+[rank0]: │        param in                            │
+[rank0]: │        signatures.parameters.values()]     │
+[rank0]: │     98 │   if "vllm_config" in all_params  │
+[rank0]: │        and "prefix" in all_params:         │
+[rank0]: │     99 │   │   # new-style model class     │
+[rank0]: │ ❱  100 │   │   return                      │
+[rank0]: │        model_class(vllm_config=vllm_config │
+[rank0]: │        , prefix=prefix)                    │
+[rank0]: │    101 │   msg = ("vLLM model class should │
+[rank0]: │        accept `vllm_config` and `prefix`   │
+[rank0]: │        as "                                │
+[rank0]: │    102 │   │      "input arguments.        │
+[rank0]: │        Possibly you have an old-style      │
+[rank0]: │        model class"                        │
+[rank0]: │    103 │   │      " registered from out of │
+[rank0]: │        tree and it is used for new vLLM    │
+[rank0]: │        version. "                          │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/model_executo │
+[rank0]: │ r/models/qwen2.py:430 in __init__          │
+[rank0]: │                                            │
+[rank0]: │   427 │   │   self.lora_config =           │
+[rank0]: │       lora_config                          │
+[rank0]: │   428 │   │                                │
+[rank0]: │   429 │   │   self.quant_config =          │
+[rank0]: │       quant_config                         │
+[rank0]: │ ❱ 430 │   │   self.model =                 │
+[rank0]: │       Qwen2Model(vllm_config=vllm_config,  │
+[rank0]: │   431 │   │   │   │   │   │   │   │        │
+[rank0]: │       prefix=maybe_prefix(prefix,          │
+[rank0]: │       "model"))                            │
+[rank0]: │   432 │   │                                │
+[rank0]: │   433 │   │   if                           │
+[rank0]: │       config.tie_word_embeddings:          │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/compilation/d │
+[rank0]: │ ecorators.py:126 in __init__               │
+[rank0]: │                                            │
+[rank0]: │   123 │   old_init = cls.__init__  # type: │
+[rank0]: │       ignore                               │
+[rank0]: │   124 │                                    │
+[rank0]: │   125 │   def __init__(self, *,            │
+[rank0]: │       vllm_config: VllmConfig, prefix: str │
+[rank0]: │       = '', **kwargs):                     │
+[rank0]: │ ❱ 126 │   │   old_init(self,               │
+[rank0]: │       vllm_config=vllm_config,             │
+[rank0]: │       prefix=prefix, **kwargs)             │
+[rank0]: │   127 │   │   # for                        │
+[rank0]: │       CompilationLevel.DYNAMO_AS_IS , the  │
+[rank0]: │       upper level model runner             │
+[rank0]: │   128 │   │   # will handle the            │
+[rank0]: │       compilation, so we don't need to do  │
+[rank0]: │       anything here.                       │
+[rank0]: │   129 │   │   self.do_not_compile =        │
+[rank0]: │       envs.VLLM_TORCH_COMPILE_LEVEL in [   │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/model_executo │
+[rank0]: │ r/models/qwen2.py:279 in __init__          │
+[rank0]: │                                            │
+[rank0]: │   276 │   │   else:                        │
+[rank0]: │   277 │   │   │   self.embed_tokens =      │
+[rank0]: │       PPMissingLayer()                     │
+[rank0]: │   278 │   │                                │
+[rank0]: │ ❱ 279 │   │   self.start_layer,            │
+[rank0]: │       self.end_layer, self.layers =        │
+[rank0]: │       make_layers(                         │
+[rank0]: │   280 │   │   │                            │
+[rank0]: │       config.num_hidden_layers,            │
+[rank0]: │   281 │   │   │   lambda prefix:           │
+[rank0]: │       Qwen2DecoderLayer(config=config,     │
+[rank0]: │   282 │   │   │   │   │   │   │   │   │    │
+[rank0]: │       │   │    cache_config=cache_config,  │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/model_executo │
+[rank0]: │ r/models/utils.py:509 in make_layers       │
+[rank0]: │                                            │
+[rank0]: │   506 │   │   │   │   │   │   │   │   │    │
+[rank0]: │       │   │                                │
+[rank0]: │       get_pp_group().rank_in_group,        │
+[rank0]: │   507 │   │   │   │   │   │   │   │   │    │
+[rank0]: │       │   │   get_pp_group().world_size)   │
+[rank0]: │   508 │   modules = torch.nn.ModuleList(   │
+[rank0]: │ ❱ 509 │   │   [PPMissingLayer() for _ in   │
+[rank0]: │       range(start_layer)] + [              │
+[rank0]: │   510 │   │   │                            │
+[rank0]: │       maybe_offload_to_cpu(layer_fn(prefix │
+[rank0]: │       =f"{prefix}.{idx}"))                 │
+[rank0]: │   511 │   │   │   for idx in               │
+[rank0]: │       range(start_layer, end_layer)        │
+[rank0]: │   512 │   │   ] + [PPMissingLayer() for _  │
+[rank0]: │       in range(end_layer,                  │
+[rank0]: │       num_hidden_layers)])                 │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/model_executo │
+[rank0]: │ r/models/utils.py:510 in <listcomp>        │
+[rank0]: │                                            │
+[rank0]: │   507 │   │   │   │   │   │   │   │   │    │
+[rank0]: │       │   │   get_pp_group().world_size)   │
+[rank0]: │   508 │   modules = torch.nn.ModuleList(   │
+[rank0]: │   509 │   │   [PPMissingLayer() for _ in   │
+[rank0]: │       range(start_layer)] + [              │
+[rank0]: │ ❱ 510 │   │   │                            │
+[rank0]: │       maybe_offload_to_cpu(layer_fn(prefix │
+[rank0]: │       =f"{prefix}.{idx}"))                 │
+[rank0]: │   511 │   │   │   for idx in               │
+[rank0]: │       range(start_layer, end_layer)        │
+[rank0]: │   512 │   │   ] + [PPMissingLayer() for _  │
+[rank0]: │       in range(end_layer,                  │
+[rank0]: │       num_hidden_layers)])                 │
+[rank0]: │   513 │   return start_layer, end_layer,   │
+[rank0]: │       modules                              │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/model_executo │
+[rank0]: │ r/models/qwen2.py:281 in <lambda>          │
+[rank0]: │                                            │
+[rank0]: │   278 │   │                                │
+[rank0]: │   279 │   │   self.start_layer,            │
+[rank0]: │       self.end_layer, self.layers =        │
+[rank0]: │       make_layers(                         │
+[rank0]: │   280 │   │   │                            │
+[rank0]: │       config.num_hidden_layers,            │
+[rank0]: │ ❱ 281 │   │   │   lambda prefix:           │
+[rank0]: │       Qwen2DecoderLayer(config=config,     │
+[rank0]: │   282 │   │   │   │   │   │   │   │   │    │
+[rank0]: │       │   │    cache_config=cache_config,  │
+[rank0]: │   283 │   │   │   │   │   │   │   │   │    │
+[rank0]: │       │   │    quant_config=quant_config,  │
+[rank0]: │   284 │   │   │   │   │   │   │   │   │    │
+[rank0]: │       │   │    prefix=f"{prefix}.layers"), │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/model_executo │
+[rank0]: │ r/models/qwen2.py:201 in __init__          │
+[rank0]: │                                            │
+[rank0]: │   198 │   │   │                            │
+[rank0]: │       rope_scaling=rope_scaling,           │
+[rank0]: │   199 │   │   │                            │
+[rank0]: │       prefix=f"{prefix}.self_attn",        │
+[rank0]: │   200 │   │   )                            │
+[rank0]: │ ❱ 201 │   │   self.mlp = Qwen2MLP(         │
+[rank0]: │   202 │   │   │                            │
+[rank0]: │       hidden_size=self.hidden_size,        │
+[rank0]: │   203 │   │   │                            │
+[rank0]: │       intermediate_size=config.intermediat │
+[rank0]: │       e_size,                              │
+[rank0]: │   204 │   │   │                            │
+[rank0]: │       hidden_act=config.hidden_act,        │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/model_executo │
+[rank0]: │ r/models/qwen2.py:76 in __init__           │
+[rank0]: │                                            │
+[rank0]: │    73 │   │   │                            │
+[rank0]: │       quant_config=quant_config,           │
+[rank0]: │    74 │   │   │                            │
+[rank0]: │       prefix=f"{prefix}.gate_up_proj",     │
+[rank0]: │    75 │   │   )                            │
+[rank0]: │ ❱  76 │   │   self.down_proj =             │
+[rank0]: │       RowParallelLinear(                   │
+[rank0]: │    77 │   │   │   intermediate_size,       │
+[rank0]: │    78 │   │   │   hidden_size,             │
+[rank0]: │    79 │   │   │   bias=False,              │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/model_executo │
+[rank0]: │ r/layers/linear.py:995 in __init__         │
+[rank0]: │                                            │
+[rank0]: │    992 │   │                               │
+[rank0]: │        self.input_size_per_partition =     │
+[rank0]: │        divide(input_size, self.tp_size)    │
+[rank0]: │    993 │   │   assert self.quant_method is │
+[rank0]: │        not None                            │
+[rank0]: │    994 │   │                               │
+[rank0]: │ ❱  995 │   │                               │
+[rank0]: │        self.quant_method.create_weights(   │
+[rank0]: │    996 │   │   │   layer=self,             │
+[rank0]: │    997 │   │   │                           │
+[rank0]: │        input_size_per_partition=self.input │
+[rank0]: │        _size_per_partition,                │
+[rank0]: │    998 │   │   │                           │
+[rank0]: │        output_partition_sizes=[self.output │
+[rank0]: │        _size],                             │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/vllm/model_executo │
+[rank0]: │ r/layers/linear.py:122 in create_weights   │
+[rank0]: │                                            │
+[rank0]: │    119 │   │   │   │   │                   │
+[rank0]: │        output_partition_sizes: List[int],  │
+[rank0]: │        input_size: int,                    │
+[rank0]: │    120 │   │   │   │   │      output_size: │
+[rank0]: │        int, params_dtype: torch.dtype,     │
+[rank0]: │    121 │   │   │   │   │                   │
+[rank0]: │        **extra_weight_attrs):              │
+[rank0]: │ ❱  122 │   │   weight =                    │
+[rank0]: │        Parameter(torch.empty(sum(output_pa │
+[rank0]: │        rtition_sizes),                     │
+[rank0]: │    123 │   │   │   │   │   │   │   │   │   │
+[rank0]: │        input_size_per_partition,           │
+[rank0]: │    124 │   │   │   │   │   │   │   │   │   │
+[rank0]: │        dtype=params_dtype),                │
+[rank0]: │    125 │   │   │   │   │   │               │
+[rank0]: │        requires_grad=False)                │
+[rank0]: │                                            │
+[rank0]: │ /network-volume/miniconda3/envs/trag/lib/p │
+[rank0]: │ ython3.10/site-packages/torch/utils/_devic │
+[rank0]: │ e.py:106 in __torch_function__             │
+[rank0]: │                                            │
+[rank0]: │   103 │   │   kwargs = kwargs or {}        │
+[rank0]: │   104 │   │   if func in                   │
+[rank0]: │       _device_constructors() and           │
+[rank0]: │       kwargs.get('device') is None:        │
+[rank0]: │   105 │   │   │   kwargs['device'] =       │
+[rank0]: │       self.device                          │
+[rank0]: │ ❱ 106 │   │   return func(*args, **kwargs) │
+[rank0]: │   107                                      │
+[rank0]: │   108 # NB: This is directly called from   │
+[rank0]: │       C++ in torch/csrc/Device.cpp         │
+[rank0]: │   109 def device_decorator(device, func):  │
+[rank0]: ╰────────────────────────────────────────────╯
+[rank0]: RuntimeError: NVML_SUCCESS == r INTERNAL 
+[rank0]: ASSERT FAILED at 
+[rank0]: "../c10/cuda/CUDACachingAllocator.cpp":995, 
+[rank0]: please report a bug to PyTorch. 
+[rank0]:[W714 12:16:47.832395491 ProcessGroupNCCL.cpp:1250] Warning: WARNING: process group has NOT been destroyed before we destruct ProcessGroupNCCL. On normal program exit, the application should call destroy_process_group to ensure that any pending NCCL operations have finished in this process. In rare cases this process can exit before this point and block the progress of another member of the process group. This constraint has always been present,  but this warning has only been added since PyTorch 2.4 (function operator())

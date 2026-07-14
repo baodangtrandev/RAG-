@@ -19,14 +19,30 @@ class EnterpriseRetriever:
     1. Probabilistic Source Router (PSR): Cắt giảm không gian tìm kiếm (Search Space).
     2. Source-Weighted Reciprocal Rank Fusion (SW-RRF): Xếp hạng tài liệu bằng thuật toán RRF kết hợp Bayesian Prior (Xác suất của nguồn).
     """
-    def __init__(self, db_uri: str = "data/lancedb", model_dir: str = "models/psr_v2", tau: float = 0.15, gamma: float = 2.0, k_rrf: int = 60):
-        self.db_uri = db_uri
-        self.tau = tau
-        self.gamma = gamma # Hệ số khuếch đại (Source Bias Factor)
-        self.k_rrf = k_rrf
+    def __init__(self, db_uri: str = None, model_dir: str = None, tau: float = None, gamma: float = None, k_rrf: int = None):
+        from dotenv import load_dotenv
+        load_dotenv()
         
-        logger.info(f"Khởi tạo Enterprise Retriever. Kết nối DB: {db_uri}")
-        self.db = lancedb.connect(db_uri)
+        self.db_uri = db_uri or os.environ.get("RAG_DB_URI", "data/lancedb")
+        model_dir = model_dir or os.environ.get("PSR_MODEL_DIR", "models/psr_v2")
+        
+        try:
+            self.tau = tau if tau is not None else float(os.environ.get("RAG_TAU", "0.15"))
+        except ValueError:
+            self.tau = 0.15
+            
+        try:
+            self.gamma = gamma if gamma is not None else float(os.environ.get("RAG_GAMMA", "2.0"))
+        except ValueError:
+            self.gamma = 2.0 # Hệ số khuếch đại (Source Bias Factor)
+            
+        try:
+            self.k_rrf = k_rrf if k_rrf is not None else int(os.environ.get("RAG_K_RRF", "60"))
+        except ValueError:
+            self.k_rrf = 60
+        
+        logger.info(f"Khởi tạo Enterprise Retriever. Kết nối DB: {self.db_uri}")
+        self.db = lancedb.connect(self.db_uri)
         
         logger.info("Khởi tạo PSR Router...")
         self.router = ProbabilisticSourceRouter(model_dir=model_dir)
@@ -83,11 +99,11 @@ class EnterpriseRetriever:
                 rrf_score = 1.0 / (self.k_rrf + r_dense)
                 sw_rrf_score = prior_weight * rrf_score
                 
-                # Đóng gói dữ liệu
+                # Đóng gói dữ liệu — dùng "content" nhất quán với LanceDB schema
                 clean_doc = {
                     "source": source,
                     "doc_id": doc.get("doc_id", "unknown"),
-                    "text": doc.get("text", doc.get("content", "")),
+                    "content": doc.get("content", ""),
                     "title": doc.get("title", ""),
                     "vector_distance": doc.get("_distance", 1.0), # L2 distance
                     "router_prob": p_s,
@@ -106,11 +122,12 @@ class EnterpriseRetriever:
         return final_top_k
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
+    from dotenv import load_dotenv
+    load_dotenv()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(name)s | %(message)s")
     
-    # Giả định LanceDB của bạn nằm ở /network-volume/RAG-/data/lancedb
-    db_path = "/network-volume/RAG-/data/lancedb"
-    retriever = EnterpriseRetriever(db_uri=db_path, tau=0.15, gamma=2.0)
+    # Đọc cấu hình từ .env thay vì hardcode đường dẫn tuyệt đối
+    retriever = EnterpriseRetriever()  # Tự động load RAG_DB_URI, RAG_TAU, RAG_GAMMA từ .env
     
     test_queries = [
         "How do I fix the CI/CD pipeline out of memory error?",
@@ -127,8 +144,8 @@ if __name__ == "__main__":
         for i, doc in enumerate(docs):
             output_str += f"  [{i+1}] Nguồn: {doc['source'].upper()} (Độ tin cậy Router: {doc['router_prob']:.2f}) | Điểm SW-RRF: {doc['sw_rrf_score']:.6f}\n"
             # Cắt bớt các ký tự xuống dòng để in ra file đẹp hơn
-            clean_text = doc['text'].replace('\n', ' ')
-            output_str += f"      Text snippet: {clean_text}...\n"
+            clean_text = doc['content'].replace('\n', ' ')
+            output_str += f"      Text snippet: {clean_text[:200]}...\n"
             
     output_str += "="*80 + "\n"
     

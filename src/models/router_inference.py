@@ -13,18 +13,21 @@ class ProbabilisticSourceRouter:
     RAG Router dựa trên xác suất (Probabilistic Source Router).
     Sử dụng Multi-Label Sigmoid Classifier để điều phối câu hỏi vào đúng các Shard dữ liệu.
     """
-    def __init__(self, model_dir: str = "models/psr_v2", embedding_model: str = "BAAI/bge-large-en-v1.5"):
-        self.model_dir = model_dir
+    def __init__(self, model_dir: str = None, embedding_model: str = None):
+        from dotenv import load_dotenv
+        load_dotenv()
+        self.model_dir = model_dir or os.environ.get("PSR_MODEL_DIR", "models/psr_v2")
+        embedding_model = embedding_model or os.environ.get("EMBEDDING_MODEL", "BAAI/bge-large-en-v1.5")
         
         # 1. Load danh sách tên các nguồn (Classes)
-        classes_path = os.path.join(model_dir, "psr_classes.json")
+        classes_path = os.path.join(self.model_dir, "psr_classes.json")
         if not os.path.exists(classes_path):
             raise FileNotFoundError(f"Không tìm thấy cấu hình lớp: {classes_path}")
         with open(classes_path, 'r', encoding='utf-8') as f:
             self.classes = json.load(f)
             
         # 2. Load trọng số mô hình Logistic Regression (Sigmoid)
-        model_path = os.path.join(model_dir, "psr_router.joblib")
+        model_path = os.path.join(self.model_dir, "psr_router.joblib")
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Không tìm thấy file mô hình: {model_path}")
         self.clf = joblib.load(model_path)
