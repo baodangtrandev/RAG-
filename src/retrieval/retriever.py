@@ -47,6 +47,10 @@ class EnterpriseRetriever:
         logger.info("Khởi tạo PSR Router...")
         self.router = ProbabilisticSourceRouter(model_dir=model_dir)
         
+        # Cache tables to avoid disk I/O bottleneck
+        self.table_names = self.db.table_names()
+        self.tables = {name: self.db.open_table(name) for name in self.table_names}
+        
     def retrieve(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
         """
         Tìm kiếm tài liệu qua 3 bước Toán học.
@@ -73,11 +77,11 @@ class EnterpriseRetriever:
         
         # Bước 3: Tìm kiếm Vector cục bộ & Áp dụng Source-Weighted RRF (SW-RRF)
         for source in active_shards:
-            if source not in self.db.table_names():
+            if source not in self.tables:
                 logger.error(f"LỖI: Không tìm thấy bảng '{source}' trong LanceDB.")
                 continue
                 
-            table = self.db.open_table(source)
+            table = self.tables[source]
             # Quét rộng hơn top_k một chút ở mỗi bảng để đảm bảo RRF công bằng
             search_limit = max(top_k * 2, 10) 
             try:

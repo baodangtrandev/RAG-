@@ -25,6 +25,7 @@ Config doc tu .env:
 """
 
 import os
+import re
 import logging
 import time
 from typing import List, Dict, Any, Optional
@@ -51,13 +52,49 @@ def _load_env_int(key: str, default: int) -> int:
 
 
 ENTITY_EXTRACTION_PROMPT = """Extract key technical entities from the following document excerpts.
-Entities include: ticket IDs (e.g. JIRA-123), PR numbers, branch names, error codes, feature names, project names.
-Return ONLY a comma-separated list of entities. If none found, return "NONE".
+Entities include: ticket IDs (e.g. JIRA-123), PR numbers (e.g. PR #102), branch names, error codes, feature names, project names.
+Return ONLY a comma-separated list on a SINGLE LINE. Do NOT explain. If none found, return exactly "NONE".
 
 Documents:
 {context}
 
 Entities:"""
+
+import json
+
+# Max ky tu cho entity string (chan babbling)
+_MAX_ENTITY_LEN = 200
+
+def _parse_entities(raw: str) -> str:
+    """
+    Parse chuoi JSON do vLLM sinh ra (guided_json).
+    Tra ve chuoi entity hoac "NONE".
+    """
+    if not raw or not raw.strip():
+        return "NONE"
+
+    try:
+        data = json.loads(raw.strip())
+        entities = data.get("entities", [])
+        if not isinstance(entities, list):
+            return "NONE"
+            
+        # Filter and clean
+        clean_entities = []
+        for e in entities:
+            e = str(e).strip()
+            if e and e.upper() not in ("NONE", "N", "NULL", "UNKNOWN"):
+                clean_entities.append(e)
+                
+        if not clean_entities:
+            return "NONE"
+            
+        result = ", ".join(clean_entities)
+        return result[:_MAX_ENTITY_LEN]
+    except json.JSONDecodeError:
+        # Fallback: neu LLM sinh text cat ngang hong the parse, tot nhat tra ve NONE 
+        # de khong bi noi chuoi raw JSON vao query gay nhieu vector space.
+        return "NONE"
 
 
 class CSEPRetriever:
@@ -137,9 +174,12 @@ class CSEPRetriever:
 
         entities = []
         for resp in raw_responses:
-            entity_str = resp.strip()
-            entities.append("NONE" if not entity_str else entity_str)
+            parsed = _parse_entities(resp)
+            entities.append(parsed)
+            logger.debug("[CSEP] Raw: %s -> Parsed: %s", repr(resp[:120]), parsed)
 
+        n_none = sum(1 for e in entities if e == "NONE")
+        logger.info("[CSEP] Entity extraction results: %d NONE / %d total.", n_none, len(entities))
         return entities
 
     def retrieve_batch(
@@ -217,10 +257,14 @@ class CSEPRetriever:
         t2 = time.perf_counter()
         hop2_results: List[Optional[List[Dict]]] = [None] * n
 
+        n_hop2_run = 0
+        n_hop2_skip = 0
         for i in csep_indices:
             entity_str = entities_per_query[i] or "NONE"
-            if entity_str == "NONE":
-                logger.debug("[CSEP] Query[%d]: No entities extracted, skip Hop 2.", i)
+            # Skip Hop 2 khi entity la NONE hoac qua ngan (< 3 ky tu)
+            if entity_str == "NONE" or len(entity_str.strip()) < 3:
+                logger.debug("[CSEP] Query[%d]: No valid entities, skip Hop 2.", i)
+                n_hop2_skip += 1
                 continue
 
             augmented_query = queries[i] + " " + entity_str
@@ -231,6 +275,9 @@ class CSEPRetriever:
 
             hop2_docs = self.retriever.retrieve(augmented_query, top_k=self.top_k_retrieve)
             hop2_results[i] = hop2_docs
+            n_hop2_run += 1
+
+        logger.info("[CSEP] Hop 2 summary: %d executed, %d skipped (no entities).", n_hop2_run, n_hop2_skip)
 
         elapsed_hop2 = time.perf_counter() - t2
         logger.info("[CSEP] Hop 2 done: %d queries in %.2fs.", n_csep, elapsed_hop2)

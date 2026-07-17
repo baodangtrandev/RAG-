@@ -1,0 +1,39 @@
+nohup: ignoring input
+==========================================
+PHẦN 1: BASELINES (Hệ quy chiếu)
+==========================================
+2026-07-17 12:40:07,030 | INFO | ============================================================
+2026-07-17 12:40:07,030 | INFO | BM25 BASELINE
+2026-07-17 12:40:07,030 | INFO | ============================================================
+2026-07-17 12:40:07,036 | INFO | Initializing vLLM Generator...
+2026-07-17 12:40:07,038 | INFO | [Generator] Init vLLM: model='Qwen/Qwen2.5-14B-Instruct', gpu_util=0.80, top_k_final=5
+INFO 07-17 12:40:17 __init__.py:207] Automatically detected platform cuda.
+2026-07-17 12:40:17,962 | INFO | HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-14B-Instruct/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-07-17 12:40:17,963 | WARNING | Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-07-17 12:40:17,969 | INFO | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-14B-Instruct/cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8/config.json "HTTP/1.1 200 OK"
+2026-07-17 12:40:18,229 | INFO | HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-14B-Instruct/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-17 12:40:18,235 | INFO | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-14B-Instruct/cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8/config.json "HTTP/1.1 200 OK"
+2026-07-17 12:40:18,501 | INFO | HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-14B-Instruct/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-07-17 12:40:18,766 | INFO | HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-14B-Instruct/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-07-17 12:40:19,035 | INFO | HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-14B-Instruct/resolve/main/preprocessor_config.json "HTTP/1.1 404 Not Found"
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+ERROR 07-17 12:40:25 registry.py:321] Error in inspecting model architecture 'Qwen2ForCausalLM'
+ERROR 07-17 12:40:25 registry.py:321] Traceback (most recent call last):
+ERROR 07-17 12:40:25 registry.py:321]   File "/network-volume/miniconda3/envs/trag/lib/python3.10/site-packages/vllm/model_executor/models/registry.py", line 528, in _run_in_subprocess
+ERROR 07-17 12:40:25 registry.py:321]     returned.check_returncode()
+ERROR 07-17 12:40:25 registry.py:321]   File "/network-volume/miniconda3/envs/trag/lib/python3.10/subprocess.py", line 457, in check_returncode
+ERROR 07-17 12:40:25 registry.py:321]     raise CalledProcessError(self.returncode, self.args, self.stdout,
+ERROR 07-17 12:40:25 registry.py:321] subprocess.CalledProcessError: Command '['/network-volume/miniconda3/envs/trag/bin/python', '-m', 'vllm.model_executor.models.registry']' died with <Signals.SIGTERM: 15>.
+ERROR 07-17 12:40:25 registry.py:321] 
+ERROR 07-17 12:40:25 registry.py:321] The above exception was the direct cause of the following exception:
+ERROR 07-17 12:40:25 registry.py:321] 
+ERROR 07-17 12:40:25 registry.py:321] Traceback (most recent call last):
+ERROR 07-17 12:40:25 registry.py:321]   File "/network-volume/miniconda3/envs/trag/lib/python3.10/site-packages/vllm/model_executor/models/registry.py", line 319, in _try_inspect_model_cls
+ERROR 07-17 12:40:25 registry.py:321]     return model.inspect_model_cls()
+ERROR 07-17 12:40:25 registry.py:321]   File "/network-volume/miniconda3/envs/trag/lib/python3.10/site-packages/vllm/model_executor/models/registry.py", line 290, in inspect_model_cls
+ERROR 07-17 12:40:25 registry.py:321]     return _run_in_subprocess(
+ERROR 07-17 12:40:25 registry.py:321]   File "/network-volume/miniconda3/envs/trag/lib/python3.10/site-packages/vllm/model_executor/models/registry.py", line 531, in _run_in_subprocess
+ERROR 07-17 12:40:25 registry.py:321]     raise RuntimeError(f"Error raised in subprocess:\n"
+ERROR 07-17 12:40:25 registry.py:321] RuntimeError: Error raised in subprocess:
+ERROR 07-17 12:40:25 registry.py:321] 

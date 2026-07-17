@@ -1,82 +1,48 @@
-# Implementation Plan: T-RAG Pipeline Completion (H100 Optimized)
+# Pipeline Đánh giá Benchmark Toàn diện (T-RAG vs Baselines) bằng Local LLM-as-a-Judge
 
-Mục tiêu: Hoàn thiện các module còn thiếu của kiến trúc T-RAG (Targeted RAG) theo tài liệu `proposal.md` và paper `EnterpriseRAG-Bench`. Đặc biệt, thiết kế luồng xử lý tập trung vào việc tối đa hóa hiệu năng (Throughput/Latency) và độ chính xác (Accuracy) trên máy chủ sử dụng **GPU H100 (40GB VRAM) & 32GB RAM**.
+Dựa trên bài báo **EnterpriseRAG-Bench** và yêu cầu của bạn, chúng ta sẽ xây dựng một quy trình benchmarking toàn diện. Quy trình này không chỉ đánh giá các siêu tham số (hyperparameters) trong cấu hình T-RAG hiện tại của bạn, mà còn so sánh nó với các pipeline cơ bản (baselines) được đề cập trong bài báo (như BM25, Vector Search). 
+
+Vì không có API của OpenAI, chúng ta sẽ sử dụng một LLM Local qua `vLLM` để đóng vai trò làm LLM-Judge. Biến môi trường `JUDGE_LLM_MODEL` sẽ được định nghĩa trong `.env` để bạn có thể linh hoạt thay đổi model (khuyến nghị các model <= 14B để vừa với 40GB VRAM).
+
+## Quy trình Đề xuất (4 Bước)
+
+### Phase 1: Triển khai & Chạy Baseline Pipelines (Từ Bài Báo)
+Bài báo sử dụng 3 baselines: BM25, Vector Search, và Bash Agent. Chúng ta sẽ implement 2 baseline phổ biến và khả thi nhất để chạy tự động:
+1. **BM25 Pipeline:** Sử dụng BM25 (qua thư viện như `rank_bm25` hoặc ElasticSearch/OpenSearch) để truy xuất top-10 tài liệu, sau đó đưa vào LLM để tạo câu trả lời.
+2. **Vector Search Pipeline:** Sử dụng mô hình embedding chuẩn (ví dụ `BAAI/bge-large-en-v1.5`) và vector database (LanceDB) để lấy top-10 tài liệu, sau đó sinh câu trả lời.
+
+*Đầu ra của Phase 1:* `results/baseline_bm25.jsonl`, `results/baseline_vector.jsonl`.
+
+### Phase 2: Chạy T-RAG Pipeline với các tham số (Ablation Study)
+Đây là bước chạy script `run_benchmark.py` của bạn với nhiều tổ hợp cấu hình (config) khác nhau để tìm ra bộ tham số tối ưu (Hyperparameter Tuning). Một số kịch bản chạy (có thể định nghĩa qua file shell script `run_all.sh`):
+
+1. **Test tính năng CSEP:** `ENABLE_CSEP_FOR_ALL="True"` vs `"False"`
+2. **Test ngưỡng Reranker:** `RERANKER_THRESHOLD="0.0"` (Không lọc) vs `RERANKER_THRESHOLD="0.5"`
+3. **Test thông số lấy tài liệu:** `RAG_TOP_K_RETRIEVE=20` / `RAG_TOP_K_FINAL=5` vs `RAG_TOP_K_RETRIEVE=50` / `RAG_TOP_K_FINAL=10`
+4. **Test Router Tau:** `RAG_TAU="0.15"` vs `RAG_TAU="0.5"`
+
+*Đầu ra của Phase 2:* Các file `.jsonl` tương ứng như `results/trag_csep_true.jsonl`, `results/trag_tau_0.5.jsonl`, v.v.
+
+### Phase 3: Khởi động Local API Server cho LLM Judge
+Sử dụng `vLLM` để bật một API Server chuẩn OpenAI, phục vụ cho việc chấm điểm. Model sẽ được đọc từ file `.env` của bạn (ví dụ thông qua biến `JUDGE_LLM_MODEL`).
+
+```bash
+# Đọc tên model từ env và khởi chạy vLLM (chạy trên một terminal/pane khác)
+source .env
+vllm serve $JUDGE_LLM_MODEL --port 8000 --max-model-len 8192
+```
+
+### Phase 4: Patch mã nguồn & Chạy Đánh giá tự động (Evaluation)
+Bài báo cung cấp script `src.scripts.answer_evaluation.metrics_based_eval`. Tôi sẽ:
+1. **Patch mã nguồn Evaluation:** Tìm và sửa các file gọi OpenAI API trong source của Benchmark để trỏ `base_url` về `http://localhost:8000/v1` và truyền tên model động từ `JUDGE_LLM_MODEL`.
+2. **Chạy Script Đánh Giá:** Viết một script tổng hợp để lặp qua tất cả các file `results/*.jsonl` (từ Phase 1 và 2) và gọi lệnh đánh giá. LLM Judge sẽ bầu chọn 3 lần (three-judge consensus) để tính điểm Correctness và Completeness.
+3. **Tổng hợp Báo Cáo:** Xuất ra một bảng tóm tắt so sánh điểm số giữa BM25, Vector Search và các cấu hình T-RAG của bạn.
+
+---
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Tối ưu Accuracy/Latency trên H100:** 
-> Dựa trên paper EnterpriseRAG-Bench và cấu hình phần cứng của anh/chị, để đạt được cả tốc độ và độ chính xác, chúng ta sẽ áp dụng chiến lược **Stage-based Batching với vLLM** thay vì vòng lặp tuần tự (Sequential). Điều này có nghĩa là thay vì hỏi LLM từng câu, ta sẽ gom hàng trăm câu hỏi đưa vào `vLLM` cùng lúc để tận dụng PagedAttention của GPU.
-> **Đề xuất LLM Model:** Với VRAM 40GB, model tối ưu nhất hiện nay để triển khai Local trên `vLLM` là **`Meta-Llama-3.1-8B-Instruct`** hoặc **`Qwen2.5-14B-Instruct`**. Chúng có khả năng xử lý ngữ cảnh dài (Long Context) rất tốt, tốn khoảng 16-20GB VRAM cho trọng số (weights), phần VRAM còn lại (20GB) hoàn toàn đủ để chứa KV Cache cực lớn cho batch size hàng trăm câu hỏi.
-
----
-
-## Proposed Changes
-
-Quá trình triển khai sẽ được chia thành 4 giai đoạn, mỗi giai đoạn sẽ đi kèm với bài test độc lập.
-
-### Giai đoạn 1: Module Reranker (Dynamic Thresholding)
-
-Module này giúp đánh giá lại mức độ liên quan của tài liệu được trả về từ SW-RRF và query gốc, loại bỏ tài liệu nhiễu.
-
-#### [NEW] [reranker.py](file:///network-volume/RAG-/src/reranker/reranker.py)
-*   Sử dụng `CrossEncoder` từ `sentence-transformers` (ví dụ: `cross-encoder/ms-marco-MiniLM-L-6-v2`).
-*   Hàm `rerank` tính toán điểm số. Những tài liệu có điểm `< threshold` sẽ bị loại bỏ. Khả năng chạy batch inference trên GPU để xử lý cực nhanh.
-*   Nếu không còn tài liệu nào sau khi lọc, trả về cờ "Unanswerable".
-
-#### [NEW] [test_reranker.py](file:///network-volume/RAG-/tests/test_reranker.py)
-*   Unit test cho Reranker.
-
----
-
-### Giai đoạn 2: Thuật toán Cross-Source Entity Propagation (CSEP)
-
-Đây là thuật toán để giải quyết các truy vấn đa nguồn phức tạp. **Theo yêu cầu của anh/chị, CSEP sẽ được kích hoạt cho toàn bộ câu hỏi theo mặc định.**
-
-#### [NEW] [csep_retriever.py](file:///network-volume/RAG-/src/retrieval/csep_retriever.py)
-*   **Thêm Header Comment:** Ghi chú rõ ở đầu file về cơ chế hoạt động của CSEP và cách sử dụng biến môi trường.
-*   **Logic Kích hoạt (Toggle):** Đọc biến `ENABLE_CSEP_FOR_ALL` từ file `.env`.
-    *   Nếu `True` (Mặc định): Mọi câu hỏi đều chạy qua luồng Multi-hop.
-    *   Nếu `False`: Chỉ kích hoạt khi Router trả về từ 2 nguồn trở lên có xác suất lớn hơn `tau`.
-*   **Luồng hoạt động Multi-hop:**
-    1.  **Hop 1:** Tìm kiếm trên shard có xác suất cao nhất.
-    2.  Dùng LLM (qua batching) trích xuất Entities.
-    3.  **Hop 2:** Nối Entities vào query và tìm kiếm trên các shard còn lại.
-    4.  Gộp kết quả của 2 hop.
-
-#### [NEW] [test_csep.py](file:///network-volume/RAG-/tests/test_csep.py)
-*   Unit test cho module CSEP.
-
----
-
-### Giai đoạn 3: Module Generation (LLM Integration)
-
-Module kết nối với LLM để tạo ra câu trả lời cuối cùng dựa trên các tài liệu đã được lọc bởi Reranker.
-
-#### [NEW] [generator.py](file:///network-volume/RAG-/src/generation/generator.py)
-*   Xây dựng class `RAGGenerator`.
-*   Tích hợp Client gọi LLM (tương thích với Local vLLM server hoặc API proxy đã định nghĩa trong `.env`).
-*   Xử lý logic fallback nếu không có documents.
-
-#### [NEW] [test_generator.py](file:///network-volume/RAG-/tests/test_generator.py)
-*   Unit test cho Generator (sử dụng mock API).
-
----
-
-### Giai đoạn 4: Tích hợp Hệ thống (End-to-End Pipeline)
-
-Kết nối tất cả các thành phần lại với nhau để tạo thành một đường ống hoàn chỉnh.
-
-#### [NEW] [main.py](file:///network-volume/RAG-/src/main.py)
-*   Xây dựng class `TRAGPipeline` điều phối luồng:
-    `Batch Query` $\rightarrow$ `Router` $\rightarrow$ `CSEP (Dựa trên env)` $\rightarrow$ `Cross-Encoder Reranker` $\rightarrow$ `Batch LLM Generation`.
-*   Tích hợp CLI bằng `typer`.
-
-## Verification Plan
-
-### Automated Tests
-- Chạy toàn bộ test suite bằng lệnh `pytest tests/` để đảm bảo các module độc lập hoạt động đúng.
-
-### Manual Verification
-- Test chạy CLI với cờ `ENABLE_CSEP_FOR_ALL=True` và `ENABLE_CSEP_FOR_ALL=False` để đảm bảo luồng routing chuyển hướng đúng mong đợi.
-- So sánh kết quả sinh ra với các baseline test case có sẵn.
+> - **Cài đặt Baselines:** Bạn có muốn tôi viết mã nguồn cho 2 pipeline cơ bản (BM25 và Vector Search) bằng Python luôn không, hay bạn đã có sẵn mã nguồn của bài báo?
+> - **Cập nhật `.env`:** Tôi sẽ thêm biến `JUDGE_LLM_MODEL="Qwen/Qwen2.5-14B-Instruct"` (hoặc model bạn muốn) vào file `.env` của bạn. Bạn có đồng ý không?
+> - **Nguồn mã đánh giá:** Thư mục `src/scripts/answer_evaluation/` (của Benchmark) hiện đã tồn tại trong dự án của bạn chưa? Nếu chưa, tôi sẽ cần tạo cấu trúc thư mục và tải các đoạn script đánh giá tương ứng về.

@@ -104,12 +104,18 @@ class VLLMGenerator:
         self.llm = LLM(
             model=self.model_name,
             gpu_memory_utilization=self.gpu_memory_utilization,
+            max_model_len=8192,
             trust_remote_code=True,
         )
         self.sampling_params = SamplingParams(
             temperature=0.1,   # Thap de dam bao tin cay trong Enterprise RAG
-            max_tokens=512,
-            stop=["\n\nQuestion:", "\n\nContext:"],
+            max_tokens=384,    # Du cho Enterprise answer, tranh babbling
+            stop=[
+                "\n\nQuestion:",
+                "\n\nContext:",
+                "<|im_end|>",
+                "<|endoftext|>",
+            ],
         )
 
         logger.info("[Generator] vLLM loaded successfully.")
@@ -119,21 +125,32 @@ class VLLMGenerator:
         query: str,
         docs: List[Dict[str, Any]],
     ) -> str:
-        """
-        Xay dung RAG prompt tu query va danh sach docs.
-        Chi dung top_k_final docs dau tien.
-        """
+        """Xay dung prompt dung Chat Template thay vi noi chuoi tho (de chong babbling)."""
         top_docs = docs[: self.top_k_final]
         context_parts = []
-        for i, doc in enumerate(top_docs, start=1):
-            source = doc.get("source", "unknown").upper()
-            title = doc.get("title", "")
-            content = doc.get("content", "")
-            header = f"[{i}] Source: {source}" + (f" | {title}" if title else "")
-            context_parts.append(f"{header}\n{content}")
+        for d in top_docs:
+            txt = d.get("content", "").strip()
+            if txt:
+                source = d.get("source", "unknown").upper()
+                title = d.get("title", "")
+                header = f"[{source}]" + (f" {title}" if title else "")
+                context_parts.append(f"{header}\n{txt}")
 
         context = "\n\n".join(context_parts) if context_parts else "No context available."
-        return RAG_USER_TEMPLATE.format(context=context, query=query)
+        user_content = RAG_USER_TEMPLATE.format(context=context, query=query)
+        
+        messages = [
+            {"role": "system", "content": RAG_SYSTEM_PROMPT},
+            {"role": "user", "content": user_content}
+        ]
+        
+        tokenizer = self.llm.get_tokenizer()
+        prompt = tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True
+        )
+        return prompt
 
     def generate_batch(
         self,
@@ -164,11 +181,19 @@ class VLLMGenerator:
         prompt_indices: List[int] = []  # index cua queries can goi LLM
 
         for i, (query, result) in enumerate(zip(queries, reranked_results)):
-            if result.get("is_unanswerable", False) or not result.get("docs"):
+            # Support both list of docs (from baselines) and dict with 'docs' key (from T-RAG pipeline)
+            if isinstance(result, list):
+                docs = result
+                is_unanswerable = len(docs) == 0
+            else:
+                docs = result.get("docs", [])
+                is_unanswerable = result.get("is_unanswerable", False)
+                
+            if is_unanswerable or not docs:
                 prompts.append(None)  # Danh dau khong can goi LLM
                 logger.debug("[Generator] Query[%d] marked unanswerable, skip LLM.", i)
             else:
-                prompt = self.build_rag_prompt(query, result["docs"])
+                prompt = self.build_rag_prompt(query, docs)
                 prompts.append(prompt)
                 prompt_indices.append(i)
 

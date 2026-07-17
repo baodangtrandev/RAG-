@@ -143,6 +143,13 @@ def run(
     logger.info("  Output file      : %s", output_file)
     logger.info("=" * 60)
 
+    # ============================================================
+    # Stage 0: Initialize Generator
+    # ============================================================
+    logger.info("[Stage 0] Initializing vLLM Generator (loads LLM onto GPU)...")
+    from src.generation.generator import VLLMGenerator
+    generator = VLLMGenerator()
+
     pipeline_start = time.perf_counter()
 
     # ============================================================
@@ -185,23 +192,49 @@ def run(
     t_s2 = time.perf_counter()
 
     from src.retrieval.csep_retriever import CSEPRetriever
-    from src.generation.generator import VLLMGenerator
-
-    # Khoi tao Generator TRUOC TIEN de dam bao vLLM chiem VRAM uu tien
-    logger.info("[Stage 2] Initializing vLLM Generator (loads LLM onto GPU)...")
-    generator = VLLMGenerator()
 
     # Dung ham generate cua generator lam llm_generate_fn cho CSEP
     def csep_llm_fn(prompts):
         from vllm import SamplingParams
-        entity_params = SamplingParams(temperature=0.0, max_tokens=64)
+        from vllm.sampling_params import GuidedDecodingParams
+        import json
+        schema = {
+            "type": "object",
+            "properties": {
+                "entities": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            },
+            "required": ["entities"]
+        }
+        guided_decoding = GuidedDecodingParams(json=schema)
+        entity_params = SamplingParams(
+            temperature=0.0,
+            max_tokens=256,
+            stop=["\n\n", "\nDocuments:", "\nEntities:", "<|im_end|>", "<|endoftext|>", "NONE", ", NONE"],
+            guided_decoding=guided_decoding
+        )
         outputs = generator.llm.generate(prompts, entity_params)
         return [o.outputs[0].text.strip() for o in outputs]
 
     csep_retriever = CSEPRetriever(llm_generate_fn=csep_llm_fn)
-    all_docs = csep_retriever.retrieve_batch(queries)
 
-    logger.info("[Stage 2] Retrieval done in %.2fs.", time.perf_counter() - t_s2)
+    # --- Do per-query retrieval latency ---
+    per_query_retrieval_times = []
+    _original_retrieve = csep_retriever.retriever.retrieve
+    def _timed_retrieve(query, top_k=20):
+        t0 = time.perf_counter()
+        result = _original_retrieve(query, top_k=top_k)
+        elapsed = time.perf_counter() - t0
+        per_query_retrieval_times.append(elapsed)
+        return result
+    csep_retriever.retriever.retrieve = _timed_retrieve
+
+    all_docs = csep_retriever.retrieve_batch(queries)
+    t_retrieval = time.perf_counter() - t_s2
+
+    logger.info("[Stage 2] Retrieval done in %.2fs.", t_retrieval)
 
     # ============================================================
     # Stage 3: Batch Cross-Encoder Reranking
@@ -235,19 +268,31 @@ def run(
     out_path = Path(output_file)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # Tong ket thoi gian
+    total_elapsed = time.perf_counter() - pipeline_start
+    avg_latency = total_elapsed / max(len(queries), 1)
+    t_rerank = time.perf_counter() - t_s3 - (time.perf_counter() - t_s4 if 't_s4' in dir() else 0)
+
+    # Map per-query retrieval times (Hop 1 + Hop 2 coalesced)
+    # per_query_retrieval_times co the co nhieu hon N entries (do Hop 2)
+    # Ta phan bo lai: moi query lay retrieve time cua Hop 1 (entry i*1 hoac i*2)
+    # Cach don gian nhat: dung avg retrieval time neu khong map duoc chinh xac
+    avg_retrieval = sum(per_query_retrieval_times) / max(len(per_query_retrieval_times), 1)
+
     with open(out_path, "w", encoding="utf-8") as f:
-        for qid, query, answer in zip(question_ids, queries, answers):
+        for idx, (qid, query, answer) in enumerate(zip(question_ids, queries, answers)):
             record = {
                 "question_id": str(qid),
                 "question": query,
                 "answer": answer,
+                "latency_sec": round(avg_latency, 4),
+                "retrieval_latency_sec": round(avg_retrieval, 4),
             }
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
     logger.info("[Stage 5] Wrote %d answers in %.2fs.", len(answers), time.perf_counter() - t_s5)
 
     # --- Tong ket ---
-    total_elapsed = time.perf_counter() - pipeline_start
     throughput = len(queries) / total_elapsed if total_elapsed > 0 else 0
     n_unanswerable = sum(1 for r in reranked_results if r.get("is_unanswerable", False))
 
@@ -256,6 +301,7 @@ def run(
     logger.info("  Total questions  : %d", len(queries))
     logger.info("  Unanswerable     : %d (%.1f%%)", n_unanswerable, 100 * n_unanswerable / max(len(queries), 1))
     logger.info("  Total time       : %.2fs", total_elapsed)
+    logger.info("  Avg retrieval    : %.4fs/query", avg_retrieval)
     logger.info("  Throughput       : %.1f queries/s", throughput)
     logger.info("  Output           : %s", out_path.resolve())
     logger.info("=" * 60)
