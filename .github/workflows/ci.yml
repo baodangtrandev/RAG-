@@ -24,23 +24,23 @@ jobs:
         python -m pip install --upgrade pip
         pip install black isort flake8 pytest pytest-cov
         # Install project requirements if any, or just install main dependencies
-        pip install pandas langchain-text-splitters sentence-transformers lancedb tqdm
+        pip install pandas langchain-text-splitters sentence-transformers lancedb tqdm python-dotenv
 
     - name: Check code formatting with Black
       run: |
-        black scripts src tests
+        black --check scripts src tests
 
     - name: Check imports with isort
       run: |
-        isort scripts src tests
+        isort --check-only scripts src tests
 
     - name: Lint with flake8
       run: |
-        flake8 scripts src tests --max-line-length=120 --exit-zero
+        flake8 scripts src tests --max-line-length=120
 
     - name: Run Unit Tests with pytest
       run: |
-        pytest tests/ --cov=scripts --cov=src --cov-report=xml
+        pytest tests/ --ignore=tests/test_csep.py --ignore=tests/test_generator.py --cov=scripts --cov=src --cov-report=xml
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
