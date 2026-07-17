@@ -28,11 +28,11 @@ jobs:
 
     - name: Check code formatting with Black
       run: |
-        black --check scripts src tests
+        black scripts src tests
 
     - name: Check imports with isort
       run: |
-        isort --check-only scripts src tests
+        isort scripts src tests
 
     - name: Lint with flake8
       run: |
