@@ -246,6 +246,7 @@ def run(
     # ============================================================
     if no_reranker:
         logger.info("[Stage 3] SKIPPING Cross-Encoder Reranking (No-Reranker mode).")
+        t_s3 = time.perf_counter()
         top_k_final_int = int(os.environ.get("RAG_TOP_K_FINAL", "5"))
         reranked_results = []
         for docs in all_docs:

@@ -1,0 +1,147 @@
+[2/2] Smoke Test: No-Reranker
+2026-07-18 05:10:35 | INFO | trag.benchmark | ============================================================
+2026-07-18 05:10:35 | INFO | trag.benchmark | T-RAG BENCHMARK CONFIG
+2026-07-18 05:10:35 | INFO | trag.benchmark |   Model            : Qwen/Qwen2.5-14B-Instruct
+2026-07-18 05:10:35 | INFO | trag.benchmark |   Tau              : 0.15
+2026-07-18 05:10:35 | INFO | trag.benchmark |   top_k_retrieve   : 20
+2026-07-18 05:10:35 | INFO | trag.benchmark |   top_k_final      : 5
+2026-07-18 05:10:35 | INFO | trag.benchmark |   CSEP             : False
+2026-07-18 05:10:35 | INFO | trag.benchmark |   Questions file   : data/EnterpriseRAG-Bench/data/questions/test.parquet
+2026-07-18 05:10:35 | INFO | trag.benchmark |   Output file      : smoke_results/test_no_reranker.jsonl
+2026-07-18 05:10:35 | INFO | trag.benchmark | ============================================================
+2026-07-18 05:10:35 | INFO | trag.benchmark | [Stage 0] Initializing vLLM Generator (loads LLM onto GPU)...
+2026-07-18 05:10:35 | INFO | src.generation.generator | [Generator] Init vLLM: model='Qwen/Qwen2.5-14B-Instruct', gpu_util=0.80, top_k_final=5
+INFO 07-18 05:10:45 __init__.py:207] Automatically detected platform cuda.
+2026-07-18 05:10:46 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-14B-Instruct/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:10:46 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-14B-Instruct/cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8/config.json "HTTP/1.1 200 OK"
+2026-07-18 05:10:46 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-14B-Instruct/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-07-18 05:10:46 | WARNING | huggingface_hub.utils._http | Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-07-18 05:10:46 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-14B-Instruct/cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8/config.json "HTTP/1.1 200 OK"
+2026-07-18 05:10:46 | INFO | httpx | HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-14B-Instruct/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-07-18 05:10:47 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-14B-Instruct/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-07-18 05:10:47 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-14B-Instruct/resolve/main/preprocessor_config.json "HTTP/1.1 404 Not Found"
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+2026-07-18 05:10:58 | INFO | httpx | HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-14B-Instruct/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+INFO 07-18 05:10:58 config.py:549] This model supports multiple tasks: {'classify', 'reward', 'embed', 'score', 'generate'}. Defaulting to 'generate'.
+INFO 07-18 05:10:58 llm_engine.py:234] Initializing a V0 LLM engine (v0.7.3) with config: model='Qwen/Qwen2.5-14B-Instruct', speculative_config=None, tokenizer='Qwen/Qwen2.5-14B-Instruct', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, override_neuron_config=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=8192, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=False, kv_cache_dtype=auto,  device_config=cuda, decoding_config=DecodingConfig(guided_decoding_backend='xgrammar'), observability_config=ObservabilityConfig(otlp_traces_endpoint=None, collect_model_forward_time=False, collect_model_execute_time=False), seed=0, served_model_name=Qwen/Qwen2.5-14B-Instruct, num_scheduler_steps=1, multi_step_stream_outputs=True, enable_prefix_caching=False, chunked_prefill_enabled=False, use_async_output_proc=True, disable_mm_preprocessor_cache=False, mm_processor_kwargs=None, pooler_config=None, compilation_config={"splitting_ops":[],"compile_sizes":[],"cudagraph_capture_sizes":[256,248,240,232,224,216,208,200,192,184,176,168,160,152,144,136,128,120,112,104,96,88,80,72,64,56,48,40,32,24,16,8,4,2,1],"max_capture_size":256}, use_cached_outputs=False, 
+2026-07-18 05:10:58 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-14B-Instruct/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:10:58 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-14B-Instruct/cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8/config.json "HTTP/1.1 200 OK"
+2026-07-18 05:10:59 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-14B-Instruct/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:10:59 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-14B-Instruct/cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-07-18 05:10:59 | INFO | httpx | HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-14B-Instruct/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-07-18 05:10:59 | INFO | httpx | HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-14B-Instruct/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-07-18 05:11:00 | INFO | httpx | HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-14B-Instruct "HTTP/1.1 200 OK"
+2026-07-18 05:11:00 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-14B-Instruct/resolve/main/generation_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:11:00 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-14B-Instruct/cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8/generation_config.json "HTTP/1.1 200 OK"
+INFO 07-18 05:11:01 cuda.py:229] Using Flash Attention backend.
+INFO 07-18 05:11:02 model_runner.py:1110] Starting to load model Qwen/Qwen2.5-14B-Instruct...
+2026-07-18 05:11:02 | INFO | httpx | HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-14B-Instruct "HTTP/1.1 200 OK"
+2026-07-18 05:11:03 | INFO | httpx | HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-14B-Instruct/tree/main?recursive=false&expand=false "HTTP/1.1 200 OK"
+INFO 07-18 05:11:03 weight_utils.py:254] Using model weights format ['*.safetensors']
+2026-07-18 05:11:03 | INFO | httpx | HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-14B-Instruct/revision/main "HTTP/1.1 200 OK"
+2026-07-18 05:11:03 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-14B-Instruct/resolve/main/model.safetensors.index.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:11:03 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-14B-Instruct/cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8/model.safetensors.index.json "HTTP/1.1 200 OK"
+Loading safetensors checkpoint shards:   0% Completed | 0/8 [00:00<?, ?it/s]
+Loading safetensors checkpoint shards:  12% Completed | 1/8 [00:00<00:02,  3.49it/s]
+Loading safetensors checkpoint shards:  25% Completed | 2/8 [00:00<00:03,  1.92it/s]
+Loading safetensors checkpoint shards:  38% Completed | 3/8 [00:01<00:03,  1.56it/s]
+Loading safetensors checkpoint shards:  50% Completed | 4/8 [00:02<00:02,  1.42it/s]
+Loading safetensors checkpoint shards:  62% Completed | 5/8 [00:03<00:02,  1.36it/s]
+Loading safetensors checkpoint shards:  75% Completed | 6/8 [00:04<00:01,  1.32it/s]
+Loading safetensors checkpoint shards:  88% Completed | 7/8 [00:04<00:00,  1.30it/s]
+Loading safetensors checkpoint shards: 100% Completed | 8/8 [00:05<00:00,  1.29it/s]
+Loading safetensors checkpoint shards: 100% Completed | 8/8 [00:05<00:00,  1.40it/s]
+
+INFO 07-18 05:11:09 model_runner.py:1115] Loading model weights took 27.5681 GB
+INFO 07-18 05:11:11 worker.py:267] Memory profiling takes 1.09 seconds
+INFO 07-18 05:11:11 worker.py:267] the current vLLM instance can use total_gpu_memory (39.38GiB) x gpu_memory_utilization (0.80) = 31.50GiB
+INFO 07-18 05:11:11 worker.py:267] model weights take 27.57GiB; non_torch_memory takes 0.11GiB; PyTorch activation peak memory takes 1.49GiB; the rest of the memory reserved for KV Cache is 2.33GiB.
+INFO 07-18 05:11:11 executor_base.py:111] # cuda blocks: 796, # CPU blocks: 1365
+INFO 07-18 05:11:11 executor_base.py:116] Maximum concurrency for 8192 tokens per request: 1.55x
+INFO 07-18 05:11:14 model_runner.py:1434] Capturing cudagraphs for decoding. This may lead to unexpected consequences if the model is not static. To run the model in eager mode, set 'enforce_eager=True' or use '--enforce-eager' in the CLI. If out-of-memory error occurs during cudagraph capture, consider decreasing `gpu_memory_utilization` or switching to eager mode. You can also reduce the `max_num_seqs` as needed to decrease memory usage.
+Capturing CUDA graph shapes:   0%|          | 0/35 [00:00<?, ?it/s]Capturing CUDA graph shapes:   3%|▎         | 1/35 [00:00<00:21,  1.58it/s]Capturing CUDA graph shapes:   6%|▌         | 2/35 [00:01<00:18,  1.77it/s]Capturing CUDA graph shapes:   9%|▊         | 3/35 [00:01<00:17,  1.81it/s]Capturing CUDA graph shapes:  11%|█▏        | 4/35 [00:02<00:16,  1.84it/s]Capturing CUDA graph shapes:  14%|█▍        | 5/35 [00:02<00:16,  1.85it/s]Capturing CUDA graph shapes:  17%|█▋        | 6/35 [00:03<00:15,  1.87it/s]Capturing CUDA graph shapes:  20%|██        | 7/35 [00:03<00:14,  1.89it/s]Capturing CUDA graph shapes:  23%|██▎       | 8/35 [00:04<00:14,  1.91it/s]Capturing CUDA graph shapes:  26%|██▌       | 9/35 [00:04<00:13,  1.92it/s]Capturing CUDA graph shapes:  29%|██▊       | 10/35 [00:05<00:13,  1.89it/s]Capturing CUDA graph shapes:  31%|███▏      | 11/35 [00:05<00:12,  1.93it/s]Capturing CUDA graph shapes:  34%|███▍      | 12/35 [00:06<00:11,  1.94it/s]Capturing CUDA graph shapes:  37%|███▋      | 13/35 [00:06<00:11,  1.95it/s]Capturing CUDA graph shapes:  40%|████      | 14/35 [00:07<00:10,  1.96it/s]Capturing CUDA graph shapes:  43%|████▎     | 15/35 [00:07<00:10,  1.96it/s]Capturing CUDA graph shapes:  46%|████▌     | 16/35 [00:08<00:09,  1.94it/s]Capturing CUDA graph shapes:  49%|████▊     | 17/35 [00:08<00:09,  1.98it/s]Capturing CUDA graph shapes:  51%|█████▏    | 18/35 [00:09<00:08,  2.00it/s]Capturing CUDA graph shapes:  54%|█████▍    | 19/35 [00:09<00:07,  2.01it/s]Capturing CUDA graph shapes:  57%|█████▋    | 20/35 [00:10<00:07,  2.03it/s]Capturing CUDA graph shapes:  60%|██████    | 21/35 [00:10<00:06,  2.05it/s]Capturing CUDA graph shapes:  63%|██████▎   | 22/35 [00:11<00:06,  2.08it/s]Capturing CUDA graph shapes:  66%|██████▌   | 23/35 [00:11<00:05,  2.09it/s]Capturing CUDA graph shapes:  69%|██████▊   | 24/35 [00:12<00:05,  2.07it/s]Capturing CUDA graph shapes:  71%|███████▏  | 25/35 [00:12<00:04,  2.09it/s]Capturing CUDA graph shapes:  74%|███████▍  | 26/35 [00:13<00:04,  2.06it/s]Capturing CUDA graph shapes:  77%|███████▋  | 27/35 [00:13<00:03,  2.07it/s]Capturing CUDA graph shapes:  80%|████████  | 28/35 [00:14<00:03,  2.07it/s]Capturing CUDA graph shapes:  83%|████████▎ | 29/35 [00:14<00:02,  2.09it/s]Capturing CUDA graph shapes:  86%|████████▌ | 30/35 [00:15<00:02,  2.07it/s]Capturing CUDA graph shapes:  89%|████████▊ | 31/35 [00:15<00:01,  2.08it/s]Capturing CUDA graph shapes:  91%|█████████▏| 32/35 [00:16<00:01,  2.11it/s]Capturing CUDA graph shapes:  94%|█████████▍| 33/35 [00:16<00:00,  2.12it/s]Capturing CUDA graph shapes:  97%|█████████▋| 34/35 [00:17<00:00,  2.15it/s]Capturing CUDA graph shapes: 100%|██████████| 35/35 [00:17<00:00,  2.12it/s]Capturing CUDA graph shapes: 100%|██████████| 35/35 [00:17<00:00,  2.00it/s]
+INFO 07-18 05:11:32 model_runner.py:1562] Graph capturing finished in 18 secs, took 0.38 GiB
+INFO 07-18 05:11:32 llm_engine.py:436] init engine (profile, create kv cache, warmup model) took 22.50 seconds
+2026-07-18 05:11:32 | INFO | src.generation.generator | [Generator] vLLM loaded successfully.
+2026-07-18 05:11:32 | INFO | trag.benchmark | [Stage 1] Loading questions from: data/EnterpriseRAG-Bench/data/questions/test.parquet
+2026-07-18 05:11:32 | INFO | trag.benchmark | [Stage 1] Loaded 1 questions in 0.04s.
+2026-07-18 05:11:32 | INFO | trag.benchmark | [Stage 2] Starting CSEP Retrieval for 1 queries...
+2026-07-18 05:11:32 | INFO | src.retrieval.csep_retriever | [CSEP] Init: enable_csep_for_all=False, top_k_retrieve=20
+2026-07-18 05:11:33 | INFO | src.retrieval.retriever | Khởi tạo Enterprise Retriever. Kết nối DB: data/lancedb
+2026-07-18 05:11:33 | INFO | src.retrieval.retriever | Khởi tạo PSR Router...
+2026-07-18 05:11:34 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/modules.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:11:34 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/modules.json "HTTP/1.1 200 OK"
+2026-07-18 05:11:34 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/config_sentence_transformers.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:11:34 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/config_sentence_transformers.json "HTTP/1.1 200 OK"
+2026-07-18 05:11:34 | INFO | sentence_transformers.base.model | Loading SentenceTransformer model from BAAI/bge-large-en-v1.5.
+2026-07-18 05:11:35 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/config_sentence_transformers.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:11:35 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/config_sentence_transformers.json "HTTP/1.1 200 OK"
+2026-07-18 05:11:35 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:11:35 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/README.md "HTTP/1.1 200 OK"
+2026-07-18 05:11:35 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/modules.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:11:35 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/modules.json "HTTP/1.1 200 OK"
+2026-07-18 05:11:36 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/sentence_bert_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:11:36 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/sentence_bert_config.json "HTTP/1.1 200 OK"
+2026-07-18 05:11:36 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/adapter_config.json "HTTP/1.1 404 Not Found"
+2026-07-18 05:11:36 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:11:36 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/config.json "HTTP/1.1 200 OK"
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights:  28%|██▊       | 108/391 [00:00<00:00, 935.89it/s]Loading weights:  60%|█████▉    | 234/391 [00:00<00:00, 1114.19it/s]Loading weights:  94%|█████████▍| 367/391 [00:00<00:00, 1198.02it/s]Loading weights: 100%|██████████| 391/391 [00:00<00:00, 1213.71it/s]
+2026-07-18 05:11:37 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-07-18 05:11:37 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/preprocessor_config.json "HTTP/1.1 404 Not Found"
+2026-07-18 05:11:38 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/video_preprocessor_config.json "HTTP/1.1 404 Not Found"
+2026-07-18 05:11:38 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/preprocessor_config.json "HTTP/1.1 404 Not Found"
+2026-07-18 05:11:38 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:11:38 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-07-18 05:11:39 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:11:39 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/config.json "HTTP/1.1 200 OK"
+2026-07-18 05:11:39 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:11:39 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/config.json "HTTP/1.1 200 OK"
+2026-07-18 05:11:39 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:11:39 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-07-18 05:11:40 | INFO | httpx | HTTP Request: GET https://huggingface.co/api/models/BAAI/bge-large-en-v1.5/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-07-18 05:11:40 | INFO | httpx | HTTP Request: GET https://huggingface.co/api/models/BAAI/bge-large-en-v1.5/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-07-18 05:11:40 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/1_Pooling/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 05:11:40 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/1_Pooling%2Fconfig.json "HTTP/1.1 200 OK"
+2026-07-18 05:11:41 | INFO | httpx | HTTP Request: GET https://huggingface.co/api/models/BAAI/bge-large-en-v1.5 "HTTP/1.1 200 OK"
+2026-07-18 05:11:41 | INFO | src.retrieval.csep_retriever | [CSEP] INPUT: 1 queries. CSEP_FOR_ALL=False
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  6.53it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  6.52it/s]
+2026-07-18 05:11:41 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the default size limits for file uploads and total request size for the new multipart upload support on the OpenAI-compatible API endpoints?'
+2026-07-18 05:11:41 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+2026-07-18 05:11:44 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 123.73it/s]
+2026-07-18 05:11:44 | INFO | src.retrieval.csep_retriever | [CSEP] Hop 1 done: 1 queries in 3.24s.
+2026-07-18 05:11:44 | INFO | src.retrieval.csep_retriever | [CSEP] CSEP will run for 1/1 queries.
+2026-07-18 05:11:44 | INFO | src.retrieval.csep_retriever | [CSEP] Entity extraction: calling LLM with 1 prompts.
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.10s/it, est. speed input: 234.02 toks/s, output: 18.14 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.10s/it, est. speed input: 234.02 toks/s, output: 18.14 toks/s]
+2026-07-18 05:11:45 | INFO | src.retrieval.csep_retriever | [CSEP] Entity extraction done in 1.29s.
+2026-07-18 05:11:45 | INFO | src.retrieval.csep_retriever | [CSEP] Entity extraction results: 0 NONE / 1 total.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 144.66it/s]
+2026-07-18 05:11:45 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the default size limits for file uploads and total request size for the new multipart upload support on the OpenAI-compatible API endpoints? multipart/form-data, OpenAI-compat, PART_MAX_BYTES'
+2026-07-18 05:11:45 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 4/9 bảng -> ['confluence', 'github', 'google_drive', 'linear']
+2026-07-18 05:11:48 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 05:11:48 | INFO | src.retrieval.csep_retriever | [CSEP] Hop 2 summary: 1 executed, 0 skipped (no entities).
+2026-07-18 05:11:48 | INFO | src.retrieval.csep_retriever | [CSEP] Hop 2 done: 1 queries in 2.56s.
+2026-07-18 05:11:48 | INFO | src.retrieval.csep_retriever | [CSEP] OUTPUT: 1 queries, CSEP applied to 1.
+2026-07-18 05:11:48 | INFO | trag.benchmark | [Stage 2] Retrieval done in 15.96s.
+2026-07-18 05:11:48 | INFO | trag.benchmark | [Stage 3] SKIPPING Cross-Encoder Reranking (No-Reranker mode).
+2026-07-18 05:11:48 | INFO | trag.benchmark | [Stage 4] Starting Batch LLM Generation for 1 queries...
+2026-07-18 05:11:48 | INFO | src.generation.generator | [Generator] INPUT: 1 queries for batch generation.
+2026-07-18 05:11:48 | INFO | src.generation.generator | [Generator] 1 answerable (will call LLM) | 0 unanswerable (skip LLM).
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.12s/it, est. speed input: 709.53 toks/s, output: 40.31 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.12s/it, est. speed input: 709.53 toks/s, output: 40.31 toks/s]
+2026-07-18 05:11:49 | INFO | src.generation.generator | [Generator] vLLM inference done: 1 prompts | 1.12s | 45 total tokens | 40 tokens/s
+2026-07-18 05:11:49 | INFO | src.generation.generator | [Generator] OUTPUT: 1 answers generated.
+2026-07-18 05:11:49 | INFO | trag.benchmark | [Stage 4] Generation done in 1.14s.
+2026-07-18 05:11:49 | INFO | trag.benchmark | [Stage 5] Writing results to: smoke_results/test_no_reranker.jsonl
+2026-07-18 05:11:49 | INFO | trag.benchmark | [Stage 5] Wrote 1 answers in 0.00s.
+2026-07-18 05:11:49 | INFO | trag.benchmark | ============================================================
+2026-07-18 05:11:49 | INFO | trag.benchmark | BENCHMARK COMPLETE
+2026-07-18 05:11:49 | INFO | trag.benchmark |   Total questions  : 1
+2026-07-18 05:11:49 | INFO | trag.benchmark |   Unanswerable     : 0 (0.0%)
+2026-07-18 05:11:49 | INFO | trag.benchmark |   Total time       : 17.13s
+2026-07-18 05:11:49 | INFO | trag.benchmark |   Avg retrieval    : 2.8944s/query
+2026-07-18 05:11:49 | INFO | trag.benchmark |   Throughput       : 0.1 queries/s
+2026-07-18 05:11:49 | INFO | trag.benchmark |   Output           : /network-volume/RAG-/T-RAG_Project/smoke_results/test_no_reranker.jsonl
+2026-07-18 05:11:49 | INFO | trag.benchmark | ============================================================
+[rank0]:[W718 05:11:50.820707904 ProcessGroupNCCL.cpp:1250] Warning: WARNING: process group has NOT been destroyed before we destruct ProcessGroupNCCL. On normal program exit, the application should call destroy_process_group to ensure that any pending NCCL operations have finished in this process. In rare cases this process can exit before this point and block the progress of another member of the process group. This constraint has always been present,  but this warning has only been added since PyTorch 2.4 (function operator())
+DONE!

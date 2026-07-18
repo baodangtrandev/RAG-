@@ -122,10 +122,11 @@ class CSEPRetriever:
             if top_k_retrieve is not None
             else _load_env_int("RAG_TOP_K_RETRIEVE", 20)
         )
+        self.retrieve_workers = _load_env_int("RAG_RETRIEVE_WORKERS", 8)
 
         logger.info(
-            "[CSEP] Init: enable_csep_for_all=%s, top_k_retrieve=%d",
-            self.enable_csep_for_all, self.top_k_retrieve,
+            "[CSEP] Init: enable_csep_for_all=%s, top_k_retrieve=%d, retrieve_workers=%d",
+            self.enable_csep_for_all, self.top_k_retrieve, self.retrieve_workers,
         )
 
         if retriever is None:
@@ -203,25 +204,27 @@ class CSEPRetriever:
         # Sub-stage A: Hop 1 Retrieval cho tat ca queries
         # ============================================================
         t0 = time.perf_counter()
-        hop1_results: List[List[Dict]] = []
+        hop1_results: List[List[Dict]] = [None] * n
+        hop1_source_probs: List[Dict[str, float]] = [None] * n
 
-        # Thu thap source_probs de quyet dinh CSEP per-query
-        hop1_source_probs: List[Dict[str, float]] = []
-
-        for query in queries:
-            # retrieve() tra ve docs da duoc sort theo SW-RRF score
+        def process_query_hop1(idx: int, query: str):
             docs = self.retriever.retrieve(query, top_k=self.top_k_retrieve)
-            hop1_results.append(docs)
-
             # Lay source_probs tu router (encode lai query)
-            import numpy as np
             emb = self.retriever.router.encoder.encode([query], normalize_embeddings=True)
             probs = self.retriever.router.clf.predict_proba(emb)[0]
             source_probs = {
-                self.retriever.router.classes[i]: float(probs[i])
-                for i in range(len(probs))
+                self.retriever.router.classes[j]: float(probs[j])
+                for j in range(len(probs))
             }
-            hop1_source_probs.append(source_probs)
+            return idx, docs, source_probs
+
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(max_workers=self.retrieve_workers) as executor:
+            futures = [executor.submit(process_query_hop1, idx, q) for idx, q in enumerate(queries)]
+            for fut in futures:
+                idx, docs, source_probs = fut.result()
+                hop1_results[idx] = docs
+                hop1_source_probs[idx] = source_probs
 
         elapsed_hop1 = time.perf_counter() - t0
         logger.info("[CSEP] Hop 1 done: %d queries in %.2fs.", n, elapsed_hop1)
@@ -259,6 +262,7 @@ class CSEPRetriever:
 
         n_hop2_run = 0
         n_hop2_skip = 0
+        hop2_queries = {}
         for i in csep_indices:
             entity_str = entities_per_query[i] or "NONE"
             # Skip Hop 2 khi entity la NONE hoac qua ngan (< 3 ky tu)
@@ -272,10 +276,21 @@ class CSEPRetriever:
                 "[CSEP] Query[%d]: augmented_query (first 120 chars): %s",
                 i, augmented_query[:120],
             )
-
-            hop2_docs = self.retriever.retrieve(augmented_query, top_k=self.top_k_retrieve)
-            hop2_results[i] = hop2_docs
+            hop2_queries[i] = augmented_query
             n_hop2_run += 1
+
+        if hop2_queries:
+            active_indices = list(hop2_queries.keys())
+            active_aug_queries = [hop2_queries[idx] for idx in active_indices]
+
+            with ThreadPoolExecutor(max_workers=self.retrieve_workers) as executor:
+                active_hop2_results = list(executor.map(
+                    lambda q: self.retriever.retrieve(q, top_k=self.top_k_retrieve),
+                    active_aug_queries
+                ))
+
+            for idx, res in zip(active_indices, active_hop2_results):
+                hop2_results[idx] = res
 
         logger.info("[CSEP] Hop 2 summary: %d executed, %d skipped (no entities).", n_hop2_run, n_hop2_skip)
 

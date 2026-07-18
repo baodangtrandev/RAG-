@@ -3,24 +3,27 @@ set -e
 
 # Không truyền limit để chạy toàn bộ tập dữ liệu (500 câu)
 LIMIT_CMD=""
+export RAG_DB_URI="/tmp/lancedb"
+export RAYON_NUM_THREADS=192
+export OMP_NUM_THREADS=192
 
 echo "=========================================="
 echo "CHẠY CÁC KỊCH BẢN TARGETED BENCHMARK"
 echo "=========================================="
 
-echo "[1/4] High-Recall (Tau=0.05, Gamma=0.0)"
+echo "[1/5] High-Recall (Tau=0.05, Gamma=0.0)"
 # Mục tiêu: Đánh bại Baseline về Điểm số. Quét toàn bộ 9 bảng, không phạt nguồn.
 export RAG_GAMMA="0.0"
 python src/run_benchmark.py $LIMIT_CMD --tau 0.05 -o results/trag_targeted_high_recall.jsonl
 
 
-echo "[2/4] Balanced (Tau=0.15, Gamma=0.0)"
+echo "[2/5] Balanced (Tau=0.15, Gamma=0.0)"
 # Mục tiêu: Cân bằng giữa Tốc độ và Điểm số. Quét 4-7 bảng, không phạt nguồn.
 export RAG_GAMMA="0.0"
 python src/run_benchmark.py $LIMIT_CMD --tau 0.15 -o results/trag_targeted_balanced.jsonl
 
 
-echo "[3/4] High-Speed (Tau=0.30, Gamma=0.0)"
+echo "[3/5] High-Speed (Tau=0.30, Gamma=0.0)"
 # Mục tiêu: Đánh bại Baseline về Latency. Chỉ quét 2-3 bảng chắc chắn nhất, không phạt nguồn.
 export RAG_GAMMA="0.0"
 python src/run_benchmark.py $LIMIT_CMD --tau 0.30 -o results/trag_targeted_high_speed.jsonl
