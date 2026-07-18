@@ -44664,4 +44664,3220 @@ INFO 07-18 07:38:42 worker.py:267] model weights take 27.57GiB; non_torch_memory
 INFO 07-18 07:38:42 executor_base.py:111] # cuda blocks: 796, # CPU blocks: 1365
 INFO 07-18 07:38:42 executor_base.py:116] Maximum concurrency for 8192 tokens per request: 1.55x
 INFO 07-18 07:38:46 model_runner.py:1434] Capturing cudagraphs for decoding. This may lead to unexpected consequences if the model is not static. To run the model in eager mode, set 'enforce_eager=True' or use '--enforce-eager' in the CLI. If out-of-memory error occurs during cudagraph capture, consider decreasing `gpu_memory_utilization` or switching to eager mode. You can also reduce the `max_num_seqs` as needed to decrease memory usage.
-Capturing CUDA graph shapes:   0%|          | 0/35 [00:00<?, ?it/s]Capturing CUDA graph shapes:   3%|▎         | 1/35 [00:00<00:20,  1.70it/s]
+Capturing CUDA graph shapes:   0%|          | 0/35 [00:00<?, ?it/s]Capturing CUDA graph shapes:   3%|▎         | 1/35 [00:00<00:20,  1.70it/s]Capturing CUDA graph shapes:   6%|▌         | 2/35 [00:01<00:17,  1.85it/s]Capturing CUDA graph shapes:   9%|▊         | 3/35 [00:01<00:16,  1.89it/s]Capturing CUDA graph shapes:  11%|█▏        | 4/35 [00:02<00:16,  1.91it/s]Capturing CUDA graph shapes:  14%|█▍        | 5/35 [00:02<00:15,  1.93it/s]Capturing CUDA graph shapes:  17%|█▋        | 6/35 [00:03<00:14,  1.94it/s]Capturing CUDA graph shapes:  20%|██        | 7/35 [00:03<00:14,  1.94it/s]Capturing CUDA graph shapes:  23%|██▎       | 8/35 [00:04<00:14,  1.91it/s]Capturing CUDA graph shapes:  26%|██▌       | 9/35 [00:04<00:13,  1.89it/s]Capturing CUDA graph shapes:  29%|██▊       | 10/35 [00:05<00:13,  1.90it/s]Capturing CUDA graph shapes:  31%|███▏      | 11/35 [00:05<00:12,  1.89it/s]Capturing CUDA graph shapes:  34%|███▍      | 12/35 [00:06<00:12,  1.89it/s]Capturing CUDA graph shapes:  37%|███▋      | 13/35 [00:06<00:11,  1.90it/s]Capturing CUDA graph shapes:  40%|████      | 14/35 [00:07<00:11,  1.89it/s]Capturing CUDA graph shapes:  43%|████▎     | 15/35 [00:07<00:10,  1.91it/s]Capturing CUDA graph shapes:  46%|████▌     | 16/35 [00:08<00:10,  1.89it/s]Capturing CUDA graph shapes:  49%|████▊     | 17/35 [00:08<00:09,  1.92it/s]Capturing CUDA graph shapes:  51%|█████▏    | 18/35 [00:09<00:08,  1.93it/s]Capturing CUDA graph shapes:  54%|█████▍    | 19/35 [00:09<00:08,  1.96it/s]Capturing CUDA graph shapes:  57%|█████▋    | 20/35 [00:10<00:07,  2.01it/s]Capturing CUDA graph shapes:  60%|██████    | 21/35 [00:10<00:06,  2.04it/s]Capturing CUDA graph shapes:  63%|██████▎   | 22/35 [00:11<00:06,  1.91it/s]Capturing CUDA graph shapes:  66%|██████▌   | 23/35 [00:11<00:06,  1.94it/s]Capturing CUDA graph shapes:  69%|██████▊   | 24/35 [00:12<00:05,  1.96it/s]Capturing CUDA graph shapes:  71%|███████▏  | 25/35 [00:12<00:05,  1.98it/s]Capturing CUDA graph shapes:  74%|███████▍  | 26/35 [00:13<00:04,  2.01it/s]Capturing CUDA graph shapes:  77%|███████▋  | 27/35 [00:13<00:03,  2.01it/s]Capturing CUDA graph shapes:  80%|████████  | 28/35 [00:14<00:03,  1.99it/s]Capturing CUDA graph shapes:  83%|████████▎ | 29/35 [00:14<00:03,  1.95it/s]Capturing CUDA graph shapes:  86%|████████▌ | 30/35 [00:15<00:02,  1.98it/s]Capturing CUDA graph shapes:  89%|████████▊ | 31/35 [00:15<00:01,  2.00it/s]Capturing CUDA graph shapes:  91%|█████████▏| 32/35 [00:16<00:01,  2.02it/s]Capturing CUDA graph shapes:  94%|█████████▍| 33/35 [00:16<00:00,  2.02it/s]Capturing CUDA graph shapes:  97%|█████████▋| 34/35 [00:17<00:00,  2.02it/s]Capturing CUDA graph shapes: 100%|██████████| 35/35 [00:17<00:00,  2.03it/s]Capturing CUDA graph shapes: 100%|██████████| 35/35 [00:17<00:00,  1.95it/s]
+INFO 07-18 07:39:04 model_runner.py:1562] Graph capturing finished in 18 secs, took 0.38 GiB
+INFO 07-18 07:39:04 llm_engine.py:436] init engine (profile, create kv cache, warmup model) took 23.20 seconds
+2026-07-18 07:39:04 | INFO | src.generation.generator | [Generator] vLLM loaded successfully.
+2026-07-18 07:39:04 | INFO | trag.benchmark | [Stage 1] Loading questions from: data/EnterpriseRAG-Bench/data/questions/test.parquet
+2026-07-18 07:39:04 | INFO | trag.benchmark | [Stage 1] Loaded 500 questions in 0.04s.
+2026-07-18 07:39:04 | INFO | trag.benchmark | [Stage 2] Starting CSEP Retrieval for 500 queries...
+2026-07-18 07:39:04 | INFO | src.retrieval.csep_retriever | [CSEP] Init: enable_csep_for_all=False, top_k_retrieve=20, retrieve_workers=8
+2026-07-18 07:39:06 | INFO | src.retrieval.retriever | Khởi tạo Enterprise Retriever. Kết nối DB: /tmp/lancedb
+2026-07-18 07:39:06 | INFO | src.retrieval.retriever | Khởi tạo PSR Router...
+2026-07-18 07:39:06 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/modules.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 07:39:06 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/modules.json "HTTP/1.1 200 OK"
+2026-07-18 07:39:06 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/config_sentence_transformers.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 07:39:06 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/config_sentence_transformers.json "HTTP/1.1 200 OK"
+2026-07-18 07:39:06 | INFO | sentence_transformers.base.model | Loading SentenceTransformer model from BAAI/bge-large-en-v1.5.
+2026-07-18 07:39:06 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/config_sentence_transformers.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 07:39:06 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/config_sentence_transformers.json "HTTP/1.1 200 OK"
+2026-07-18 07:39:07 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 07:39:07 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/README.md "HTTP/1.1 200 OK"
+2026-07-18 07:39:07 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/modules.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 07:39:07 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/modules.json "HTTP/1.1 200 OK"
+2026-07-18 07:39:07 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/sentence_bert_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 07:39:07 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/sentence_bert_config.json "HTTP/1.1 200 OK"
+2026-07-18 07:39:07 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/adapter_config.json "HTTP/1.1 404 Not Found"
+2026-07-18 07:39:08 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 07:39:08 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/config.json "HTTP/1.1 200 OK"
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights:  57%|█████▋    | 224/391 [00:00<00:00, 2237.86it/s]Loading weights: 100%|██████████| 391/391 [00:00<00:00, 1926.31it/s]
+2026-07-18 07:39:09 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-07-18 07:39:09 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/preprocessor_config.json "HTTP/1.1 404 Not Found"
+2026-07-18 07:39:09 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/video_preprocessor_config.json "HTTP/1.1 404 Not Found"
+2026-07-18 07:39:09 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/preprocessor_config.json "HTTP/1.1 404 Not Found"
+2026-07-18 07:39:10 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 07:39:10 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-07-18 07:39:10 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 07:39:10 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/config.json "HTTP/1.1 200 OK"
+2026-07-18 07:39:10 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 07:39:10 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/config.json "HTTP/1.1 200 OK"
+2026-07-18 07:39:10 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 07:39:10 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-07-18 07:39:11 | INFO | httpx | HTTP Request: GET https://huggingface.co/api/models/BAAI/bge-large-en-v1.5/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-07-18 07:39:11 | INFO | httpx | HTTP Request: GET https://huggingface.co/api/models/BAAI/bge-large-en-v1.5/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-07-18 07:39:11 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/BAAI/bge-large-en-v1.5/resolve/main/1_Pooling/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-18 07:39:11 | INFO | httpx | HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/BAAI/bge-large-en-v1.5/d4aa6901d3a41ba39fb536a557fa166f842b0e09/1_Pooling%2Fconfig.json "HTTP/1.1 200 OK"
+2026-07-18 07:39:12 | INFO | httpx | HTTP Request: GET https://huggingface.co/api/models/BAAI/bge-large-en-v1.5 "HTTP/1.1 200 OK"
+2026-07-18 07:39:12 | INFO | src.retrieval.csep_retriever | [CSEP] INPUT: 500 queries. CSEP_FOR_ALL=False
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[A
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.86it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.26it/s]
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.89it/s][A[A[A[A[A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.63it/s][A
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.79it/s][A[A[A
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.91it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.77it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.63it/s]2026-07-18 07:39:12 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the draft spec about extending a routing policy engine for automated regional failover, what is the proposed priority order for evaluating different failure signals when deciding whether to shift traffic or fail over?'
+
+2026-07-18 07:39:12 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear', 'slack']
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.65it/s]2026-07-18 07:39:12 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the name of the new metric added so SRE can track when server-side streaming sessions get finalized due to hitting the time limit?'
+2026-07-18 07:39:12 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'jira', 'linear']
+[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.61it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.07it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.59it/s]
+2026-07-18 07:39:12 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In a rolling investigation of a model regression on policy-related prompts after a recent deploy, what was the average triage rubric score change between the older baseline build and the newer optimized build in the first comparison run?'
+2026-07-18 07:39:12 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.33it/s]2026-07-18 07:39:12 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the meeting about onboarding a SaaS product to Google Cloud Marketplace, what did the GCP team recommend for handling delays where a new subscription entitlement is not immediately available during the customer onboarding flow?'
+
+2026-07-18 07:39:12 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the default size limits for file uploads and total request size for the new multipart upload support on the OpenAI-compatible API endpoints?'
+
+
+
+
+2026-07-18 07:39:12 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 4/9 bảng -> ['confluence', 'gmail', 'google_drive', 'jira']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.82it/s]2026-07-18 07:39:12 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+[A[A[A[A2026-07-18 07:39:12 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the acceptance criteria for the project introducing an algorithm to generate interactive UI color states and a Kappa-style elevation scale for dense table and grid components?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.24it/s]
+2026-07-18 07:39:12 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'hubspot', 'linear']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.36it/s]
+2026-07-18 07:39:12 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What failover sequence and recovery targets did MedThink specify for handling an EU region outage, including any limits on how long traffic can shift to the US?'
+2026-07-18 07:39:12 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the internal shiproom runner notes, what is the target time-to-recover threshold for a verified rollback in staging?'
+2026-07-18 07:39:12 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'jira', 'linear', 'slack']
+2026-07-18 07:39:12 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'jira', 'linear', 'slack']
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A2026-07-18 07:39:13 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A2026-07-18 07:39:13 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.55it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  4.54it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.46it/s][A
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.48it/s][A[A[A
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.19it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.15it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.26it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.91it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.18it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.09it/s]
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.92it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.83it/s]
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.58it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.56it/s]
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.12it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.07it/s]
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.01it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.87it/s]
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the EdgePath evaluation email thread, what alternative Year 1 pricing package did Redwood propose instead of matching the competitor's 50 percent first-year discount and migration credit?'
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 3/9 bảng -> ['fireflies', 'gmail', 'google_drive']
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.20it/s][A[A
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.59it/s][A[A[A
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.09it/s][A[A[A[A
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.56it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.66it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.93it/s]
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | 🔍 [Query]: 'How long is the validity period for the telemetry driven runbook author certification from the operator training bootcamp?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.23it/s]
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.75it/s]2026-07-18 07:39:13 | INFO | src.retrieval.retriever | 🔍 [Query]: 'How does the new alerting approach group model-serving requests by the stages they pass through to reduce noisy alerts and speed up root cause analysis?'
+
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.98it/s]2026-07-18 07:39:13 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was identified as the root cause of the intermittent VPN connectivity blackholes and duplicate IP warnings for users on the corporate Wi-Fi in the SF2 building behind a specific edge switch?'
+
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'jira']
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the recommended two-stage process for rotating the signing credentials used by GPU image build and promotion pipelines, including how to cut over safely and roll back if something goes wrong?'
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the on-prem private upgrade deep dive with an air-gapped healthcare customer, what did they describe as their current rollback approach when an upgrade goes wrong?'
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'github', 'gmail', 'google_drive', 'jira', 'linear', 'slack']
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'jira', 'linear', 'slack']
+Batches: 100%|██████████| 1/1 [00:00<00:00, 14.74it/s]
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the high-percentile latency concern reported after a smoke test of about 50 concurrent streaming chat sessions for Satellite Grove?'
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'gmail', 'hubspot', 'jira', 'linear']
+Batches: 100%|██████████| 1/1 [00:00<00:00, 17.46it/s]
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the company policy for how long contractor access should last by default before it expires, according to the access and permissions playbook?'
+2026-07-18 07:39:13 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear']
+2026-07-18 07:39:14 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:14 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:14 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:14 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:14 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:14 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:14 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:14 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  1.80it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  1.80it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.17it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.02it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.86it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.67it/s]
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.44it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  9.25it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.99it/s][A[A[A[A
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.09it/s][A[A[A
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.47it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.68it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.13it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.76it/s]
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.37it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.17it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.44it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  6.43it/s]
+2026-07-18 07:39:15 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What service credit percentages were proposed in the tiered uptime SLA counteroffer for the maritime logistics SaaS customer using dedicated GPU capacity?'
+2026-07-18 07:39:15 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot', 'linear']
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.42it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.31it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.92it/s][A[A2026-07-18 07:39:15 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the incident writeup about KV cache ghost entries causing gradual memory growth and OOM during a surge, what metric name was added for counting when the sanitizer finds negative refcounts?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.82it/s]2026-07-18 07:39:15 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear', 'slack']
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.13it/s][A[A[A2026-07-18 07:39:15 | INFO | src.retrieval.retriever | 🔍 [Query]: 'After a recent network change at the SoMa office, users on corporate WiFi saw VPN access to an internal 10.11.x service fail and SSO logins time out because an office bridge was translating client addresses. What device mode misconfiguration caused the source IP rewrite?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.91it/s]2026-07-18 07:39:15 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'github', 'google_drive', 'jira', 'slack']
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.48it/s]2026-07-18 07:39:15 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the recent update to the chat completions compatibility adapter, how does the parameter normalizer handle a client sending max_tokens as null compared to leaving it out entirely?'
+[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.23it/s]2026-07-18 07:39:15 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 4/9 bảng -> ['confluence', 'github', 'linear', 'slack']
+
+
+
+
+
+
+
+2026-07-18 07:39:15 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the customer docs plan for the opt-in quantization profile feature, what are the review roles required before the documentation can be merged?'
+2026-07-18 07:39:15 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'github', 'gmail', 'google_drive', 'linear']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.51it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.85it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.65it/s]
+
+
+
+
+2026-07-18 07:39:15 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the default time limit for automatically expiring guest or contractor accounts in the plan to set up a temporary contractor seat pool for DossierHQ with Okta provisioning and SSO?'
+2026-07-18 07:39:15 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'gmail', 'google_drive', 'hubspot', 'jira', 'linear', 'slack']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.02it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.80it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.93it/s]
+2026-07-18 07:39:15 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the recommended liability cap language in the procurement legal triage SOP for vendor contracts (including the key exceptions and how the cap amount is determined)?'
+2026-07-18 07:39:15 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'github', 'gmail', 'google_drive', 'linear']
+2026-07-18 07:39:15 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the expected turnaround time for security to approve access to a high risk internal tool role in Redwood's tool access governance process?'
+2026-07-18 07:39:15 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'linear']
+2026-07-18 07:39:15 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:15 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:15 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:15 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:15 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A2026-07-18 07:39:15 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:15 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A2026-07-18 07:39:15 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.13it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  5.12it/s]
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.39it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.30it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.46it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.30it/s]
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.97it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.86it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.12it/s][A[A[A[A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.62it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.88it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.30it/s]
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.90it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.69it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.75it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.60it/s]
+
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.46it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  9.25it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.32it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  8.20it/s]2026-07-18 07:39:16 | INFO | src.retrieval.retriever | 🔍 [Query]: 'For a customer upgrading a private deployment in their own cloud environment, what restore time did support say is typical if the upgrade fails and a rollback is needed (assuming snapshots were taken)?'
+
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'slack']
+Batches: 100%|██████████| 1/1 [00:00<00:00, 10.59it/s]
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the enterprise tenant cutover go-live runbook, what latency threshold triggers escalation based on the 95th percentile being too high, and how long does it need to be sustained?'
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 4/9 bảng -> ['confluence', 'fireflies', 'google_drive', 'linear']
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the Redwood and Acme service assurance negotiation, what timing did Redwood agree to for sending an initial incident summary after a Severity 1 outage?'
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 4/9 bảng -> ['confluence', 'fireflies', 'gmail', 'jira']
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.97it/s][A[A[A[A
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.79it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00, 10.26it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00, 10.52it/s]
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What caused the nightly evaluation cron jobs in the production us-east cluster to fail with an invalid refresh token error after an identity provider policy change?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.34it/s]
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the Console feature that compares canary or A-B cohorts and links metric anomalies to request traces, what customer tiers are allowed into the beta via a feature flag gate?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.97it/s]
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'github', 'gmail', 'google_drive', 'jira', 'slack']
+Batches: 100%|██████████| 1/1 [00:00<00:00, 15.84it/s]
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the operator procedure to put a private deployment tenant into local-only telemetry mode and how can you verify the mode afterward?'
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'github', 'google_drive', 'hubspot', 'linear']
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What steps and commands were recommended for creating and pushing a signed annotated Git tag and then making a draft GitHub release for the v1.14.0 release?'
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear', 'slack']
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What performance goal was set for reducing GPU out of memory incidents in the stress tests for the windowed KV cache proposal?'
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 3/9 bảng -> ['confluence', 'github', 'slack']
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:16 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:16 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A2026-07-18 07:39:16 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A2026-07-18 07:39:16 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.33it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  6.32it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.66it/s][A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.66it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.34it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.36it/s]
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.56it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.40it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.21it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  9.04it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.72it/s][A[A[A[A[A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.75it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.29it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.26it/s]
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.56it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.36it/s]
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.68it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.66it/s]
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the security review meeting about private cloud upgrades for a financial services customer, what was the stated minimum audit log retention period they wanted?'
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot', 'jira', 'linear']
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.00it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.91it/s]
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | 🔍 [Query]: 'For regulated customer private VPC deployments, what is the tenant-facing monthly availability target for the inference endpoint?'
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'hubspot', 'linear']
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.03it/s][A
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.70it/s][A[A[A
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.68it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.25it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00, 11.26it/s]
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What telemetry events and alert threshold are required to monitor streaming responses when a downstream tool call fails but the system continues with degraded output?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.58it/s]
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the 3-hour customer workshop plan for taking a team from initial evaluation to a proof of concept, what are the three types of go/no-go acceptance gates?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.89it/s]
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+Batches: 100%|██████████| 1/1 [00:00<00:00, 10.65it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00, 13.37it/s]2026-07-18 07:39:17 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'linear']
+
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the Console nav redesign prototype with compact workspace chips and a contextual micro-rail, how is the micro-rail state preserved in shareable URLs?'
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What caused the spike in 502 and 503 errors on the embeddings endpoint for the us-east dedicated pool around March 13, 2026?'
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the sandbox onboarding demo with NimbusApps, what median and p95 latency did the 50-concurrency 1-minute performance run report?'
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['fireflies', 'github', 'google_drive', 'linear', 'slack']
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the retention time windows for these lightweight kernel state snapshots (in-memory cache, indexed store, and any cold archive) used for post-incident diagnostics?'
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'google_drive', 'hubspot', 'jira', 'slack']
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'hubspot', 'slack']
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:17 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A2026-07-18 07:39:18 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.60it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.59it/s]
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.43it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.20it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.64it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.46it/s]
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.22it/s][A
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.62it/s][A[A[A[A[A
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.69it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.62it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.53it/s]
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.94it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.94it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.37it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.82it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.68it/s]
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.31it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  8.28it/s]
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.68it/s]2026-07-18 07:39:18 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the security review call about buying an LLM inference service through AWS Marketplace, what was said about whether cross-region failover is enabled by default for the hosted endpoint?'
+[A2026-07-18 07:39:18 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'hubspot', 'linear']
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.19it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.22it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.62it/s]2026-07-18 07:39:18 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the founder building when they came in as a self-serve lead from a Hacker News thread, and what kind of stable integration did they say they wanted for it?'
+
+2026-07-18 07:39:18 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['fireflies', 'github', 'gmail', 'hubspot', 'slack']
+2026-07-18 07:39:18 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What caused the brief p99 latency jump on the hosted text generation endpoint in us-west-2, and what mitigation was applied to bring it back down?'
+2026-07-18 07:39:18 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 8/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'hubspot', 'jira', 'linear', 'slack']
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.67it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00, 10.94it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.48it/s]2026-07-18 07:39:18 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the Medicore procurement email thread about data use and telemetry, what turnaround timeline did Redwood propose for delivering the operational runbook?'
+
+2026-07-18 07:39:18 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'linear']
+Batches: 100%|██████████| 1/1 [00:00<00:00, 10.26it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.70it/s]2026-07-18 07:39:18 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What support response time commitments did Acme approve for being shown in their AWS and Azure marketplace listing for incident priority levels?'
+2026-07-18 07:39:18 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'gmail', 'google_drive', 'hubspot', 'jira', 'linear']
+
+2026-07-18 07:39:18 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In some lab notes about reducing few-shot example copying, what tradeoff was noted when rotating the order of exemplars in prompts?'
+2026-07-18 07:39:18 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear', 'slack']
+2026-07-18 07:39:18 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the estimated compressed size for the customers requested 12 month structured audit log export for their SIEM privacy scan?'
+2026-07-18 07:39:18 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot', 'jira', 'linear']
+
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.41it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.82it/s]
+2026-07-18 07:39:18 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the initial weighting percentages for the signals used in the Model Resilience Propensity Index, before the 4-week recalibration?'
+2026-07-18 07:39:18 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear']
+2026-07-18 07:39:18 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:18 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:18 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:19 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A2026-07-18 07:39:19 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.90it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  4.89it/s]
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.68it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.60it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.80it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  9.56it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.12it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.96it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.44it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  9.24it/s]
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.91it/s][A[A[A[A[A[A
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.55it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  9.20it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.78it/s]
+
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.40it/s][A[A[A[A[A[A[A
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.86it/s]
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.08it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.06it/s]
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the email thread about BrightPath considering a marketplace pilot versus a direct contract for an AI inference vendor, what lead time was given for getting marketplace entitlement after onboarding?'
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'gmail', 'google_drive', 'jira', 'linear']
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.64it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.57it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.44it/s]2026-07-18 07:39:19 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the proposed HTTP header scheme for attributing API traffic to quickstart templates, including how the header value is formatted and the opt-in header?'
+[A[A2026-07-18 07:39:19 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'github', 'gmail', 'google_drive', 'linear', 'slack']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.22it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00, 10.42it/s]
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the cost-aware model routing proposal, what telemetry fields were suggested to emit so the team can analyze routing decisions and tradeoffs between spend and quality?'
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'hubspot', 'linear']
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the sampling policy for request routes of different telemetry priority levels in the new path-based observability change?'
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.94it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.97it/s]
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What metric label allowlist and caps did the SRE team decide for v1 shadow traffic metrics to prevent high-cardinality issues (including limits for route and experiment labels)?'
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.38it/s][A[A[A[A[A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.40it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.06it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.08it/s]
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the decision for when and how to roll out the new lattice scheduler into a limited canary, and what condition would allow expanding it to higher traffic models?'
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear', 'slack']
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What audit log retention period did Redwood commit to for pilot customers during the 2027 API model migration, in response to the Acme Health security questions?'
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'gmail', 'jira', 'linear']
+
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.80it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.49it/s]
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In a recent GPU incident in us-east after a driver update, what load balancer network setting change was suspected as contributing to the NCCL watchdog timeouts and Xid errors?'
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'jira', 'linear', 'slack']
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:19 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:20 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A2026-07-18 07:39:20 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A2026-07-18 07:39:20 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  2.94it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  2.94it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.78it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.74it/s]
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.02it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.99it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.69it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.66it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.98it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.92it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.74it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.67it/s]
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.93it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.84it/s]
+
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.84it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.79it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.47it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  8.44it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:20 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In our staging cluster, checkpoint downloads sometimes hang when resuming with an HTTP Range request to a cloud storage signed URL; what unexpected HTTP status code is sometimes returned instead of partial content that triggers the stall?'
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'github', 'google_drive', 'jira', 'slack']
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.96it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.87it/s]
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the email thread about renewing the feature flag vendor for Redwood, what peak burst capacity was proposed in the multi year renewal option SLA?'
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'gmail', 'hubspot', 'linear']
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.13it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  9.06it/s]
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the incident where a CI runner service token was suspected of being used from two different datacenter IP ranges minutes apart, what time window did the team decide to audit for artifact uploads and repository pushes?'
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'jira']
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.45it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.67it/s]
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was identified as the root cause of the hover double-outline or glow issue on small icon-style buttons, and what change was proposed to prevent stacked shadow artifacts?'
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['github', 'google_drive', 'jira', 'linear', 'slack']
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.31it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.94it/s]
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.66it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.60it/s]2026-07-18 07:39:20 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In our design system buttons, what approach was chosen to show a loading spinner without the button shifting size when the text length changes?'
+
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 4/9 bảng -> ['fireflies', 'github', 'linear', 'slack']
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the proposed backend API endpoint and query parameters for fetching a trace in either grouped or full detail for the console timeline view?'
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  2.13it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  2.13it/s]
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What remediation timeline by severity did the security team propose for the upcoming external penetration test findings?'
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'jira', 'linear']
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  2.04it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  2.03it/s]
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | 🔍 [Query]: 'For the NorthPoint Signalworks dedicated pilot, what p95 latency target did they set for short chat interactions?'
+2026-07-18 07:39:20 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'google_drive', 'hubspot', 'linear']
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.23it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.20it/s]
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.24it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  3.24it/s]
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.14it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.10it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.69it/s][A[A[A[A
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.92it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.54it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.81it/s]
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.23it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.15it/s]
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.01it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.99it/s]
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.18it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.10it/s]
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | 🔍 [Query]: 'During the November 2025 us-east incident where streaming chat responses were dropping, what was the internal start and mitigation time that support shared with the affected customer?'
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot', 'jira', 'slack']
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.62it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.45it/s]
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What p95 latency goal did the founder set for the on-page product Q and A widget for the streetwear brand that expects big traffic spikes during limited edition drops?'
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['fireflies', 'gmail', 'google_drive', 'hubspot', 'slack']
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.98it/s][A[A[A
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.74it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.83it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  8.44it/s]
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What did the internal usability test with six reviewers conclude about the table column compression feature, especially regarding its discoverability?'
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'hubspot', 'linear']
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.29it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.38it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.93it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.95it/s]
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the default wait time used by the new tool-call batching invoker, and how does it differ between hosted and dedicated tiers?'
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear']
+
+
+
+
+
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In our internal dry run of marketplace onboarding, what time window did the team suggest we describe as a normal entitlement sync delay before telling customers to contact support?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.90it/s][A[A[A[A[A2026-07-18 07:39:21 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'gmail', 'google_drive', 'hubspot', 'jira', 'linear']
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.46it/s]
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In an ops day log about GPU rebalancing and brief west region network instability, what was the target slot capacity for the small hosted pool in the slot metrics dashboard?'
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot', 'linear', 'slack']
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches: 100%|██████████| 1/1 [00:00<00:00,  2.31it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  2.31it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:21 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the Private VPC console prototype for an interactive network path storyboard used to rehearse cluster upgrades, what is explicitly out of scope for the ticket?'
+2026-07-18 07:39:21 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A2026-07-18 07:39:22 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  1.63it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  1.63it/s]
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the security incident about leaked encrypted log fragments in a partners cloud storage archive, what steps were listed in the triage checklist?'
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 4/9 bảng -> ['confluence', 'fireflies', 'google_drive', 'jira']
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A2026-07-18 07:39:22 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  2.23it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  2.23it/s]
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.58it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.54it/s]
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.83it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.71it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.78it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.71it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.23it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.19it/s]
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.38it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.28it/s]
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.49it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.45it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.82it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.79it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.74it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.61it/s]
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the credit memo amount AWS Marketplace issued after fixing the March billing issue with duplicated reserved usage and reversing incorrectly applied VAT for a US buyer?'
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'jira', 'slack']
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.34it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.09it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A2026-07-18 07:39:22 | INFO | src.retrieval.retriever | 🔍 [Query]: 'How does the new v1 chat compatibility layer handle invalid tool or function schemas, and what HTTP status does it return when validation fails?'
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 4/9 bảng -> ['confluence', 'github', 'linear', 'slack']
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.00it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.87it/s]
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What change was introduced to prevent oscillations in the new GPU scratch memory allocator that can trigger repeated micro-batch splits?'
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'jira', 'linear']
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.88it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.67it/s]
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | 🔍 [Query]: 'Why are some newly created Okta provisioned users getting a 403 when accessing the model observability metrics or dashboard, and what was the underlying type mismatch causing the missing role mapping?'
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'github', 'jira', 'linear', 'slack']
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.96it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.87it/s]
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the proposal for an anchor-based trace drilldown panel that pins a span or request correlation, what is the MVP limitation on how many anchors can be pinned in a workspace?'
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'hubspot', 'linear']
+
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.95it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.91it/s]
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the three-step message sequence used for the new cross-language streaming startup handshake in the SDKs?'
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'slack']
+2026-07-18 07:39:22 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches: 100%|██████████| 1/1 [00:00<00:00,  2.23it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  2.23it/s]
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In a morning account blitz note from May 2026, what was the proposed mitigation to address repeated inference timeouts for a healthcare customer with a mid-June renewal?'
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'gmail', 'jira', 'linear', 'slack']
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:23 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  1.74it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  1.73it/s]
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the low-risk mitigation plan for BrightHealth AI to reduce recurring tail-latency spikes after enabling aggressive per-tenant batching, prefix cache prefetch, and a fast quantization profile, including the small initial traffic split to a stable profile?'
+
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'jira', 'linear']
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A2026-07-18 07:39:23 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A2026-07-18 07:39:23 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.10it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.06it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  2.96it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  2.94it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.61it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.57it/s]
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.04it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.00it/s]
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.69it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.65it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.67it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.61it/s]
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.71it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.58it/s]
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.41it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.39it/s]
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the design for tenant credit based routing that can spill over to hosted capacity, what are the hysteresis window durations used for the different credit tiers?'
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear']
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.66it/s][A
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.21it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.40it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.89it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.32it/s][A[A[A[A2026-07-18 07:39:23 | INFO | src.retrieval.retriever | 🔍 [Query]: 'During the year end handoff meeting, what was identified as the cause of the early December latency incident impacting some p95 requests?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.17it/s]
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 8/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot', 'jira', 'linear', 'slack']
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.19it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.04it/s]
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the three request quality and cost tiers proposed in the lightweight interaction tiering model for user facing features?'
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'hubspot', 'linear']
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the root cause of the customer invoice overcharge where an organization-wide promotional credit was mistakenly redistributed as charges across multiple child accounts during a billing reconciliation run in a hybrid dedicated plus hosted setup?'
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'gmail', 'jira', 'linear', 'slack']
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.34it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.08it/s]
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the target reduction in product manager first-touch triage time for high-touch enterprise requests when using the intake checklist and minimum implementation slate?'
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.15it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.10it/s]
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | 🔍 [Query]: 'Why would Apple Silicon MacBooks coming back from logic board repair get stuck during automated DEP or MDM setup at first boot, with the device checking in but the management profile and SSO certificate never installing?'
+2026-07-18 07:39:23 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 4/9 bảng -> ['confluence', 'github', 'gmail', 'jira']
+2026-07-18 07:39:24 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:24 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:24 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:24 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:24 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  1.61it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  1.60it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A2026-07-18 07:39:24 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What default lookahead window did the new predictive headroom autoscaling design choose for forecasting future load on dedicated capacity?'
+2026-07-18 07:39:24 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'github', 'google_drive', 'hubspot', 'linear']
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A2026-07-18 07:39:24 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  1.52it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  1.51it/s]
+2026-07-18 07:39:24 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the Slack chat about a desk plant rap contest, where was the remaining sticker stock said to be stored?'
+2026-07-18 07:39:24 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 4/9 bảng -> ['fireflies', 'gmail', 'hubspot', 'slack']
+2026-07-18 07:39:24 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.98it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.98it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.10it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.05it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.80it/s][A[A[A[A
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.35it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.40it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.86it/s]
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.28it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.19it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A2026-07-18 07:39:24 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.33it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.28it/s]
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.75it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  5.73it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.38it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.21it/s]
+2026-07-18 07:39:24 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the three runtime precision settings introduced for controlling fp32 vs lower precision execution, and what does each mode allow?'
+2026-07-18 07:39:24 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear', 'slack']
+Batches: 100%|██████████| 1/1 [00:00<00:00, 10.44it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.13it/s]2026-07-18 07:39:24 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the engineering rollout chat about deprecating v2, what was the start time and region for the initial canary deployment and what traffic ramp was planned?'
+[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.84it/s]2026-07-18 07:39:24 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['fireflies', 'github', 'gmail', 'google_drive', 'linear', 'slack']
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.22it/s]2026-07-18 07:39:24 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What summary turnaround time after transcription completion is the call-summarization customer targeting?'
+[A[A[A2026-07-18 07:39:24 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'hubspot', 'jira', 'linear']
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.69it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.47it/s]
+
+
+
+
+
+
+2026-07-18 07:39:24 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the key rotation runbook, what is the recommended default rotation interval for per-tenant key encryption keys used to wrap data keys?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.98it/s][A[A[A[A[A[A2026-07-18 07:39:24 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear', 'slack']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.90it/s]
+
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.18it/s]2026-07-18 07:39:24 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the founders statement about keeping sensitive health and personal data within US borders and needing audit logging for the hosted API trial?'
+[A[A[A[A[A[A[A2026-07-18 07:39:24 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot', 'slack']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.10it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.52it/s]
+2026-07-18 07:39:24 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the recommended emergency action to temporarily simplify routing policy rules when the edge route agent is causing high evaluation latency and end to end latency spikes?'
+2026-07-18 07:39:24 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'jira', 'linear']
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  2.40it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  2.40it/s]
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the five synthetic workload templates defined for the repeatable probe harness that compares competitor model endpoints across regions?'
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:25 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A2026-07-18 07:39:25 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  1.95it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  1.95it/s]
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | 🔍 [Query]: 'When an employee is marked for immediate termination in Workday, why can a third party SaaS seat stay billable for around two weeks even after Okta deactivates the user?'
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'gmail', 'google_drive', 'jira', 'linear', 'slack']
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.47it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  4.47it/s]
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.75it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.65it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.65it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.27it/s]
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.38it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.56it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.46it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.39it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.31it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.20it/s]
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.71it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.66it/s]
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[A
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.68it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.59it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.30it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.75it/s][A[A[A2026-07-18 07:39:25 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the MedSecure logging and PII redaction POC email thread, what method did Redwood propose for pseudonymizing trace or request IDs so correlation works within a tenant but not across customers?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.17it/s]
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 4/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.43it/s]
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the OpenAI Responses v3 compatibility work, how are overly large user-provided seeds handled to keep determinism, and where is the original seed stored for auditing?'
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the temporary mitigation applied to the internal load balancer serving the gen-infer VIPs around 03:40 UTC that immediately reduced TCP retransmits?'
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 8/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'jira', 'linear', 'slack']
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.16it/s][A[A[A[A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.82it/s][A[A[A[A[A[A
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.22it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.87it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.35it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.82it/s]
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What change was applied to reduce the latency spike caused by a KV cache and continuous batching regression on the us-west-2 inference production cluster?'
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear', 'slack']
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the default significance threshold and minimum sample size guidelines for deciding whether a model regression is actionable in the causal regression investigation handbook?'
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 4/9 bảng -> ['confluence', 'github', 'google_drive', 'linear']
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the meeting about Zephyrus Labs unit cost and deployment options, what utilization threshold was mentioned as the point where a dedicated reserved setup typically becomes cheaper than hosted?'
+2026-07-18 07:39:25 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'hubspot', 'linear']
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.30it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.21it/s]
+
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.30it/s][A[A[A[A[A[A[A2026-07-18 07:39:26 | INFO | src.retrieval.retriever | 🔍 [Query]: 'How is the baseline token cost computed for the per-span cost delta metric in the new tracing observability change?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.17it/s]
+2026-07-18 07:39:26 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:26 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:26 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:26 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A2026-07-18 07:39:26 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:26 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+[A[A[A2026-07-18 07:39:26 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches: 100%|██████████| 1/1 [00:00<00:00,  1.91it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  1.91it/s]
+2026-07-18 07:39:26 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the standard amount of time a new hire buddy is expected to spend per day during the first two weeks when a long-term contractor is converted to a full-time employee?'
+2026-07-18 07:39:26 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'hubspot', 'linear']
+2026-07-18 07:39:26 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.28it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.26it/s]
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.41it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.37it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.53it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.48it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.11it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.07it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.04it/s][A[A[A[A[A
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.82it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.84it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.59it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.93it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.56it/s]
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A2026-07-18 07:39:26 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.94it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  5.92it/s]
+2026-07-18 07:39:27 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the proposed internal time to mitigate targets by severity for incident response, regardless of customer deployment tier?'
+2026-07-18 07:39:27 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'google_drive', 'hubspot', 'linear']
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.08it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.02it/s]
+
+2026-07-18 07:39:27 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the Velora AI Solutions opportunity, what requirement did their security team say was non-negotiable before going live?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.83it/s][A2026-07-18 07:39:27 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'gmail', 'hubspot', 'jira', 'linear']
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.36it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.43it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.00it/s]
+2026-07-18 07:39:27 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What baseline metrics are listed for the Console activation health panel in the quarterly activation plan for customer-hosted Private VPC deployments?'
+2026-07-18 07:39:27 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear']
+2026-07-18 07:39:27 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In an internal onboarding thread for a new language model, what was the estimated GPU memory used by the attention key value cache for a single 8192 token sequence (batch 1)?'
+2026-07-18 07:39:27 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear', 'slack']
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.44it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.32it/s]
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.48it/s][A[A[A[A[A2026-07-18 07:39:27 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the rollout ramp schedule and time window used for the canary phase when validating adaptive degradation behavior in the Redwood serving runtime?'
+
+
+
+
+
+
+2026-07-18 07:39:27 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.71it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.65it/s]
+
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.22it/s][A[A[A[A[A[A[A2026-07-18 07:39:27 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the acceptance thresholds for rerank performance in the mini-bundle unified inference API, including the required top-1 precision and the P95 latency limit?'
+2026-07-18 07:39:27 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear', 'slack']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.44it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.66it/s]
+2026-07-18 07:39:27 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the performance threshold for short requests that the solo iOS founder said would convince them to buy after a demo?'
+2026-07-18 07:39:27 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['fireflies', 'github', 'gmail', 'google_drive', 'hubspot', 'linear', 'slack']
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:27 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:27 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:27 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A2026-07-18 07:39:27 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A2026-07-18 07:39:27 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A2026-07-18 07:39:27 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A2026-07-18 07:39:27 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  1.81it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  1.81it/s]
+2026-07-18 07:39:27 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the proposed small business token pricing tiers, what is the monthly included token allowance for the plan priced at $25 per month?'
+2026-07-18 07:39:27 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot', 'linear', 'slack']
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.71it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.68it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.18it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.12it/s]
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.06it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.96it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.01it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.90it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.75it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.61it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.49it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.41it/s]
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.72it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.66it/s]
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.96it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  4.95it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.20it/s]2026-07-18 07:39:28 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the phased rollout schedule for removing the legacy compatibility proxy and migrating old persisted flag configs to a single newer schema?'
+[A[A2026-07-18 07:39:28 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 4/9 bảng -> ['confluence', 'github', 'linear', 'slack']
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.65it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.94it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.45it/s]
+2026-07-18 07:39:28 | INFO | src.retrieval.retriever | 🔍 [Query]: 'Why would a tenant start getting rate limit 429 errors on real time chat or streaming endpoints a few minutes after being upgraded to a higher tier, apparently because background catch up jobs consume the newly increased burst allowance first?'
+2026-07-18 07:39:28 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'github', 'hubspot', 'jira', 'linear', 'slack']
+2026-07-18 07:39:28 | INFO | src.retrieval.retriever | 🔍 [Query]: 'For the ClearSight Health pilot discussions with Redwood, what specific types of patient-related data did their security lead say should be treated as PHI for this integration?'
+2026-07-18 07:39:28 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot', 'linear']
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.45it/s][A[A[A
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.60it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.30it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.38it/s]
+2026-07-18 07:39:28 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the SOC2 readiness notes, what log retention duration is mentioned as a risk for some environments?'
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.63it/s]2026-07-18 07:39:28 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the PRD about adding managed orchestration for multi-model inference pipelines, what are the rollout milestones and target quarters for alpha, beta, and general availability?'
+[A[A[A[A[A2026-07-18 07:39:28 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+Batches: 100%|██████████| 1/1 [00:00<00:00, 15.07it/s]
+2026-07-18 07:39:28 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'github', 'gmail', 'google_drive', 'linear']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.01it/s]
+2026-07-18 07:39:28 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:28 | INFO | src.retrieval.retriever | 🔍 [Query]: 'When the audit event buffer is full or the local durable queue hits its size limit, what should happen to must-log admin actions and what HTTP status is returned?'
+2026-07-18 07:39:28 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'jira', 'linear', 'slack']
+2026-07-18 07:39:28 | INFO | src.retrieval.retriever | 🔍 [Query]: 'How do we turn observed production workload patterns for inference routes into defensible latency SLO targets and cost sensitivity guidance, including clustering and profiling steps?'
+2026-07-18 07:39:28 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'hubspot', 'linear']
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:28 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:28 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A2026-07-18 07:39:28 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:28 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:28 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:28 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:28 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  1.47it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  1.47it/s]
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.30it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.30it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.99it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.85it/s]
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.14it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.83it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.99it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.70it/s]
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.05it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.78it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.11it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.91it/s]
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.99it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.92it/s]
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.74it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  6.71it/s]
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What documents did Silver Birch ScribeCo say they needed from us before they could proceed with using real customer data in their trial?'
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot']
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.68it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.54it/s]
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | 🔍 [Query]: 'When is the 48-hour throughput and latency benchmark on the dedicated pool due to be completed?'
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 8/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'hubspot', 'jira', 'linear']
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.91it/s][A[A
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.92it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.75it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.12it/s]
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | 🔍 [Query]: 'Which GPU cluster or pool was flagged as having relatively low average usage but high churn, making its free capacity unreliable during a specific morning UTC window?'
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'github', 'gmail', 'google_drive', 'jira', 'linear', 'slack']
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the requested proof-of-concept duration for the inbound content marketing company evaluating batching and caching for high-volume templated SEO article generation?'
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot', 'linear']
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.59it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.46it/s]
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.13it/s][A[A[A[A[A2026-07-18 07:39:29 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the formula used by the new autoscaling approach that combines a high-percentile request rate with request variability to compute effective demand, including the default weights?'
+
+
+
+
+
+
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.09it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.05it/s]
+
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.05it/s][A[A[A[A[A[A[A2026-07-18 07:39:29 | INFO | src.retrieval.retriever | 🔍 [Query]: 'For IronCrest Bioinformatics evaluating Redwood, what was the typical time to get from signup to receiving the first response token using the self-serve quickstart flow?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.94it/s]2026-07-18 07:39:29 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot', 'linear']
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.77it/s]
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the phased rollout plan for the change that smooths dedicated autoscaling signals and adds an advisory gateway-to-controller backpressure mechanism?'
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear']
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What percent reduction in monthly model or token spend was the founder of a small developer tools micro-SaaS aiming for while keeping acceptable latency?'
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 8/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'hubspot', 'linear', 'slack']
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:29 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:29 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:30 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A2026-07-18 07:39:30 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  1.88it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  1.88it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.79it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.71it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.83it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.72it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.14it/s][A[A[A[A
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.68it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.89it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.40it/s]
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.04it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.86it/s]
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.51it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.17it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.48it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.31it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.50it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.48it/s]
+2026-07-18 07:39:30 | INFO | src.retrieval.retriever | 🔍 [Query]: 'When are production changes normally allowed to be deployed, and what are the default business hours change window?'
+2026-07-18 07:39:30 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear', 'slack']
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.89it/s][A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.69it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.65it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.39it/s]
+2026-07-18 07:39:30 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the temporary workaround used to prevent the Windows 11 imaging task sequence from failing when a provisioning script breaks under certain non-default locale collation settings?'
+2026-07-18 07:39:30 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'github', 'google_drive', 'jira', 'linear', 'slack']
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.11it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.86it/s]
+2026-07-18 07:39:30 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What latency goals did the founder of Birch Branch Apps mention for short in-app chat responses during their early discovery call?'
+
+
+
+2026-07-18 07:39:30 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['fireflies', 'github', 'gmail', 'hubspot', 'slack']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.48it/s]2026-07-18 07:39:30 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the pass fail criteria used in the quick pull request smoke checks for the embedding robustness noise and input length evaluation suite?'
+[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.26it/s]2026-07-18 07:39:30 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear', 'slack']
+
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.86it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.74it/s]2026-07-18 07:39:30 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In a case where server-sent event streaming responses sometimes lose the very last space or period only when traffic goes through an HTTP/2 edge proxy with stream preemption, what mitigation was proposed to stop the final bytes from being dropped?'
+2026-07-18 07:39:30 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'jira', 'linear']
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.35it/s][A[A[A[A[A2026-07-18 07:39:30 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the suspected root cause behind the brief p99 latency spikes on the hosted chat inference route during small burst traffic?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.95it/s]
+2026-07-18 07:39:30 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'google_drive', 'hubspot', 'jira', 'slack']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.85it/s]
+2026-07-18 07:39:30 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the recommended step-by-step rollback and traffic split plan to mitigate correctness issues and tail latency spikes after a healthcare customer enabled adaptive batching together with an INT8 quantized model on their dedicated production route?'
+2026-07-18 07:39:30 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 8/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'jira', 'linear', 'slack']
+2026-07-18 07:39:30 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What were the performance goals for the multilingual enterprise search project in terms of median and tail response time for retrieval plus reranking, and did they allow a higher tail latency for Japanese or Chinese?'
+2026-07-18 07:39:30 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'hubspot', 'linear']
+2026-07-18 07:39:30 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:30 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:30 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:31 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A2026-07-18 07:39:31 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A2026-07-18 07:39:31 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.73it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  3.73it/s]
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.69it/s][A
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.81it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.54it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.59it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.53it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.39it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.21it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.08it/s]
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.10it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.99it/s]
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.81it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.51it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.63it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.57it/s]
+
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.61it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.60it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00, 10.97it/s]
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the CTOs non negotiable security requirement mentioned on the early 2026 demo call for the analytics SaaS customer moving from hosted API to a dedicated VPC deployment?'
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'gmail', 'hubspot', 'linear']
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the temporary mitigation applied for the enterprise customer whose SSE streaming chat responses were getting truncated after an edge proxy handoff in us-east?'
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 4/9 bảng -> ['confluence', 'gmail', 'jira', 'slack']
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.72it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.57it/s]
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What KPI targets did the customer set for improving support ticket handling time and high priority triage speed in their Zendesk automation pilot?'
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'google_drive', 'hubspot', 'linear']
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.87it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  9.69it/s]
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.39it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.15it/s]
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What false positive threshold did the prospect set for suggested code review comments in the evaluation criteria for their PR review assistant POC?'
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'github', 'google_drive', 'hubspot', 'slack']
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the minimum cache time-to-live safeguard that was added to the new automated policy recommendation service to prevent cold-start issues after deploys?'
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'jira', 'linear', 'slack']
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.87it/s][A[A[A[A[A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.17it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.25it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.93it/s]
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What uptime and latency service level targets are stated for the hosted versus reserved/dedicated LLM inference offering in the SaaS go-to-market brief?'
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot', 'linear']
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the target goal for average router queue time for very short token sequences, compared to the baseline of 28 ms, in the weekly sprint anchor about reducing staging inference queuing latency?'
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'google_drive', 'hubspot', 'linear']
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  2.41it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  2.40it/s]
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the short-term mitigation suggested to stabilize RDMA traffic when there was packet loss and latency spikes between two racks in the same availability zone?'
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'jira', 'linear']
+2026-07-18 07:39:31 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:31 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A2026-07-18 07:39:32 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A2026-07-18 07:39:32 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A2026-07-18 07:39:32 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  2.61it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  2.61it/s]
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.87it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.81it/s]
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.81it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.69it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.40it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.33it/s]
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.12it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.81it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.06it/s][A[A[A[A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.41it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.85it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.11it/s]
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.13it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.03it/s]
+
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.98it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.85it/s]
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the recent Friday all-hands notes, what was the reported median latency improvement attributed to continuous batching?'
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear']
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.12it/s][A
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.97it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.77it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.41it/s]
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What change was introduced to reduce tail latency in a paged key value cache by defragmenting free space during frees and keeping frequently used key prefixes from being evicted?'
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear', 'slack']
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | 🔍 [Query]: 'For the upcoming joint demo with a Japan-based logistics customer, what document did they prefer for trial procurement instead of a full purchase order?'
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot']
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.85it/s][A[A[A[A
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.84it/s][A[A[A
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.98it/s][A[A[A[A[A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.77it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.29it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.74it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.77it/s]
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the recent SDK update that added typed streaming errors and a reconnecting iterator API across Python, TypeScript, and Go, what package versions were released for each SDK?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.91it/s]
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the required permission scopes for an API key when SDK examples fail with a 401 unauthorized error during developer onboarding?'
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'github', 'jira', 'linear', 'slack']
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the planned cutoff date when the old model capability format may stop being accepted for new writes?'
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'github', 'google_drive', 'linear', 'slack']
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear']
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | 🔍 [Query]: 'When do reservations open for the new dedicated GPU option that is rolling out first in the EU Central and India South regions?'
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['fireflies', 'github', 'gmail', 'google_drive', 'hubspot', 'linear']
+
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  2.48it/s][A[A[A[A[A[A[A2026-07-18 07:39:32 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches: 100%|██████████| 1/1 [00:00<00:00,  2.38it/s]
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | 🔍 [Query]: 'Why did the 3am nightly release pipeline stop uploading build artifacts to the internal S3 style storage after a security sudo policy update?'
+2026-07-18 07:39:32 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'github', 'google_drive', 'jira', 'slack']
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A2026-07-18 07:39:33 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A2026-07-18 07:39:33 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.23it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  4.22it/s]
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.86it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.81it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.71it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.56it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.10it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.96it/s]
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.10it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.94it/s]
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.65it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.38it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.91it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.76it/s]
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.64it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.53it/s]
+
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.58it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.47it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.99it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.86it/s]
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the engineering chat about a Go refactor PR, what did they change in the linter config to get CI passing when a gocritic rule complained about context parameter types in tests?'
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 4/9 bảng -> ['confluence', 'github', 'linear', 'slack']
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What caused the GPU training slowdowns in one us-east rack where same-rack pod latency jumped to tens of milliseconds and NCCL allreduce started timing out, and what network symptom on the top-of-rack switch pointed to it?'
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'github', 'gmail', 'google_drive', 'jira', 'linear', 'slack']
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.95it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.83it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00, 10.41it/s]
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What success targets were suggested for the four week micro credential pilot with SI partners (completion percentage and number of integrations started within about two months)?'
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot', 'linear']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.96it/s]
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the planning meeting about a strict deployment change freeze and automatic fallback during a model rollout, what composite health score thresholds defined green, amber, and red states?'
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the lifecycle states and key transitions for the edge adapter service that registers with a control plane and can fall back to hosted inference?'
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+Batches: 100%|██████████| 1/1 [00:00<00:00, 10.85it/s]
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the corrective journal number created to move a supplier credit amount from the DEV cost center to the OPS cost center after it was posted incorrectly during the March close?'
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'gmail', 'google_drive', 'jira', 'slack']
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.15it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.71it/s]
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the three default preset options in the autoscaling policy builder for the dedicated capacity trial onboarding flow?'
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear', 'slack']
+
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  2.83it/s]2026-07-18 07:39:33 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+[A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  2.67it/s]
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What were the two immediate options the SRE suggested when a finance customer could not reserve four A100 GPUs in eu-west-1 due to insufficient capacity?'
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'gmail', 'google_drive', 'hubspot', 'jira', 'linear', 'slack']
+2026-07-18 07:39:33 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A2026-07-18 07:39:34 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:34 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:34 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:34 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.19it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  4.19it/s]
+2026-07-18 07:39:34 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.03it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  2.99it/s]
+2026-07-18 07:39:34 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.79it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.75it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.95it/s][A[A[A[A
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.87it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.77it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.80it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.17it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.14it/s]
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.07it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.06it/s]
+2026-07-18 07:39:34 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What change reduced GPU memory use and improved first-token latency by prepacking INT8 weights and fusing smoothquant dequantization into the GEMM kernel without creating intermediate tensors?'
+2026-07-18 07:39:34 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'linear', 'slack']
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.08it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.97it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.61it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.51it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.61it/s][A[A2026-07-18 07:39:34 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the OpenAI compatibility adapter update for Redwood deployments, what priority order does the normalizer use to resolve conflicting tool selection hints?'
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.46it/s]2026-07-18 07:39:34 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear']
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.24it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  7.13it/s]
+2026-07-18 07:39:34 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What caused the brief period where a few tenants were not being throttled correctly after a shard reassignment happened at the same time as a runtime policy reload?'
+2026-07-18 07:39:34 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'github', 'google_drive', 'jira', 'linear', 'slack']
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  7.49it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  6.68it/s]
+2026-07-18 07:39:34 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the pass fail threshold percentages for the release guardrails for critical versus lower risk controls in the SSO and audit log compliance rollout plan?'
+2026-07-18 07:39:34 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear', 'slack']
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.32it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.23it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:34 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the HyperOnboard 30-60-90 onboarding template, what are the escalation conditions that should trigger an email to people ops and the hiring manager?'
+[A2026-07-18 07:39:34 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 3/9 bảng -> ['confluence', 'gmail', 'google_drive']
+
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.68it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.35it/s]
+2026-07-18 07:39:34 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the agreed condition and timing for approving the additional senior infrastructure engineering hire under the hiring freeze plan?'
+2026-07-18 07:39:34 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'gmail', 'google_drive', 'jira', 'linear']
+2026-07-18 07:39:34 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:34 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:34 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A2026-07-18 07:39:35 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  1.69it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  1.69it/s]
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What procurement target date did ClearPath Health give for signing an agreement after the streaming model benchmark and security review?'
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'jira', 'linear']
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  1.78it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  1.77it/s]
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What configuration option was added to let repositories explicitly allow Docker-in-Docker during the staged rollout of the new GitHub composite action CI setup?'
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'github', 'google_drive', 'jira', 'slack']
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.67it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.65it/s]
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.87it/s][A[A[A
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.00it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.87it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.67it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.84it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  3.83it/s]
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.11it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.08it/s]
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.62it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.59it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.68it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.61it/s]
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What is the HTTP endpoint and method for the new service that returns recommended default profiles for batching, cache lifetimes, and quantization based on recent traffic telemetry?'
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear']
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.99it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.96it/s]
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What was the performance goal for response time at the 95th percentile for single-request text generation for a small SaaS lead building automated social content drafts and support triage?'
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot', 'linear']
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.74it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.90it/s]
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | 🔍 [Query]: 'Who is responsible for signing off on latency regression in the weekly customer rollout tracker for Nimbus Health?'
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'linear']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.52it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  9.38it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  9.22it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.12it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.30it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.08it/s]
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the eng-platform standup about staging 401 spikes on the generate endpoint, what header value caused the requests to miss both the primary and fallback route predicates and hit the fallthrough route?'
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'jira', 'linear', 'slack']
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  8.47it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  8.44it/s]
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In a production incident during a staggered canary rollout in us-east-1, what ordering change was made to the autoscaler prewarm handshake to stop some tenant-pinned traffic from getting routed to an older model variant?'
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'github', 'google_drive', 'jira', 'linear', 'slack']
+
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  6.02it/s][A[A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.63it/s]
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What maintenance window and expected downtime were planned for the rollout bringing up new dedicated GPU capacity nodes, including the canary and broader rollout dates?'
+2026-07-18 07:39:35 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 8/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'hubspot', 'linear', 'slack']
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A2026-07-18 07:39:36 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:36 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A2026-07-18 07:39:36 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:36 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A2026-07-18 07:39:36 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+Batches: 100%|██████████| 1/1 [00:00<00:00,  1.95it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  1.94it/s]
+2026-07-18 07:39:36 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the required fields that each entry in the contract conformance results ledger must include?'
+2026-07-18 07:39:36 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'hubspot', 'linear']
+Batches: 100%|██████████| 1/1 [00:00<00:00,  1.82it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  1.82it/s]
+2026-07-18 07:39:36 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What keyboard-only interaction model is required for the compact dashboard widgets, including how focus enters the card and how users move and activate controls inside it?'
+2026-07-18 07:39:36 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'hubspot', 'linear']
+2026-07-18 07:39:36 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.53it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.48it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.43it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.40it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.99it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.95it/s]
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.98it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.87it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.38it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.32it/s]
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A2026-07-18 07:39:36 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A2026-07-18 07:39:36 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.20it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  3.20it/s]
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.25it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.23it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:36 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What were the final concession terms approved for the retail partner purchase through the major cloud providers marketplace, specifically the first year price reduction and the referral payout schedule after launch?'
+2026-07-18 07:39:36 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'gmail', 'google_drive', 'hubspot', 'linear']
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.21it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.15it/s]
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A2026-07-18 07:39:36 | INFO | src.retrieval.retriever | 🔍 [Query]: 'When does booking open for the new top end 80GB accelerator on dedicated clusters in the EU Central and India South locations?'
+2026-07-18 07:39:36 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'fireflies', 'gmail', 'google_drive', 'hubspot']
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.59it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.52it/s]
+2026-07-18 07:39:36 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In the recent change that made low bit math safer for inference, what is the default pass rate used to decide when a machine is allowed to step down from the safest numeric mode?'
+2026-07-18 07:39:36 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 6/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'linear', 'slack']
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.46it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.33it/s]
+2026-07-18 07:39:36 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What caused an enterprise tenant in Western Europe to suddenly get routed to a Southeast Asia edge during a short mid March 2026 load spike on the vectorization service, adding about 200ms and triggering ingestion timeouts, even though the tenant was supposed to stay in Europe?'
+2026-07-18 07:39:36 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'gmail', 'google_drive', 'hubspot', 'jira', 'linear', 'slack']
+
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.31it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.24it/s]
+2026-07-18 07:39:36 | INFO | src.retrieval.retriever | 🔍 [Query]: 'In our rollout system, what is the name of the new mechanism that prevents a candidate release from getting full user traffic until a dry run with replayed requests and smoke checks has passed?'
+2026-07-18 07:39:36 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 4/9 bảng -> ['confluence', 'github', 'google_drive', 'linear']
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.28it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.08it/s]
+2026-07-18 07:39:37 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A2026-07-18 07:39:37 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+2026-07-18 07:39:37 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+Batches: 100%|██████████| 1/1 [00:00<00:00,  2.02it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  2.02it/s]
+2026-07-18 07:39:37 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  1.86it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  1.84it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-18 07:39:37 | INFO | src.retrieval.retriever | 🔍 [Query]: 'During a large overnight upload run using short lived credentials refreshed by many transient workers, what client side scheduling change was recommended to stop periodic too many requests errors after a partial worker restart caused refresh bursts?'
+2026-07-18 07:39:37 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 5/9 bảng -> ['confluence', 'github', 'google_drive', 'jira', 'linear']
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A2026-07-18 07:39:37 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.23it/s][A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.20it/s]
+2026-07-18 07:39:37 | INFO | src.retrieval.retriever | 🔍 [Query]: 'During a failover between two active locations, what is the default time window where a short-lived resume credential is accepted on the destination before doing full authentication again?'
+2026-07-18 07:39:37 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'gmail', 'google_drive', 'jira', 'linear']
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  3.23it/s][A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  3.21it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.95it/s][A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  5.90it/s]
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.85it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  4.84it/s]
+2026-07-18 07:39:37 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.61it/s][ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.57it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  4.27it/s][A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  4.23it/s]
+2026-07-18 07:39:37 | INFO | src.retrieval.retriever | 🔍 [Query]: 'What are the specific gate thresholds used to automatically decide whether a compressed model variant is allowed, canaried, or blocked, including the limits for chat similarity drop, code pass rate change, retrieval embedding quality, and acceptable latency and cost changes?'
+2026-07-18 07:39:37 | INFO | src.retrieval.retriever | 🛣️ [Router]: Quét 7/9 bảng -> ['confluence', 'fireflies', 'github', 'google_drive', 'hubspot', 'linear', 'slack']
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A
+
+
+
+
+
+Batches: 100%|██████████| 1/1 [00:00<00:00,  2.92it/s][A[A[A[A[A[ABatches: 100%|██████████| 1/1 [00:00<00:00,  2.90it/s]
+2026-07-18 07:39:37 | INFO | src.retrieval.retriever | ✨ [Retrieved]: Trả về 20 tài liệu có độ tin cậy cao nhất.
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A
+
+
+
+
+
+Batches:   0%|          | 0/1 [00:00<?, ?it/s][A[A[A[A[A[A
