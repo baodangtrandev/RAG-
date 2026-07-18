@@ -109,6 +109,11 @@ def run(
         "--limit", "-l",
         help="Gioi han so cau hoi de test nhanh (None = chay tat ca).",
     ),
+    no_reranker: bool = typer.Option(
+        False,
+        "--no-reranker",
+        help="Bo qua buoc Reranker de test toc do",
+    ),
 ):
     """
     Chay T-RAG Pipeline tren tap du lieu benchmark va ghi ket qua ra JSONL.
@@ -239,15 +244,26 @@ def run(
     # ============================================================
     # Stage 3: Batch Cross-Encoder Reranking
     # ============================================================
-    logger.info("[Stage 3] Starting Cross-Encoder Reranking...")
-    t_s3 = time.perf_counter()
+    if no_reranker:
+        logger.info("[Stage 3] SKIPPING Cross-Encoder Reranking (No-Reranker mode).")
+        top_k_final_int = int(os.environ.get("RAG_TOP_K_FINAL", "5"))
+        reranked_results = []
+        for docs in all_docs:
+            top_k_docs = docs[:top_k_final_int]
+            reranked_results.append({
+                "docs": top_k_docs,
+                "is_unanswerable": len(top_k_docs) == 0
+            })
+    else:
+        logger.info("[Stage 3] Starting Cross-Encoder Reranking...")
+        t_s3 = time.perf_counter()
 
-    from src.reranker.reranker import CrossEncoderReranker
+        from src.reranker.reranker import CrossEncoderReranker
 
-    reranker = CrossEncoderReranker()
-    reranked_results = reranker.rerank_batch(queries, all_docs)
+        reranker = CrossEncoderReranker()
+        reranked_results = reranker.rerank_batch(queries, all_docs)
 
-    logger.info("[Stage 3] Reranking done in %.2fs.", time.perf_counter() - t_s3)
+        logger.info("[Stage 3] Reranking done in %.2fs.", time.perf_counter() - t_s3)
 
     # ============================================================
     # Stage 4: Batch LLM Generation

@@ -26,10 +26,16 @@ export RAG_GAMMA="0.0"
 python src/run_benchmark.py $LIMIT_CMD --tau 0.30 -o results/trag_targeted_high_speed.jsonl
 
 
-echo "[4/4] Baseline Gamma (Tau=0.15, Gamma=1.0)"
+echo "[4/5] Baseline Gamma (Tau=0.15, Gamma=1.0)"
 # Mục tiêu: Kịch bản có phạt nguồn nhưng nhẹ hơn (Gamma=1.0) để so sánh với Gamma=0.0 ở trên
 export RAG_GAMMA="1.0"
 python src/run_benchmark.py $LIMIT_CMD --tau 0.15 -o results/trag_targeted_gamma_1.0.jsonl
+
+
+echo "[5/5] T-RAG (No Reranker) (Tau=0.15, Gamma=0.0)"
+# Mục tiêu: Chứng minh SW-RRF đủ tốt để xếp hạng mà không cần Reranker nặng nề
+export RAG_GAMMA="0.0"
+python src/run_benchmark.py $LIMIT_CMD --tau 0.15 --no-reranker -o results/trag_targeted_no_reranker.jsonl
 
 
 echo "=========================================="

@@ -73,16 +73,15 @@ class EnterpriseRetriever:
         logger.info(f"🔍 [Query]: '{query}'")
         logger.info(f"🛣️ [Router]: Quét {len(active_shards)}/9 bảng -> {active_shards}")
         
-        all_results = []
+        all_candidate_docs = []
         
-        # Bước 3: Tìm kiếm Vector cục bộ & Áp dụng Source-Weighted RRF (SW-RRF)
+        # Bước 3: Tìm kiếm Vector cục bộ để gom Candidate Docs
         for source in active_shards:
             if source not in self.tables:
                 logger.error(f"LỖI: Không tìm thấy bảng '{source}' trong LanceDB.")
                 continue
                 
             table = self.tables[source]
-            # Quét rộng hơn top_k một chút ở mỗi bảng để đảm bảo RRF công bằng
             search_limit = max(top_k * 2, 10) 
             try:
                 # Vector Search (Dense)
@@ -92,32 +91,40 @@ class EnterpriseRetriever:
                 continue
             
             p_s = source_probs[source]
-            # Tính Bayesian Prior weight (Xác suất nguồn ^ Gamma)
             prior_weight = p_s ** self.gamma
             
-            for rank_0_idx, doc in enumerate(results):
-                r_dense = rank_0_idx + 1 # Rank bắt đầu từ 1
+            for doc in results:
+                doc["_source"] = source
+                doc["_prior_weight"] = prior_weight
+                doc["_router_prob"] = p_s
+                all_candidate_docs.append(doc)
                 
-                # Thuật toán SW-RRF cốt lõi:
-                # Score = P(Source|Query)^Gamma * (1 / (k + Rank))
-                rrf_score = 1.0 / (self.k_rrf + r_dense)
-                sw_rrf_score = prior_weight * rrf_score
-                
-                # Đóng gói dữ liệu — dùng "content" nhất quán với LanceDB schema
-                clean_doc = {
-                    "source": source,
-                    "doc_id": doc.get("doc_id", "unknown"),
-                    "content": doc.get("content", ""),
-                    "title": doc.get("title", ""),
-                    "vector_distance": doc.get("_distance", 1.0), # L2 distance
-                    "router_prob": p_s,
-                    "original_rank": r_dense,
-                    "sw_rrf_score": sw_rrf_score
-                }
-                all_results.append(clean_doc)
-                
-        # Bước 4: Xếp hạng Toàn cầu (Global Reranking)
-        # Sắp xếp các tài liệu từ tất cả các Shard dựa trên điểm SW-RRF tổng hợp
+        # Bước 4: Xếp hạng Dense Toàn cầu (Global Dense Ranking)
+        # Sắp xếp tất cả tài liệu dựa trên vector distance (L2 distance - càng nhỏ càng tốt)
+        all_candidate_docs.sort(key=lambda x: x.get("_distance", float('inf')))
+        
+        all_results = []
+        # Bước 5: Áp dụng thuật toán SW-RRF với Global Rank
+        for rank_0_idx, doc in enumerate(all_candidate_docs):
+            global_rank = rank_0_idx + 1 # Rank bắt đầu từ 1
+            
+            # Score = P(Source|Query)^Gamma * (1 / (k + Global Rank))
+            rrf_score = 1.0 / (self.k_rrf + global_rank)
+            sw_rrf_score = doc["_prior_weight"] * rrf_score
+            
+            clean_doc = {
+                "source": doc["_source"],
+                "doc_id": doc.get("doc_id", "unknown"),
+                "content": doc.get("content", ""),
+                "title": doc.get("title", ""),
+                "vector_distance": doc.get("_distance", 1.0),
+                "router_prob": doc["_router_prob"],
+                "original_rank": global_rank,
+                "sw_rrf_score": sw_rrf_score
+            }
+            all_results.append(clean_doc)
+            
+        # Sắp xếp lại lần cuối theo điểm SW-RRF tổng hợp
         all_results.sort(key=lambda x: x['sw_rrf_score'], reverse=True)
         
         final_top_k = all_results[:top_k]
