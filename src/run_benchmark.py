@@ -296,14 +296,25 @@ def run(
     # Cach don gian nhat: dung avg retrieval time neu khong map duoc chinh xac
     avg_retrieval = sum(per_query_retrieval_times) / max(len(per_query_retrieval_times), 1)
 
+    refused_count = 0
+    search_spaces = []
+
     with open(out_path, "w", encoding="utf-8") as f:
         for idx, (qid, query, answer) in enumerate(zip(question_ids, queries, answers)):
+            docs_for_query = all_docs[idx]
+            search_space = docs_for_query[0].get("search_space_docs", 0) if docs_for_query else 0
+            search_spaces.append(search_space)
+            
+            if 'do not have enough' in answer.lower() or 'i don' in answer.lower():
+                refused_count += 1
+
             record = {
                 "question_id": str(qid),
                 "question": query,
                 "answer": answer,
                 "latency_sec": round(avg_latency, 4),
                 "retrieval_latency_sec": round(avg_retrieval, 4),
+                "search_space_docs": search_space
             }
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
@@ -312,11 +323,14 @@ def run(
     # --- Tong ket ---
     throughput = len(queries) / total_elapsed if total_elapsed > 0 else 0
     n_unanswerable = sum(1 for r in reranked_results if r.get("is_unanswerable", False))
+    avg_search_space = sum(search_spaces) / max(len(search_spaces), 1)
 
     logger.info("=" * 60)
     logger.info("BENCHMARK COMPLETE")
     logger.info("  Total questions  : %d", len(queries))
     logger.info("  Unanswerable     : %d (%.1f%%)", n_unanswerable, 100 * n_unanswerable / max(len(queries), 1))
+    logger.info("  Refused rate     : %d (%.1f%%)", refused_count, 100 * refused_count / max(len(queries), 1))
+    logger.info("  Avg Search Space : %.0f documents", avg_search_space)
     logger.info("  Total time       : %.2fs", total_elapsed)
     logger.info("  Avg retrieval    : %.4fs/query", avg_retrieval)
     logger.info("  Throughput       : %.1f queries/s", throughput)

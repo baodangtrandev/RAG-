@@ -121,6 +121,7 @@ def run(
                 "answer": answer,
                 "latency_sec": round(avg_latency, 4),
                 "retrieval_latency_sec": round(per_query_retrieval_times[idx], 4),
+                "search_space_docs": 4213106
             }
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 

@@ -23,14 +23,19 @@ logger = logging.getLogger(__name__)
 
 # Prompt template chuan — co the override qua subclass
 RAG_SYSTEM_PROMPT = (
-    "You are a helpful enterprise assistant. Answer the user question "
-    "based ONLY on the provided context documents. "
-    "If the context does not contain sufficient information, "
-    "say \'I do not have enough information to answer this question based on the available sources.\'"
+    "You are a helpful and precise enterprise assistant. Answer the user question "
+    "based on the provided context documents. The documents come from a retrieval system which is imperfect. "
+    "Try your best to answer the question using the available information, including drawing reasonable "
+    "conclusions and combining facts from multiple documents. "
+    "If and only if the context documents contain absolutely no relevant information to the question, "
+    "say 'I do not have enough information to answer this question based on the available sources.'"
 )
 
-RAG_USER_TEMPLATE = """Context documents:
+RAG_USER_TEMPLATE = """Answer the question based on the context documents provided below.
+
+<context>
 {context}
+</context>
 
 Question: {query}
 

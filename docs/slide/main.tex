@@ -2,10 +2,8 @@
 \usetheme{Madrid}
 \usecolortheme{whale}
 
-% Hỗ trợ tiếng Việt cho pdflatex
-\usepackage[T5]{fontenc}
+\usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[vietnamese]{babel} % Optional, có thể bỏ nếu gây lỗi
 
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
@@ -31,9 +29,9 @@
 
 \title[\textbf{T-RAG}]{\textbf{T-RAG: Targeted Retrieval-Augmented Generation}\\
 \large Probabilistic Source-Aware RAG for Enterprise Data}
-\author{Trình bày: Đăng Bảo \& Đinh Bằng}
-\date{Tháng 7, 2026}
-\institute{Research Proposal --- Advisor Meeting}
+\author{Presented by: Dang Bao \& Dinh Bang}
+\date{July 2026}
+\institute{Experimental Results Report --- T-RAG}
 
 \begin{document}
 
@@ -48,27 +46,27 @@
 \end{frame}
 
 %------------------------------------------------
-\section{Bối cảnh \& Bài toán}
+\section{Background \& Problem Statement}
 
-\begin{frame}{Bài toán: RAG trên dữ liệu Doanh nghiệp}
+\begin{frame}{The Problem: RAG on Enterprise Data}
 
 \begin{columns}
 \begin{column}{0.5\textwidth}
 \begin{block}{Dataset: EnterpriseRAG-Bench}
 \begin{itemize}
-    \item \textbf{511,962 documents} từ 9 nguồn khác nhau
+    \item \textbf{511,962 documents} across 9 different sources
     \item Slack (285k), Gmail (121k), Jira (41k),\\Confluence (5k), GitHub, Fireflies...
-    \item \textbf{500 câu hỏi} benchmark, 10 loại
-    \item Dữ liệu nhiễu (Noisy Data): Xung đột ngữ nghĩa, trùng lặp thông tin
+    \item \textbf{500 benchmark queries}, 10 categories
+    \item Noisy Data: Semantic conflicts, duplicated information
 \end{itemize}
 \end{block}
 \end{column}
 \begin{column}{0.5\textwidth}
-\begin{alertblock}{3 Vấn đề của Standard RAG}
+\begin{alertblock}{3 Major Limitations of Standard RAG}
 \begin{enumerate}
-    \item \textbf{Sự mơ hồ về nguồn (Source Ambiguity)}: Gây phân tán không gian đặc trưng và tăng độ nhiễu.
-    \item \textbf{Bất đồng từ vựng (Vocabulary Mismatch)}: Sự sai lệch giữa ngôn ngữ tự nhiên và thuật ngữ kỹ thuật.
-    \item \textbf{Truy vấn đa nguồn (Multi-source Queries)}: Đòi hỏi năng lực suy luận chéo nguồn phức tạp.
+    \item \textbf{Source Ambiguity}: Scatters embedding space representation and increases retrieval noise.
+    \item \textbf{Vocabulary Mismatch}: Gap between natural queries and technical terms.
+    \item \textbf{Multi-source Queries}: Requires complex cross-source reasoning.
 \end{enumerate}
 \end{alertblock}
 \end{column}
@@ -76,34 +74,34 @@
 
 \vspace{0.4cm}
 \begin{center}
-\textit{Kiến trúc Standard RAG bộc lộ hạn chế về độ phức tạp tính toán và khả năng định chuẩn khi đối sánh trên toàn cục không gian dữ liệu.}
+\textit{Standard RAG architectures suffer from high search complexity and noise when searching the global document space.}
 \end{center}
 \end{frame}
 
 %------------------------------------------------
-\section{Tính Mới \& Đóng góp}
+\section{Novelty \& Contributions}
 
-\begin{frame}{3 Đóng góp Học thuật}
+\begin{frame}{3 Academic Contributions}
 
 \begin{block}{\#1 --- Probabilistic Source Router (PSR) + Database Sharding}
-\textbf{System-ML Co-design}: Tích hợp phân vùng hệ quản trị Vector DB và mô hình dự báo xác suất định tuyến, tối ưu hóa không gian tìm kiếm từ \textbf{50--90\%}.
+\textbf{System-ML Co-design}: Co-designing vector database sharding with routing models to reduce the document search space by \textbf{50--90\%}.
 \end{block}
 
 \vspace{0.2cm}
 \begin{block}{\#2 --- Source-Weighted RRF (SW-RRF)}
-\textbf{Cải tiến mô hình toán học}: Đề xuất tích hợp \textbf{Bayesian Prior} trực tiếp vào công thức Reciprocal Rank Fusion nhằm tối ưu hóa tính điểm xếp hạng tài liệu đa nguồn.
+\textbf{Mathematical Formulation}: Integrates a \textbf{Bayesian Prior} directly into Reciprocal Rank Fusion to optimize multi-source candidate ranking.
 \end{block}
 
 \vspace{0.2cm}
 \begin{block}{\#3 --- Cross-Source Entity Propagation (CSEP)}
-\textbf{Phương pháp suy luận đa bước}: Khắc phục giới hạn truy vấn chéo bằng kỹ thuật trích xuất thực thể mỏ neo (Anchor Entity) để định hướng chuỗi suy luận thứ cấp.
+\textbf{Multi-step Reasoning}: Solves cross-source dependencies by extracting anchor entities to guide secondary reasoning hops.
 \end{block}
 \end{frame}
 
 %------------------------------------------------
-\section{Kiến trúc Pipeline Đề xuất}
+\section{Proposed Pipeline Architecture}
 
-\begin{frame}{Tổng quan Pipeline T-RAG (4 Giai đoạn)}
+\begin{frame}{Overview of T-RAG Pipeline (4 Stages)}
 
 \resizebox{\textwidth}{!}{
 \begin{tikzpicture}[
@@ -117,11 +115,11 @@
 ]
 
 \node[graybox] (q) {User Query $Q$};
-\node[bluebox, right=1.2cm of q] (psr) {Giai đoạn 1\\PSR Router};
+\node[bluebox, right=1.2cm of q] (psr) {Stage 1\\PSR Router};
 \node[bluebox, right=1.2cm of psr] (shard) {DB Sharding\\Sub-space};
-\node[orangebox, right=1.2cm of shard] (hybrid) {Giai đoạn 2\\SW-RRF\\Hybrid Search};
-\node[orangebox, right=1.2cm of hybrid] (csep) {Giai đoạn 3\\CSEP\\Multi-hop};
-\node[greenbox, below=1.0cm of csep] (rerank) {Giai đoạn 4\\Cross-Encoder\\Reranker};
+\node[orangebox, right=1.2cm of shard] (hybrid) {Stage 2\\SW-RRF\\Hybrid Search};
+\node[orangebox, right=1.2cm of hybrid] (csep) {Stage 3\\CSEP\\Multi-hop};
+\node[greenbox, below=1.0cm of csep] (rerank) {Stage 4\\Cross-Encoder\\Reranker};
 \node[greenbox, left=1.2cm of rerank] (gen) {LLM\\Generation};
 \node[graybox, left=1.2cm of gen] (ans) {Answer};
 
@@ -144,51 +142,51 @@
 \begin{columns}
 \begin{column}{0.33\textwidth}
 \centering\small
-\textcolor{tragblue}{\textbf{Xanh = Pre-Retrieval}}\\Phân loại \& Định tuyến
+\textcolor{tragblue}{\textbf{Blue = Pre-Retrieval}}\\Classification \& Routing
 \end{column}
 \begin{column}{0.33\textwidth}
 \centering\small
-\textcolor{tragorange}{\textbf{Cam = Retrieval}}\\Lai ghép \& Suy luận đa bước
+\textcolor{tragorange}{\textbf{Orange = Retrieval}}\\Hybrid Search \& Multi-hop
 \end{column}
 \begin{column}{0.33\textwidth}
 \centering\small
-\textcolor{traggreen}{\textbf{Xanh lá = Post-Retrieval}}\\Kiểm soát ảo giác
+\textcolor{traggreen}{\textbf{Green = Post-Retrieval}}\\Hallucination Control
 \end{column}
 \end{columns}
 \end{frame}
 
 %------------------------------------------------
-\begin{frame}{Giai đoạn 1: Probabilistic Source Router (PSR)}
+\begin{frame}{Stage 1: Probabilistic Source Router (PSR)}
 \small
 \begin{columns}[T]
 \begin{column}{0.54\textwidth}
-\textbf{Toán học định tuyến:} 
-Dự báo xác suất có điều kiện của nguồn:
+\textbf{Routing Formulation:} \\
+Predicting source conditional probabilities:
 \vspace{-0.2cm}
 {\footnotesize $$\boxed{P(s_i | Q) = \text{Softmax}(W \cdot \text{Encoder}(Q) + b)_i}$$}
 
-\textbf{Thuật toán Phân vùng (Sharding):}
+\textbf{Sub-space Filtering (Sharding):}
 \begin{itemize}
-    \item Chỉ kích hoạt tìm kiếm trên tập nguồn con:
+    \item Activating queries only on selected sub-spaces:
 \vspace{-0.2cm}
     {\footnotesize $$S_{active} = \{ s_i \in S \mid P(s_i | Q) \ge \tau \}$$}
 \end{itemize}
 
 \vspace{0.1cm}
-\textbf{Kết quả:} 
-Độ phức tạp giảm từ $O(|D_{total}|)$ xuống $O(\sum_{i \in S_{active}} |D_{s_i}|)$. Giảm I/O đáng kể.
+\textbf{Key Outcome:} \\
+Search complexity reduced from $O(|D_{\text{total}}|)$ to $O(\sum_{i \in S_{\text{active}}} |D_{s_i}|)$, drastically reducing I/O latency.
 \end{column}
 \begin{column}{0.44\textwidth}
-\begin{exampleblock}{Ví dụ minh họa định tuyến}
-Truy vấn: \textit{"What did the team say about the GPU budget meeting?"}
+\begin{exampleblock}{Routing Illustration (Example)}
+Query: \textit{"What did the team say about the GPU budget meeting?"}
 
 \vspace{0.1cm}
-Kết quả phân phối xác suất từ PSR:
+PSR conditional probability distribution:
 \begin{itemize}
-    \item $P(\text{Fireflies}|Q) = 0.81 > \tau \rightarrow$ Kích hoạt
-    \item $P(\text{Slack}|Q) = 0.72 > \tau \rightarrow$ Kích hoạt
-    \item $P(\text{Jira}|Q) = 0.04 \le \tau \rightarrow$ Loại bỏ
-    \item $P(\text{GitHub}|Q) = 0.02 \le \tau \rightarrow$ Loại bỏ
+    \item $P(\text{Fireflies}|Q) = 0.81 > \tau \rightarrow$ Active
+    \item $P(\text{Slack}|Q) = 0.72 > \tau \rightarrow$ Active
+    \item $P(\text{Jira}|Q) = 0.04 \le \tau \rightarrow$ Pruned
+    \item $P(\text{GitHub}|Q) = 0.02 \le \tau \rightarrow$ Pruned
 \end{itemize}
 \end{exampleblock}
 \end{column}
@@ -196,35 +194,35 @@ Kết quả phân phối xác suất từ PSR:
 \end{frame}
 
 %------------------------------------------------
-\begin{frame}{Giai đoạn 2: Source-Weighted RRF (SW-RRF)}
+\begin{frame}{Stage 2: Source-Weighted RRF (SW-RRF)}
 \small
 \begin{columns}[T]
 \begin{column}{0.5\textwidth}
-\textbf{RRF truyền thống (Cormack, 2009):}
-Đánh đồng mọi tài liệu, làm mất đi sự "ưu tiên" cho nguồn chính.
+\textbf{Standard RRF (Cormack et al., 2009):}\\
+Scores candidates uniformly, failing to prioritize primary source context.
 
 \vspace{0.2cm}
-\textbf{Đề xuất tính mới (SW-RRF):}
-Đưa xác suất $P(s_d|Q)$ làm \textbf{Bayesian Prior} vào công thức xếp hạng.
+\textbf{Proposed Innovation (SW-RRF):}\\
+Incorporates the routing probability $P(s_d|Q)$ as a Bayesian Prior.
 
 \vspace{-0.2cm}
 {\footnotesize $$\boxed{Score(d) = P(s_d|Q)^\gamma \cdot \left( \frac{\alpha}{k + r_{dense}} + \frac{1-\alpha}{k + r_{sparse}} \right)}$$}
 
 \begin{itemize}
     \item $\gamma$: Source Bias Factor
-    \item $\alpha$: Trọng số Dense/Sparse
+    \item $\alpha$: Dense/Sparse weights
 \end{itemize}
 \end{column}
 \begin{column}{0.48\textwidth}
-\begin{block}{Cơ sở lý thuyết của SW-RRF}
-Tối ưu hóa thứ hạng tài liệu mục tiêu thông qua trọng số phân phối xác suất ($P(s_d|Q)$), triệt tiêu nhiễu từ các văn bản có tính tương đồng bề mặt nhưng sai lệch ngữ cảnh nguồn.
+\begin{block}{Theoretical Foundation of SW-RRF}
+Optimizes candidate ranking by adjusting score distributions based on source likelihood ($P(s_d|Q)$), eliminating surface-level keyword distractors from irrelevant sources.
 \end{block}
 
 \vspace{0.1cm}
-\begin{exampleblock}{Khả năng bổ trợ của Hybrid Search}
+\begin{exampleblock}{Hybrid Search Synergy}
 \begin{itemize}
-    \item \textbf{Dense Search}: Trích xuất và đối sánh biểu diễn ngữ nghĩa trừu tượng.
-    \item \textbf{Sparse (BM25)}: Ràng buộc tính chính xác từ vựng (Exact match).
+    \item \textbf{Dense Search}: Captures abstract semantic representation.
+    \item \textbf{Sparse (BM25/FTS)}: Restricts search with exact keyword matching.
 \end{itemize}
 \end{exampleblock}
 \end{column}
@@ -232,57 +230,103 @@ Tối ưu hóa thứ hạng tài liệu mục tiêu thông qua trọng số phâ
 \end{frame}
 
 %------------------------------------------------
-\begin{frame}{Giai đoạn 3 \& 4: Multi-hop \& Reranking}
+\begin{frame}{Stage 3 \& 4: Multi-hop \& Reranking}
 \small
 \begin{columns}[T]
 \begin{column}{0.52\textwidth}
-\begin{block}{Giai đoạn 3: CSEP (Suy luận đa bước)}
-Mô phỏng cơ chế đồ thị hai phía (Bipartite Graph Random Walk).
+\begin{block}{Stage 3: CSEP (Multi-hop Reasoning)}
+Approximated via Bipartite Graph Random Walk.
 \begin{enumerate}
-    \item \textbf{Hop 1:} Khởi tạo truy xuất trên nguồn tối ưu nhất $\rightarrow$ Định vị tài liệu mỏ neo ($D_{anchor}$).
-    \item \textbf{Entity Extraction:} Phân tách và nhận diện tập thực thể $E$ từ $D_{anchor}$.
-    \item \textbf{Hop 2:} Mở rộng không gian truy vấn $Q^{(2)} = Q \oplus E$ để đối sánh chéo nguồn.
+    \item \textbf{Hop 1:} Retrieve anchor documents ($D_{\text{anchor}}$) from the highest-probability sources.
+    \item \textbf{Entity Extraction}: Extract and identify unique anchor entities $E$ from $D_{\text{anchor}}$.
+    \item \textbf{Hop 2:} Query expansion $Q^{(2)} = Q \oplus E$ to bridge related contexts cross-source.
 \end{enumerate}
 \end{block}
 \end{column}
 \begin{column}{0.46\textwidth}
-\begin{block}{Giai đoạn 4: Kiểm soát ngưỡng tin cậy}
-Sử dụng \textbf{Cross-Encoder} tối ưu hóa hàm đánh giá $CE(Q, d_{final})$.
+\begin{block}{Stage 4: Confidence Thresholding}
+Leverages a \textbf{Cross-Encoder} to compute accurate relevance score $CE(Q, d_{\text{final}})$.
 
 \vspace{0.1cm}
-Áp dụng \textbf{Hard Thresholding}: Lọc nhiễu triệt để nếu $CE(Q, d) < \theta$.
+\textbf{Hard Thresholding}: Prunes low-confidence documents if $CE(Q, d) < \theta$.
 
 \vspace{0.1cm}
-Trong điều kiện $D_{final} = \emptyset$, hệ thống ngắt luồng LLM và trả về "Unanswerable", hỗ trợ giảm thiểu hiện tượng ảo giác (Hallucination).
+If $D_{\text{final}} = \emptyset$, early-exit directly returns "Unanswerable", successfully minimizing hallucinations.
 \end{block}
 \end{column}
 \end{columns}
 \end{frame}
 
 %------------------------------------------------
-\section{Kế hoạch Thực thi Kỹ thuật}
+\section{Experiments \& Evaluation}
 
-\begin{frame}{Kế hoạch Thực thi \& Đánh giá}
+\begin{frame}{Performance \& Accuracy Comparison}
+\begin{table}[h]
+\centering
+\small
+\resizebox{0.9\textwidth}{!}{
+\begin{tabular}{lccccc}
+\toprule
+\textbf{RAG Pipeline / Configuration} & \textbf{Correctness} & \textbf{Completeness} & \textbf{Refused} & \textbf{Total Latency} & \textbf{Speedup} \\
+\midrule
+BM25 Baseline & 27.8\% & 37.3\% & 36.6\% & 1.04s & 12.0x \\
+VECTOR Baseline & 24.4\% & 32.7\% & 40.4\% & 12.56s & Baseline \\
+VECTOR\_RERANKER Baseline & 28.5\% & 38.5\% & 34.8\% & 12.50s & Baseline \\
+\midrule
+\textbf{T-RAG [High-Recall]} ($\tau=0.05, \gamma=0.0$) & \textbf{32.0\%} & \textbf{41.5\%} & \textbf{30.0\%} & 1.04s & \textbf{12.0x} \\
+\textbf{T-RAG [Balanced]} ($\tau=0.15, \gamma=0.0$) & \textbf{29.6\%} & \textbf{41.4\%} & \textbf{33.2\%} & 0.92s & \textbf{13.6x} \\
+\textbf{T-RAG [Balanced Gamma]} ($\tau=0.15, \gamma=1.0$) & \textbf{31.1\%} & \textbf{41.2\%} & \textbf{32.4\%} & 0.90s & \textbf{13.9x} \\
+\textbf{T-RAG [High-Speed]} ($\tau=0.30, \gamma=0.0$) & \textbf{30.2\%} & \textbf{40.5\%} & \textbf{35.0\%} & 0.77s & \textbf{16.2x} \\
+\textbf{T-RAG [No Reranker]} ($\tau=0.15$) & 27.4\% & 37.3\% & 37.6\% & 0.86s & 14.5x \\
+\bottomrule
+\end{tabular}
+}
+\caption{Evaluation results from Qwen-14B Judge on 500 queries per scenario (v2 Hybrid Search).}
+\end{table}
+\end{frame}
 
-\begin{block}{Các bước Triển khai}
-\begin{enumerate}
-    \item \textbf{Tiền xử lý Dữ liệu}: Áp dụng mô hình Sharding chia 511k documents thành các bảng phân mảnh độc lập theo \texttt{source\_type}.
-    \item \textbf{Huấn luyện PSR Router}: Tinh chỉnh (Fine-tune) mô hình Encoder gọn nhẹ thành bộ phân loại xác suất (Soft Classifier).
-    \item \textbf{Triển khai SW-RRF}: Xây dựng hàm lai ghép truy xuất (Retriever) tích hợp công thức toán học hệ số.
-\end{enumerate}
+%------------------------------------------------
+\begin{frame}{Experimental Results Analysis}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{Computational Efficiency (Speedup)}
+\begin{itemize}
+    \item Standard Vector Reranker takes \textbf{12.50s} due to full-database scan.
+    \item T-RAG [High-Speed] takes only \textbf{0.77s} (\textbf{16.2x speedup}) by querying targeted shards and bypassing hop 2.
+\end{itemize}
+\end{block}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{block}{Relevance \& Accuracy (Correctness)}
+\begin{itemize}
+    \item T-RAG [High-Recall] reaches \textbf{32.0\%} correctness (outperforming Vector Reranker's 28.5\% and BM25's 27.8\%).
+    \item Source penalty ($\gamma=1.0$) filters noisy text, boosting correctness from \textbf{29.6\% to 31.1\%}.
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Conclusion \& Future Work}
+\begin{block}{Conclusion}
+\begin{itemize}
+    \item T-RAG V2 (Hybrid Search \& SW-RRF) effectively resolves multi-source enterprise RAG challenges.
+    \item Delivers outstanding performance (\textbf{>16x speedup}) while surpassing standard Vector Reranker accuracy.
+\end{itemize}
 \end{block}
 
-\vspace{0.3cm}
-\begin{block}{Đánh giá (So với Standard RAG)}
+\vspace{0.2cm}
+\begin{block}{Future Directions (V3)}
 \begin{itemize}
-    \item \textbf{Chất lượng:} Recall@K, NDCG@10 (sử dụng tập ground truth)
-    \item \textbf{Tốc độ/Chi phí:} Latency (ms), Search Space Size (\% documents được load)
+    \item Fine-tuning RRF weights (Dense 0.3 / Sparse 0.7) to improve exact keyword recall.
+    \item Tracking the physical search space (in docs) and actual refusal rates to better control hallucinations.
 \end{itemize}
 \end{block}
 \end{frame}
 
 %------------------------------------------------
-\begin{frame}[allowframebreaks]{Tài liệu Tham khảo (Verified References)}
+\begin{frame}[allowframebreaks]{References}
 \small
 \begin{enumerate}
     \item Qiao et al. (2024). \textit{Route Before Retrieve: A New Paradigm for Retrieval-Augmented Generation}.

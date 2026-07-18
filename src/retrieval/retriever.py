@@ -56,6 +56,25 @@ class EnterpriseRetriever:
         except Exception:
             self.hybrid_search = True
         logger.info(f"Cấu hình Hybrid Search: {self.hybrid_search}")
+
+        try:
+            self.dense_weight = float(os.environ.get("RAG_DENSE_WEIGHT", "0.3"))
+        except ValueError:
+            self.dense_weight = 0.3
+            
+        try:
+            self.sparse_weight = float(os.environ.get("RAG_SPARSE_WEIGHT", "0.7"))
+        except ValueError:
+            self.sparse_weight = 0.7
+        logger.info(f"Trọng số Hybrid Search - Dense: {self.dense_weight}, Sparse: {self.sparse_weight}")
+
+        # Get document counts for search space calculation
+        self.table_sizes = {}
+        for name, table in self.tables.items():
+            try:
+                self.table_sizes[name] = len(table)
+            except Exception:
+                self.table_sizes[name] = 0
         
     def retrieve(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
         """
@@ -78,6 +97,8 @@ class EnterpriseRetriever:
             
         logger.info(f"🔍 [Query]: '{query}'")
         logger.info(f"🛣️ [Router]: Quét {len(active_shards)}/9 bảng -> {active_shards}")
+        
+        search_space_docs = sum(self.table_sizes.get(source, 0) for source in active_shards)
         
         search_limit = max(top_k * 2, 10)
         dense_candidates = []
@@ -158,9 +179,9 @@ class EnterpriseRetriever:
             
             rrf_score = 0.0
             if dense_rank is not None:
-                rrf_score += 1.0 / (self.k_rrf + dense_rank)
+                rrf_score += self.dense_weight * (1.0 / (self.k_rrf + dense_rank))
             if sparse_rank is not None:
-                rrf_score += 1.0 / (self.k_rrf + sparse_rank)
+                rrf_score += self.sparse_weight * (1.0 / (self.k_rrf + sparse_rank))
                 
             sw_rrf_score = doc["_prior_weight"] * rrf_score
             
@@ -171,7 +192,8 @@ class EnterpriseRetriever:
                 "title": doc.get("title", ""),
                 "vector_distance": doc.get("_distance", 1.0),
                 "router_prob": doc["_router_prob"],
-                "sw_rrf_score": sw_rrf_score
+                "sw_rrf_score": sw_rrf_score,
+                "search_space_docs": search_space_docs
             }
             all_results.append(clean_doc)
             
