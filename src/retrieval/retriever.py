@@ -51,6 +51,12 @@ class EnterpriseRetriever:
         self.table_names = self.db.table_names()
         self.tables = {name: self.db.open_table(name) for name in self.table_names}
         
+        try:
+            self.hybrid_search = os.environ.get("RAG_HYBRID_SEARCH", "True").lower() == "true"
+        except Exception:
+            self.hybrid_search = True
+        logger.info(f"Cấu hình Hybrid Search: {self.hybrid_search}")
+        
     def retrieve(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
         """
         Tìm kiếm tài liệu qua 3 bước Toán học.
@@ -73,43 +79,89 @@ class EnterpriseRetriever:
         logger.info(f"🔍 [Query]: '{query}'")
         logger.info(f"🛣️ [Router]: Quét {len(active_shards)}/9 bảng -> {active_shards}")
         
-        all_candidate_docs = []
+        search_limit = max(top_k * 2, 10)
+        dense_candidates = []
+        sparse_candidates = []
         
-        # Bước 3: Tìm kiếm Vector cục bộ để gom Candidate Docs
+        # Bước 3: Tìm kiếm song song Dense & Sparse cục bộ
         for source in active_shards:
             if source not in self.tables:
                 logger.error(f"LỖI: Không tìm thấy bảng '{source}' trong LanceDB.")
                 continue
                 
             table = self.tables[source]
-            search_limit = max(top_k * 2, 10) 
-            try:
-                # Vector Search (Dense)
-                results = table.search(emb[0]).limit(search_limit).to_list()
-            except Exception as e:
-                logger.error(f"Lỗi khi search bảng {source}: {e}")
-                continue
-            
             p_s = source_probs[source]
             prior_weight = p_s ** self.gamma
             
-            for doc in results:
-                doc["_source"] = source
-                doc["_prior_weight"] = prior_weight
-                doc["_router_prob"] = p_s
-                all_candidate_docs.append(doc)
+            # 3.1 Vector Search (Dense)
+            try:
+                results = table.search(emb[0]).limit(search_limit).to_list()
+                for doc in results:
+                    doc["_source"] = source
+                    doc["_prior_weight"] = prior_weight
+                    doc["_router_prob"] = p_s
+                    dense_candidates.append(doc)
+            except Exception as e:
+                logger.error(f"Lỗi khi vector search bảng {source}: {e}")
                 
-        # Bước 4: Xếp hạng Dense Toàn cầu (Global Dense Ranking)
-        # Sắp xếp tất cả tài liệu dựa trên vector distance (L2 distance - càng nhỏ càng tốt)
-        all_candidate_docs.sort(key=lambda x: x.get("_distance", float('inf')))
+            # 3.2 FTS Search (Sparse)
+            if self.hybrid_search:
+                try:
+                    results_fts = table.search(query, query_type="fts").limit(search_limit).to_list()
+                    for doc in results_fts:
+                        doc["_source"] = source
+                        doc["_prior_weight"] = prior_weight
+                        doc["_router_prob"] = p_s
+                        sparse_candidates.append(doc)
+                except Exception as e:
+                    logger.warning(f"Lỗi khi FTS search bảng {source}: {e}")
+                    
+        # Bước 4: Xếp hạng Toàn cầu & Dung hợp bằng SW-RRF
+        fused_docs = {}  # key: (source, doc_id) -> values: doc, dense_rank, sparse_rank
         
+        # Sắp xếp Dense Candidates toàn cục theo distance (L2 distance càng nhỏ càng tốt/gần)
+        dense_candidates.sort(key=lambda x: x.get("_distance", float('inf')))
+        for rank_0_idx, doc in enumerate(dense_candidates):
+            source = doc["_source"]
+            doc_id = doc.get("doc_id", "unknown")
+            key = (source, doc_id)
+            if key not in fused_docs:
+                fused_docs[key] = {
+                    "doc": doc,
+                    "dense_rank": rank_0_idx + 1,
+                    "sparse_rank": None
+                }
+            else:
+                fused_docs[key]["dense_rank"] = rank_0_idx + 1
+                
+        # Sắp xếp Sparse Candidates toàn cục theo FTS score (càng lớn càng tốt/khớp)
+        sparse_candidates.sort(key=lambda x: x.get("_score", x.get("score", 0.0)), reverse=True)
+        for rank_0_idx, doc in enumerate(sparse_candidates):
+            source = doc["_source"]
+            doc_id = doc.get("doc_id", "unknown")
+            key = (source, doc_id)
+            if key not in fused_docs:
+                fused_docs[key] = {
+                    "doc": doc,
+                    "dense_rank": None,
+                    "sparse_rank": rank_0_idx + 1
+                }
+            else:
+                fused_docs[key]["sparse_rank"] = rank_0_idx + 1
+                
+        # Áp dụng công thức RRF và kết hợp prior weight
         all_results = []
-        # Bước 5: Áp dụng thuật toán SW-RRF với Global Rank
-        for rank_0_idx, doc in enumerate(all_candidate_docs):
-            global_rank = rank_0_idx + 1 # Rank bắt đầu từ 1
+        for key, info in fused_docs.items():
+            doc = info["doc"]
+            dense_rank = info["dense_rank"]
+            sparse_rank = info["sparse_rank"]
             
-            # Score = P(Source|Query)^Gamma * (1 / (k + Global Rank))
-            rrf_score = 1.0 / (self.k_rrf + global_rank)
+            rrf_score = 0.0
+            if dense_rank is not None:
+                rrf_score += 1.0 / (self.k_rrf + dense_rank)
+            if sparse_rank is not None:
+                rrf_score += 1.0 / (self.k_rrf + sparse_rank)
+                
             sw_rrf_score = doc["_prior_weight"] * rrf_score
             
             clean_doc = {
@@ -119,7 +171,6 @@ class EnterpriseRetriever:
                 "title": doc.get("title", ""),
                 "vector_distance": doc.get("_distance", 1.0),
                 "router_prob": doc["_router_prob"],
-                "original_rank": global_rank,
                 "sw_rrf_score": sw_rrf_score
             }
             all_results.append(clean_doc)

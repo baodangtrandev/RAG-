@@ -20,12 +20,15 @@ def parse_config_from_filename(filename):
         return name
     return name
 
+import sys
+
 def main():
     print("=" * 110)
     print(f"{'Pipeline / Config':<45} | {'Correct':<8} | {'Complete':<9} | {'Refused':<8} | {'Total Lat':<10} | {'Retr Lat':<10}")
     print("-" * 110)
     
-    files = sorted(glob.glob("results/*.jsonl"))
+    folder = sys.argv[1] if len(sys.argv) > 1 else "results"
+    files = sorted(glob.glob(f"{folder}/*.jsonl"))
     for file in files:
         filename = os.path.basename(file)
         config_name = parse_config_from_filename(filename)
@@ -56,7 +59,7 @@ def main():
         refused_pct = (unanswerable / total * 100) if total > 0 else 0
         
         # Parse Evaluation Scores
-        eval_file = f"results/eval_{filename.replace('.jsonl', '.json')}"
+        eval_file = f"{folder}/eval_{filename.replace('.jsonl', '.json')}"
         correct_pct = 0.0
         complete_pct = 0.0
         if os.path.exists(eval_file):
