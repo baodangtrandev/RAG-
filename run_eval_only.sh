@@ -10,10 +10,11 @@ echo "=========================================="
 echo "Model: $JUDGE_LLM_MODEL"
 
 # Chạy server vllm trong background
-python -m vllm.entrypoints.openai.api_server \
+/network-volume/miniconda3/envs/trag/bin/python -m vllm.entrypoints.openai.api_server \
     --model "$JUDGE_LLM_MODEL" \
     --tensor-parallel-size 1 \
     --gpu-memory-utilization $VLLM_GPU_MEMORY_UTILIZATION \
+    --max-model-len 8192 \
     --port 8000 > vllm_server.log 2>&1 &
 
 VLLM_PID=$!
@@ -39,7 +40,7 @@ for file in results/*.jsonl; do
     echo "------------------------------------------"
     if [ ! -f "$eval_file" ] || grep -q '"average_correctness_pct": 0.0' "$eval_file"; then
         echo "Đang chấm điểm: $filename"
-        python -m src.scripts.metrics_based_eval \
+        /network-volume/miniconda3/envs/trag/bin/python -m src.scripts.metrics_based_eval \
             --answers-file "$file" \
             --results-file "$eval_file" \
             --parallelism 16
@@ -55,4 +56,5 @@ kill $VLLM_PID
 echo "Đã tắt server vLLM."
 
 echo "Đang tạo báo cáo tổng hợp..."
-python generate_report.py
+/network-volume/miniconda3/envs/trag/bin/python generate_report.py
+
