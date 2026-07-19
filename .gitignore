@@ -11,4 +11,5 @@ all_documents.zip
 
 data
 
-.log
+*.log
+.nfs*

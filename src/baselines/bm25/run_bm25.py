@@ -68,7 +68,7 @@ def run(
         table = db.open_table(name)
         # Tự động tạo FTS Index nếu chưa có
         try:
-            table.create_fts_index("content", replace=True)
+            table.create_fts_index("content", replace=False)
             logger.info(f"  FTS Index sẵn sàng cho bảng: {name}")
         except Exception as e:
             logger.warning(f"  Không thể tạo FTS Index cho bảng {name}: {e}")

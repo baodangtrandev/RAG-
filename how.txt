@@ -1,16 +1,12 @@
-# 1. Vào tmux để chạy ngầm
+
 tmux
 
-# 2. Khởi tạo lệnh conda cho Terminal
 source /network-volume/miniconda3/bin/activate
 
-# 3. Tạo môi trường từ file environment.yml (chỉ chạy 1 lần)
 conda env create -f environment.yml
 
-# 4. Kích hoạt môi trường vừa tạo (tên môi trường là trag)
 conda activate trag
 
-# 5. Chạy benchmark (quá trình này lâu nên bạn có thể tắt máy đi ngủ)
 python src/run_benchmark.py --limit 10
 
 
@@ -35,3 +31,16 @@ or:
 tail -f benchmark_smoke_logs.txt
 
 pkill -f "run_all" ; pkill -f "run_benchmark.py" ; pkill -f "vllm" ; pkill -f "run_bm25" ; pkill -f "run_vector" ; sleep 2 ; ps aux | grep python
+
+or:
+
+./run_eval_only_v3.sh > run_eval_only_v3.txt 2>&1 &
+
+tail -f run_eval_only_v3.txt
+
+
+
+
+v6:
+nohup ./run_all_v6.2.sh > bench_v6.2_full.log 2>&1 &
+tail -f bench_v6.2_full.log
