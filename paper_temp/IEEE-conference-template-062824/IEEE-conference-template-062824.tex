@@ -13,17 +13,17 @@
 \usepackage{orcidlink}
 
 \lstset{
-  basicstyle=\ttfamily\scriptsize,
+  basicstyle=\ttfamily\scriptsize\setlength{\parindent}{0pt},
   breaklines=true,
   frame=single,
   backgroundcolor=\color{gray!10},
-  columns=fullflexible,
   showstringspaces=false,
   keepspaces=true,
   belowcaptionskip=10pt,
-  xleftmargin=3pt,
-  xrightmargin=3pt,
-  framesep=5pt
+  xleftmargin=15pt,
+  xrightmargin=15pt,
+  framesep=8pt,
+  captionpos=t
 }
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
@@ -31,7 +31,7 @@
 
 \begin{document}
 
-\title{T-RAG v2: An Adaptive and Latency-Optimized Selective Table Retrieval-Augmented Generation System for Multi-Source Enterprise Databases}
+\title{T-RAG: An Adaptive and Latency-Optimized Selective Table Retrieval-Augmented Generation System for Multi-Source Enterprise Databases}
 
 \author{
     \IEEEauthorblockN{Bang Dinh Nguyen\textsuperscript{1, $\dagger$}\,\orcidlink{0009-0007-3969-1768}, Bao Dang Tran\textsuperscript{1, $\dagger$}\,\orcidlink{0009-0004-0894-7212}, and Minh Quoc Nguyen\textsuperscript{1, *}\,\orcidlink{0009-0006-6070-1492}}
@@ -169,7 +169,7 @@ Query Expansion & 32.60 & 43.14 & 19.8\% & 2.46s \\
 \end{center}
 \end{table}
 
-\subsubsection{Routing Threshold $\tau_{base}$ Sensitivity}
+\subsubsection{Routing Threshold \texorpdfstring{$\tau_{base}$}{Tau} Sensitivity}
 Table~\ref{tab:tau} illustrates the impact of the base routing threshold $\tau_{base}$ while maintaining default grid settings ($\gamma=0.5, \alpha=0.08, D=0.5/S=0.5$). Lowering $\tau_{base}$ to 0.05 yields high coverage (46.30\% completeness) but increases search latency (1.05s). Conversely, setting a high threshold like 0.30 restricts search space and speeds up retrieval (0.91s total latency) but degrades completeness (45.90\%) due to under-routing. $\tau_{base}=0.10$ provides the best trade-off with 36.67\% correctness.
 
 \begin{table}[htbp]
@@ -192,7 +192,7 @@ $\tau_{base}=0.30$ & 35.30 & 45.90 & 1,456,839 & 0.91s \\
 \end{center}
 \end{table}
 
-\subsubsection{Dynamic Threshold Coefficient $\alpha$ Sensitivity}
+\subsubsection{Dynamic Threshold Coefficient \texorpdfstring{$\alpha$}{Alpha} Sensitivity}
 Table~\ref{tab:alpha} analyzes the sensitivity of the dynamic scaling factor $\alpha$. Completely disabling dynamic scaling ($\alpha=0.00$) yields 35.67\% correctness. Enabling dynamic thresholding with moderate sensitivity ($\alpha=0.15$) dynamically rescales the search space, achieving 36.27\% correctness. Setting $\alpha$ too high ($\alpha=0.50$, aggressive scaling) introduces noise on vague queries, slightly degrading correctness to 36.07\%.
 
 \begin{table}[htbp]
@@ -217,7 +217,7 @@ $\alpha=0.50$ (aggr.) & 36.07 & 44.99 & 3,573,824 & 0.90s \\
 \end{center}
 \end{table}
 
-\subsubsection{Diversity Penalty $\gamma$ Sensitivity}
+\subsubsection{Diversity Penalty \texorpdfstring{$\gamma$}{Gamma} Sensitivity}
 Table~\ref{tab:gamma} shows the effect of the diversity penalty $\gamma$. Setting $\gamma=0.0$ (no penalty) yields 36.40\% correctness when routing is narrow ($\tau=0.15$). Setting a high penalty ($\gamma=1.0$) severely penalizes document scores from low-probability shards, degrading correctness to 33.30\%. A moderate penalty ($\gamma=0.3$--$0.5$) provides the best overall balance.
 
 \begin{table}[htbp]
@@ -331,7 +331,7 @@ Fig. 3 visualizes the tradeoff between end-to-end processing latency and answer 
 \subsubsection{Dynamic Adaptive Thresholding and Router Interplay}
 Evaluating dynamic routing ($\alpha > 0$) demonstrates that adjusting database routing boundaries per query improves coverage. Vague questions automatically trigger search expansions to a wider subset of database shards, boosting correctness by up to 0.60\% compared to a static router configuration ($\alpha=0.00$).
 
-\subsubsection{Cross-Parameter Hyperparameter Interplay: $\tau_{base}$ vs. $\gamma$}
+\subsubsection{Cross-Parameter Hyperparameter Interplay: \texorpdfstring{$\tau_{base}$}{Tau} vs. \texorpdfstring{$\gamma$}{Gamma}}
 Our targeted evaluation (Table~\ref{tab:targeted}) exposes a crucial interplay between the routing threshold $\tau_{base}$ and the diversity penalty $\gamma$. Setting $\gamma=0.0$ (no diversity penalty) was optimal in grid search with a narrow, high threshold ($\tau=0.15$). However, when combined with a lower base threshold ($\tau_{base} \in [0.05, 0.10]$) in Targeted Configs A, B, and C, correctness degraded to 31.0\%--32.4\% and the refusal rate rose to 21.4\%.
 
 This degradation is caused by information redundancy. A low $\tau_{base}$ retrieves a larger candidate document pool across multiple shards. Without a diversity penalty ($\gamma=0.0$), the reranker selects highly redundant documents containing the same facts. This starves the generator of the diverse information coverage needed to synthesize answers. Incorporating a moderate diversity penalty ($\gamma = 0.4$ in Targeted D and G) penalizes duplicates and allows diverse contexts to enter the window, boosting correctness to 36.00\% and lowering the refusal rate to 17.0\%.
@@ -339,8 +339,38 @@ This degradation is caused by information redundancy. A low $\tau_{base}$ retrie
 \subsubsection{Optimal Configuration for Production Deployment}
 `Targeted H` ($\tau=0.15, \gamma=0.0, \alpha=0.00, D=0.4/S=0.6$) represents the optimal choice for production. By disabling dynamic thresholding and diversity calculations, it minimizes CPU and GPU processing overhead, achieving a total latency of \textbf{0.84s} (0.26s retrieval) while maintaining a high correctness of 34.60\% (outperforming standard Hybrid by 1.00\% absolute correctness).
 
+\subsection{Performance by Query Category}
+To understand the granular impact of our architectural improvements, we categorize the EnterpriseRAG-Bench dataset into 10 semantic question types. Figure~\ref{fig:query_types} illustrates the performance of the optimal T-RAG v2 configuration compared to the strong Hybrid Baseline.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=1.0\linewidth]{fig_query_types.png}}
+\caption{Performance Comparison Across 10 Semantic Query Categories.}
+\label{fig:query_types}
+\end{figure}
+
+T-RAG v2 demonstrates substantial superiority in queries requiring precise factual grounding and filtering, outperforming the Hybrid Baseline significantly in \textit{Basic} (+4.5\%), \textit{Constrained} (+10.0\%), and \textit{Miscellaneous} inquiries. The adaptive routing ensures that precise queries are strictly contained within highly relevant shards, eliminating noise. However, \textit{Semantic} and \textit{Intra-doc reasoning} queries remain challenging bottlenecks for both systems. T-RAG v2 slightly underperforms the baseline in reasoning tasks because chunk-level retrieval struggles to capture document-wide context, highlighting a limitation of standard RAG chunking strategies for enterprise documents.
+
+\subsection{Impact of Context Window and Retrieval Depth}
+The context window capacity, dictated by the number of top documents fed to the LLM ($K_{final}$), profoundly impacts the generator's confidence. Figure~\ref{fig:context_k} demonstrates the relationship between the context window size, generation correctness, and the system's refusal rate.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=0.8\linewidth]{fig_context_k.png}}
+\caption{Impact of Context Window ($K$) on Correctness and Refusal Rate.}
+\label{fig:context_k}
+\end{figure}
+
+When the LLM is restricted to a single document ($K=1$), the refusal rate spikes to 40.6\%, indicating severe information starvation. Expanding the context window to $K=5$ drastically drops the refusal rate to 17.0\% while maximizing correctness (34.67\%). Furthermore, increasing the initial retrieval depth ($R_{retrieve}$) from 10 to 20 provides the reranker with a richer candidate pool, improving final accuracy. However, scaling $R_{retrieve}$ beyond 20 yields diminishing returns, increasing latency without notable correctness gains.
+
 \section{Conclusion and Future Work}
-We introduced T-RAG v2, an adaptive and latency-optimized selective table RAG system for multi-source enterprise repositories. By introducing probabilistic shard routing, adaptive entropy thresholding, source-weighted rank fusion, and a conditional multi-hop trigger, T-RAG v2 addresses both retrieval noise and computation overhead. Evaluated on the 500-question EnterpriseRAG-Bench dataset, T-RAG v2 achieves 36.80\% correctness with sub-second latencies. For future work, we plan to explore query-adaptive hybrid weighting and late-interaction cross-encoders to improve semantic synthesis.
+We introduced T-RAG v2, an adaptive and latency-optimized selective table RAG system for multi-source enterprise repositories. By introducing probabilistic shard routing, adaptive entropy thresholding, source-weighted rank fusion, and a conditional multi-hop trigger, T-RAG v2 addresses both retrieval noise and computation overhead. Evaluated on the 500-question EnterpriseRAG-Bench dataset, T-RAG v2 achieves 36.80\% correctness with sub-second latencies, outperforming conventional hybrid pipelines.
+
+Despite these advancements, semantic retrieval remains a critical bottleneck. Future research (T-RAG v3) will focus on several architectural paradigms to bridge this gap:
+\begin{enumerate}
+    \item \textbf{Query-Adaptive Dense/Sparse Weighting:} Implementing a lightweight classifier to dynamically adjust the dense-to-sparse fusion ratio based on query semantics (e.g., favoring BM25 for technical codes, and Dense for conceptual queries).
+    \item \textbf{Reranker-Guided Hop 2 Triggers:} Replacing static similarity thresholds with cross-encoder confidence scores to orchestrate multi-hop reasoning dynamically.
+    \item \textbf{ColBERT-style Late Interaction:} Upgrading the reranker to a late-interaction architecture to capture deep semantic relevance without the latency overhead of heavy cross-encoders.
+    \item \textbf{Document Expansion:} Dynamically fetching adjacent chunks or parent documents post-retrieval to provide contiguous context, specifically targeting the poor performance in \textit{Intra-doc reasoning} tasks.
+\end{enumerate}
 
 \appendix
 \section{Prompt Templates}
