@@ -78,7 +78,18 @@ def parse_config_from_filename(filename):
     if name == 'opt_high_recall_sparse_heavy': return 'OPT: Recall+Sparse (Tau=0.05, D=0.3/S=0.7)', '9. T-RAG v2 Optimized (v6.1)'
     if name == 'opt_high_speed_sparse_super_heavy': return 'OPT: Speed+Sparse (Tau=0.30, D=0.1/S=0.9)', '9. T-RAG v2 Optimized (v6.1)'
     
-    return name, '10. Custom / Other'
+    # 10. T-RAG v2.5 Targeted Combos (v6.2 Proposal)
+    if name == 'opt_targeted_combo_a': return 'Targeted A: Ultimate Combo (Tau=0.05, G=0.0, A=0.15, D=0.3/S=0.7)', '10. T-RAG v2.5 Targeted'
+    if name == 'opt_targeted_combo_b': return 'Targeted B: Precision Strike (Tau=0.10, G=0.0, A=0.15, D=0.4/S=0.6)', '10. T-RAG v2.5 Targeted'
+    if name == 'opt_targeted_combo_c': return 'Targeted C: Gamma Zero Low Tau (Tau=0.10, G=0.0, A=0.08, D=0.3/S=0.7)', '10. T-RAG v2.5 Targeted'
+    if name == 'opt_targeted_combo_d': return 'Targeted D: Alpha Sweet Spot (Tau=0.05, G=0.4, A=0.15, D=0.4/S=0.6)', '10. T-RAG v2.5 Targeted'
+    if name == 'opt_targeted_combo_e': return 'Targeted E: Low Gamma High Alpha (Tau=0.10, G=0.0, A=0.12, D=0.3/S=0.7)', '10. T-RAG v2.5 Targeted'
+    if name == 'opt_targeted_combo_f': return 'Targeted F: Wide Net Balanced (Tau=0.05, G=0.0, A=0.08, D=0.4/S=0.6, R=25)', '10. T-RAG v2.5 Targeted'
+    if name == 'opt_targeted_combo_g': return 'Targeted G: Minimalist Best (Tau=0.10, G=0.4, A=0.15, D=0.3/S=0.7)', '10. T-RAG v2.5 Targeted'
+    if name == 'opt_targeted_combo_h': return 'Targeted H: Speed King v2 (Tau=0.15, G=0.0, A=0.00, D=0.4/S=0.6)', '10. T-RAG v2.5 Targeted'
+    
+    return name, '11. Custom / Other'
+
 
 def main():
     folder = sys.argv[1] if len(sys.argv) > 1 else "results_v6"
