@@ -13,3 +13,14 @@ data
 
 *.log
 .nfs*
+
+# latex
+*.aux
+*.nav
+*.out
+*.toc
+*.log
+*.synctex.gz
+.snm
+RAG.md
+.cache

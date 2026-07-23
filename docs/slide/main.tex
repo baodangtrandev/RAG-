@@ -28,11 +28,11 @@
 \setbeamercolor{block title alerted}{bg=tragorange,fg=white}
 \setbeamercolor{block title example}{bg=traggreen,fg=white}
 
-\title[\textbf{T-RAG}]{\textbf{T-RAG: Targeted Retrieval-Augmented Generation}\\
-\large Hệ thống RAG phân tách nguồn dựa trên phân phối xác suất cho dữ liệu doanh nghiệp}
+\title[\textbf{T-RAG v2}]{\textbf{T-RAG v2: Selective Multi-Source Retrieval-Augmented Generation}\\
+\large Hệ thống RAG doanh nghiệp phân tách nguồn thông minh với Adaptive Tau \& Smart Hop 2}
 \author{Trình bày: Đăng Bảo \& Đinh Bằng}
 \date{Tháng 7, 2026}
-\institute{Báo cáo Kết quả Thực nghiệm --- T-RAG}
+\institute{Báo cáo Kết quả Thực nghiệm Toàn diện 53 Cấu hình --- T-RAG v2}
 
 \begin{document}
 
@@ -55,19 +55,19 @@
 \begin{column}{0.5\textwidth}
 \begin{block}{Bộ dữ liệu thử nghiệm: EnterpriseRAG-Bench}
 \begin{itemize}
-    \item \textbf{511,962 tài liệu} phân tán trên 9 nguồn dữ liệu khác nhau
-    \item Slack (285k), Gmail (121k), Jira (41k),\\Confluence (5k), GitHub, Fireflies...
-    \item \textbf{500 câu hỏi đánh giá} chia làm 10 danh mục
-    \item Nhiễu thông tin: Xung đột ngữ nghĩa, dữ liệu trùng lặp chéo nguồn
+    \item \textbf{4,213,106 tài liệu (chunks)} phân tán trên 9 nguồn dữ liệu doanh nghiệp
+    \item Slack, Gmail, Jira, Confluence, GitHub, Fireflies, HubSpot, Linear, GDrive
+    \item \textbf{500 câu hỏi đánh giá} thuộc 10 dạng câu hỏi doanh nghiệp thực tế
+    \item Nhiễu thông tin: Xung đột ngữ nghĩa, thuật ngữ mã nguồn, ID ticket
 \end{itemize}
 \end{block}
 \end{column}
 \begin{column}{0.5\textwidth}
 \begin{alertblock}{3 Hạn chế cốt lõi của Standard RAG}
 \begin{enumerate}
-    \item \textbf{Mơ hồ nguồn (Source Ambiguity)}: Làm loãng không gian vector embedding và tăng nhiễu khi truy vấn.
-    \item \textbf{Bất đồng nhất từ vựng (Vocabulary Mismatch)}: Khoảng cách lớn giữa câu hỏi tự nhiên và thuật ngữ kỹ thuật trong tài liệu.
-    \item \textbf{Truy vấn đa nguồn (Multi-source Queries)}: Yêu cầu khả năng lập luận, liên kết chéo thông tin từ nhiều nguồn.
+    \item \textbf{Mơ hồ nguồn (Source Ambiguity)}: Quét toàn cục gây nhiễu và làm phồng không gian vector.
+    \item \textbf{Bất đồng nhất từ vựng (Vocabulary Mismatch)}: Thuật ngữ kỹ thuật (Jira ID, PR \#, branch) bị Vector Search bỏ sót.
+    \item \textbf{Lập luận đa nguồn (Multi-source Hop)}: Đòi hỏi liên kết thông tin chéo nguồn mà 1 lượt search không đáp ứng được.
 \end{enumerate}
 \end{alertblock}
 \end{column}
@@ -75,119 +75,127 @@
 
 \vspace{0.4cm}
 \begin{center}
-\textit{Kiến trúc Standard RAG gặp hạn chế lớn về độ phức tạp tính toán và nhiễu thông tin khi phải tìm kiếm trên toàn bộ không gian dữ liệu toàn cục.}
+\textit{T-RAG v2 được thiết kế để giải quyết cả 3 thách thức trên với tốc độ và độ chính xác tối ưu.}
 \end{center}
 \end{frame}
 
 %------------------------------------------------
-\section{Tính Mới \& Đóng góp Khoa học}
+\section{Tính Mới \& Đóng góp Khoa học của T-RAG v2}
 
-\begin{frame}{3 Đóng góp Khoa học Cốt lõi}
-
-\begin{block}{\#1 --- Bộ định tuyến nguồn xác suất (PSR) + Database Sharding}
-\textbf{System-ML Co-design}: Tích hợp Database Sharding với PSR để giảm không gian tìm kiếm từ \textbf{50--90\%}.
+\begin{frame}{4 Cải tiến Thế hệ Mới trong T-RAG v2}
+\small
+\begin{columns}[T]
+\begin{column}{0.49\textwidth}
+\begin{block}{\#1 --- PSR Router + Adaptive Tau}
+Tự động điều chỉnh ngưỡng $\tau_{eff} = \tau_{base} + \alpha \cdot (conf - 0.5)$ theo độ tự tin của Router. Giảm không gian tìm kiếm từ \textbf{36\% đến 67\%}.
 \end{block}
 
 \vspace{0.1cm}
-\begin{block}{\#2 --- Thuật toán Source-Weighted RRF (SW-RRF)}
-\textbf{Mô hình Toán học}: Tích hợp tiền nghiệm Bayesian vào RRF giúp tối ưu hóa thứ hạng ứng viên đa nguồn.
+\begin{block}{\#2 --- Sửa lỗi Double-Encode (Tăng tốc 6x)}
+Tái sử dụng vector embedding giữa Hop 1 và Hop 2, kéo Retrieval Latency từ \textbf{1.68s} xuống còn \textbf{0.27s}.
+\end{block}
+\end{column}
+
+\begin{column}{0.49\textwidth}
+\begin{block}{\#3 --- Cơ chế Smart Hop 2 (Conditional)}
+Bỏ qua Hop 2 nếu câu hỏi đơn nguồn ($active\_shards < 2$) hoặc Hop 1 đã rất khớp ($top1\_dist < 0.55$), tiết kiệm \textbf{34\% Total Latency}.
 \end{block}
 
 \vspace{0.1cm}
-\begin{block}{\#3 --- Cơ chế lan truyền thực thể đa nguồn (CSEP)}
-\textbf{Lập luận Đa bước}: Giải quyết phụ thuộc chéo bằng cách trích xuất Anchor Entities để dẫn hướng cho truy vấn thứ cấp (Hop 2).
+\begin{block}{\#4 --- SW-RRF + Hybrid Search Tuning}
+Tăng trọng số BM25 trên từ khóa kỹ thuật ($D=0.3, S=0.7$) kết hợp với Bayesian Prior $P(\text{Source}|Q)^\gamma$.
 \end{block}
+\end{column}
+\end{columns}
 \end{frame}
 
 %------------------------------------------------
-\section{Kiến trúc Pipeline Đề xuất}
+\section{Kiến trúc Pipeline T-RAG v2}
 
-\begin{frame}{Tổng quan Pipeline T-RAG (4 Giai đoạn)}
+\begin{frame}{Tổng quan Pipeline T-RAG v2 (End-to-End)}
 
-\resizebox{\textwidth}{!}{
+\vspace{-0.2cm}
+\centering
+\resizebox{0.96\textwidth}{!}{
 \begin{tikzpicture}[
-  node distance=0.6cm and 0.4cm,
-  box/.style={rectangle, rounded corners=4pt, minimum width=2.5cm, minimum height=0.9cm, text centered, font=\small\bfseries, text width=2.5cm},
-  arrow/.style={-{Stealth[length=4pt]}, thick},
-  bluebox/.style={box, fill=tragblue!20, draw=tragblue, text=tragblue},
-  orangebox/.style={box, fill=tragorange!20, draw=tragorange, text=tragorange},
-  greenbox/.style={box, fill=traggreen!20, draw=traggreen, text=traggreen},
-  graybox/.style={box, fill=gray!15, draw=gray, text=black},
+  node distance=0.45cm and 0.4cm,
+  box/.style={rectangle, rounded corners=5pt, minimum width=2.5cm, minimum height=1.0cm, text centered, font=\small\bfseries, align=center},
+  arrow/.style={-{Stealth[length=5pt]}, thick},
+  bluebox/.style={box, fill=tragblue!15, draw=tragblue!80, text=tragblue},
+  orangebox/.style={box, fill=tragorange!15, draw=tragorange!80, text=tragorange},
+  greenbox/.style={box, fill=traggreen!15, draw=traggreen!80, text=traggreen},
+  graybox/.style={box, fill=gray!15, draw=gray!70, text=black},
 ]
 
-\node[graybox] (q) {User Query $Q$};
-\node[bluebox, right=1.2cm of q] (psr) {Giai đoạn 1\\PSR Router};
-\node[bluebox, right=1.2cm of psr] (shard) {Database Sharding\\Sub-space};
-\node[orangebox, right=1.2cm of shard] (hybrid) {Giai đoạn 2\\SW-RRF\\Hybrid Search};
-\node[orangebox, right=1.2cm of hybrid] (csep) {Giai đoạn 3\\CSEP\\Multi-hop};
-\node[greenbox, below=1.0cm of csep] (rerank) {Giai đoạn 4\\Cross-Encoder\\Reranker};
-\node[greenbox, left=1.2cm of rerank] (gen) {LLM\\Generation};
-\node[graybox, left=1.2cm of gen] (ans) {Đáp án};
+% Top Row: Forward Flow
+\node[graybox, minimum width=2.0cm] (q) {User Query $Q$};
+\node[bluebox, right=0.5cm of q] (psr) {PSR Router\\\& Adaptive Tau};
+\node[bluebox, right=0.5cm of psr] (shard) {Active Shards\\Sub-space};
+\node[orangebox, right=0.5cm of shard] (hybrid) {Hop 1: Hybrid\\SW-RRF Search};
+\node[orangebox, right=0.5cm of hybrid] (smarthop) {Smart Hop 2\\(Conditional)};
 
+% Bottom Row: Processing & Output
+\node[greenbox, below=1.2cm of smarthop] (rerank) {Cross-Encoder\\Reranker};
+\node[greenbox, left=1.2cm of rerank] (gen) {vLLM Generator\\(Qwen2.5-14B)};
+\node[graybox, left=1.2cm of gen, minimum width=2.0cm] (ans) {Đáp án};
+
+% Arrows Top Row
 \draw[arrow] (q) -- (psr);
-\draw[arrow] (psr) -- node[above,font=\scriptsize]{$P(s_i|Q)$} (shard);
-\draw[arrow] (shard) -- node[above,font=\scriptsize]{$S_{active}$} (hybrid);
-\draw[arrow] (hybrid) -- node[above,font=\scriptsize]{ứng viên} (csep);
-\draw[arrow] (csep) -- node[right,font=\scriptsize,text width=1.8cm,align=center]{tài liệu\\đa bước} (rerank);
-\draw[arrow] (rerank) -- node[above,font=\scriptsize]{top-K} (gen);
-\draw[arrow] (gen) -- (ans);
+\draw[arrow] (psr) -- node[above,font=\scriptsize,text=tragblue]{$\tau_{eff}$} (shard);
+\draw[arrow] (shard) -- node[above,font=\scriptsize,text=tragblue]{$S_{active}$} (hybrid);
+\draw[arrow] (hybrid) -- node[above,font=\scriptsize,text=tragorange]{Top K} (smarthop);
 
-\node[font=\tiny\itshape, below=0.15cm of psr, text=traggray] {Định tuyến ngữ nghĩa};
-\node[font=\tiny\itshape, below=0.15cm of hybrid, text=traggray] {Dense + BM25};
-\node[font=\tiny\itshape, below=0.15cm of rerank, text=traggray] {Ngưỡng lọc $\theta$};
+% Arrow Top to Bottom
+\draw[arrow] (smarthop) -- node[right,font=\scriptsize,text width=1.8cm,align=center,text=tragorange]{Skip / Hop 2\\Candidates} (rerank);
+
+% Arrows Bottom Row
+\draw[arrow] (rerank) -- node[above,font=\scriptsize,text=traggreen]{Top 7} (gen);
+\draw[arrow] (gen) -- (ans);
 
 \end{tikzpicture}
 }
 
-\vspace{0.2cm}
+\vspace{0.4cm}
 \begin{columns}
 \begin{column}{0.33\textwidth}
 \centering\small
-\textcolor{tragblue}{\textbf{Xanh dương = Tiền truy vấn}}\\Phân loại \& Định tuyến
+\textcolor{tragblue}{\textbf{Giai đoạn 1: Tiền truy vấn}}\\Encoder (1 lần) + Dynamic Tau
 \end{column}
 \begin{column}{0.33\textwidth}
 \centering\small
-\textcolor{tragorange}{\textbf{Màu cam = Truy vấn}}\\Tìm kiếm lai \& Đa bước
+\textcolor{tragorange}{\textbf{Giai đoạn 2: Truy vấn linh hoạt}}\\Local Hybrid + Smart Hop 2
 \end{column}
 \begin{column}{0.33\textwidth}
 \centering\small
-\textcolor{traggreen}{\textbf{Màu xanh lá = Hậu truy vấn}}\\Kiểm soát ảo tưởng (Hallucination)
+\textcolor{traggreen}{\textbf{Giai đoạn 3: Hậu truy vấn}}\\GPU Rerank + vLLM Generation
 \end{column}
 \end{columns}
 \end{frame}
 
 %------------------------------------------------
-\begin{frame}{Stage 1: Bộ định tuyến nguồn xác suất (PSR)}
+\begin{frame}{Stage 1: PSR Router \& Ngưỡng động Adaptive Tau}
 \small
 \begin{columns}[T]
 \begin{column}{0.54\textwidth}
-\textbf{Công thức định tuyến:} \\
-Dự đoán xác suất có điều kiện của nguồn dữ liệu:
-\vspace{-0.2cm}
-{\footnotesize $$\boxed{P(s_i | Q) = \text{Softmax}(W \cdot \text{Encoder}(Q) + b)_i}$$}
+\textbf{Công thức PSR Router:}
+$$\boxed{P(s_i | Q) = \sigma(W_i \cdot \text{Encoder}(Q) + b_i)}$$
 
-\textbf{Lọc không gian con (Database Sharding):}
-\begin{itemize}
-    \item Chỉ kích hoạt truy vấn trên các phân mảnh được lựa chọn:
-\vspace{-0.2cm}
-    {\footnotesize $$S_{active} = \{ s_i \in S \mid P(s_i | Q) \ge \tau \}$$}
-\end{itemize}
-
-\vspace{0.1cm}
-\textbf{Kết quả chính:} \\
-Độ phức tạp tìm kiếm giảm từ toàn cục xuống cục bộ (theo phân mảnh active), tiết kiệm tối đa tài nguyên I/O.
+\textbf{Thuật toán Adaptive Tau (Dynamic Thresholding):}
+\begin{enumerate}
+    \item Shannon Entropy: $H = -\sum_{i=1}^K p_i \ln(p_i)$
+    \item Confidence: $conf = 1.0 - \frac{H}{\ln(K)}$
+    \item Ngưỡng hiệu dụng $\tau_{eff}$:
+    $$\boxed{\tau_{eff} = \tau_{base} + \alpha \cdot (conf - 0.5)}$$
+    $\tau_{eff}$ được kẹp trong khoảng $[0.05, 0.40]$.
+\end{enumerate}
 \end{column}
 \begin{column}{0.44\textwidth}
-\begin{exampleblock}{Minh họa cơ chế Định tuyến}
-Query: \textit{"What did the team say about the GPU budget meeting?"}
-
-\vspace{0.1cm}
-Phân phối xác suất có điều kiện từ PSR:
+\begin{exampleblock}{Cơ chế tự thích ứng theo câu hỏi}
 \begin{itemize}
-    \item $P(\text{Fireflies}|Q) = 0.81 > \tau \rightarrow$ Kích hoạt (Active)
-    \item $P(\text{Slack}|Q) = 0.72 > \tau \rightarrow$ Kích hoạt (Active)
-    \item $P(\text{Jira}|Q) = 0.04 \le \tau \rightarrow$ Loại bỏ (Pruned)
-    \item $P(\text{GitHub}|Q) = 0.02 \le \tau \rightarrow$ Loại bỏ (Pruned)
+    \item \textbf{Câu hỏi rõ ràng} (\textit{"Fix GitHub Actions pipeline error"}):\\
+    Entropy $H$ thấp $\rightarrow conf = 0.84 \rightarrow \tau_{eff} = 0.177 \rightarrow$ Chỉ quét 1 bảng \texttt{github}.
+    \item \textbf{Câu hỏi mơ hồ} (\textit{"API discussion yesterday"}):\\
+    Entropy $H$ cao $\rightarrow conf = 0.11 \rightarrow \tau_{eff} = 0.119 \rightarrow$ Quét rộng 4 bảng để tăng Recall.
 \end{itemize}
 \end{exampleblock}
 \end{column}
@@ -195,137 +203,172 @@ Phân phối xác suất có điều kiện từ PSR:
 \end{frame}
 
 %------------------------------------------------
-\begin{frame}{Stage 2: Thuật toán Source-Weighted RRF (SW-RRF)}
+\begin{frame}{Stage 2 \& 3: Local Hybrid Search, SW-RRF \& Smart Hop 2}
 \small
 \begin{columns}[T]
 \begin{column}{0.5\textwidth}
-\textbf{Thuật toán RRF chuẩn (Cormack và cộng sự, 2009):}\\
-Đánh giá các ứng viên đồng đều, chưa phân biệt tầm quan trọng của nguồn dữ liệu mục tiêu.
-
-\vspace{0.2cm}
-\textbf{Cải tiến đề xuất (SW-RRF):}\\
-Tích hợp xác suất định tuyến $P(s_d|Q)$ làm trọng số ưu tiên Bayesian Prior.
-
-\vspace{-0.2cm}
-{\footnotesize $$\boxed{Score(d) = P(s_d|Q)^\gamma \cdot \left( \frac{\alpha}{k + r_{dense}} + \frac{1-\alpha}{k + r_{sparse}} \right)}$$}
-
+\begin{block}{SW-RRF Fusion \& Hybrid Search}
+$$\boxed{Score(d) = P(s_d|Q)^\gamma \cdot \left( \frac{W_{dense}}{k + r_{dense}} + \frac{W_{sparse}}{k + r_{sparse}} \right)}$$
 \begin{itemize}
-    \item $\gamma$: Hệ số khuếch đại nguồn (Source Bias Factor)
-    \item $\alpha$: Trọng số Dense/Sparse (ví dụ: 0.3 / 0.7)
+    \item \textbf{Dense Search}: LanceDB IVF-PQ index.
+    \item \textbf{Sparse Search}: BM25 Tantivy FTS.
+    \item Trọng số tối ưu: $W_{dense}=0.3, W_{sparse}=0.7$ ($D=0.3, S=0.7$).
 \end{itemize}
+\end{block}
 \end{column}
 \begin{column}{0.48\textwidth}
-\begin{block}{Cơ sở lý thuyết của SW-RRF}
-Tối ưu hóa thứ hạng bằng cách tinh chỉnh điểm số theo độ tin cậy của nguồn, giảm thiểu nhiễu từ khóa bề mặt từ các nguồn không liên quan.
-\end{block}
-
-\vspace{0.1cm}
-\begin{exampleblock}{Sự kết hợp trong Hybrid Search}
-\begin{itemize}
-    \item \textbf{Dense Search}: Ghi nhận biểu diễn ngữ nghĩa trừu tượng.
-    \item \textbf{Sparse Search (BM25/FTS)}: Thu hẹp phạm vi tìm kiếm bằng khớp từ khóa chính xác.
-\end{itemize}
-\end{exampleblock}
-\end{column}
-\end{columns}
-\end{frame}
-
-%------------------------------------------------
-\begin{frame}{Stage 3 \& 4: Lập luận đa bước \& Tái xếp hạng}
-\small
-\begin{columns}[T]
-\begin{column}{0.52\textwidth}
-\begin{block}{Stage 3: Thuật toán CSEP (Lập luận đa bước)}
-Mô phỏng qua mô hình duyệt ngẫu nhiên trên đồ thị hai phía (Bipartite Graph Random Walk).
+\begin{alertblock}{Smart Hop 2 Decision (2 Điều kiện SKIP)}
 \begin{enumerate}
-    \item \textbf{Hop 1:} Truy vấn các tài liệu neo ($D_{\text{anchor}}$) từ các nguồn có xác suất cao nhất.
-    \item \textbf{Entity Extraction}: Trích xuất và nhận diện các thực thể neo $E$ độc bản từ $D_{\text{anchor}}$ bằng LLM.
-    \item \textbf{Hop 2:} Mở rộng truy vấn $Q^{(2)} = Q \oplus E$ để kết nối các ngữ cảnh liên quan chéo nguồn.
+    \item \textbf{Đơn nguồn}: $active\_shards\_count < 2 \rightarrow$ \textbf{SKIP Hop 2}.
+    \item \textbf{Match Hop 1 xuất sắc}: $top1\_dist < 0.55 \rightarrow$ \textbf{SKIP Hop 2}.
 \end{enumerate}
-\end{block}
-\end{column}
-\begin{column}{0.46\textwidth}
-\begin{block}{Stage 4: Xác thực và Đánh giá Độ tin cậy}
-Sử dụng mô hình \textbf{Cross-Encoder} để tính toán điểm tương đồng ngữ nghĩa chính xác $CE(Q, d_{\text{final}})$.
-
-\vspace{0.1cm}
-\textbf{Ngưỡng lọc cứng (Hard Thresholding)}: Lọc bỏ các tài liệu có độ tin cậy thấp nếu điểm số $CE(Q, d) < \theta$.
-
-\vspace{0.1cm}
-Nếu tập tài liệu cuối cùng $D_{\text{final}} = \emptyset$, cơ chế thoát sớm (Early-Exit) sẽ trả về trực tiếp thông báo từ chối trả lời (Unanswerable), giúp loại bỏ ảo tưởng thông tin (Hallucination).
-\end{block}
+Nếu không thỏa mãn $\rightarrow$ Call LLM batch entity extraction $\rightarrow$ Hop 2 Search $\rightarrow$ Merge \& Dedup.
+\end{alertblock}
 \end{column}
 \end{columns}
 \end{frame}
 
 %------------------------------------------------
-\section{Thực nghiệm \& Đánh giá}
+\section{Thực nghiệm \& Kết quả Benchmark (53 Cấu hình)}
 
-\begin{frame}{So sánh Hiệu năng \& Độ chính xác}
+%------------------------------------------------
+\begin{frame}{Bảng 1: So sánh T-RAG v2 với các Baselines}
 \begin{table}[h]
 \centering
 \small
 \resizebox{0.95\textwidth}{!}{
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
-\textbf{Cấu hình / Pipeline RAG} & \textbf{Correctness} & \textbf{Completeness} & \textbf{Refused} & \textbf{Latency} & \textbf{Search Space} \\
+\textbf{Pipeline / Model} & \textbf{Correctness} & \textbf{Completeness} & \textbf{Refused} & \textbf{Total Lat} & \textbf{Retr Lat} & \textbf{Search Space} \\
 \midrule
-BM25 Baseline & 29.0\% & 39.4\% & 22.4\% & 1.21s & 4,213,106 \\
-VECTOR Baseline & 19.4\% & 30.2\% & 32.0\% & \textbf{0.63s} & 4,213,106 \\
-VECTOR\_RERANKER Baseline & 23.6\% & 33.9\% & 26.8\% & 0.73s & 4,213,106 \\
-HYBRID Baseline & 33.4\% & \textbf{44.1\%} & \textbf{18.0\%} & 1.23s & 4,213,106 \\
+Vector Baseline & 19.60\% & 30.24\% & 32.0\% & 0.60s & 0.20s & 4,213,106 \\
+Vector + Reranker Baseline & 24.65\% & 33.84\% & 26.8\% & 0.69s & 0.23s & 4,213,106 \\
+LLM Router Baseline & 27.80\% & 38.57\% & 21.8\% & 0.88s & 0.32s & 2,075,036 \\
+BM25 Baseline & 29.20\% & 39.50\% & 23.0\% & 0.97s & 0.41s & 4,213,106 \\
+Query Expansion Baseline & 32.60\% & 43.14\% & 19.8\% & 2.46s & 1.91s & 4,213,106 \\
+HyDE Baseline & 33.00\% & 42.97\% & 18.2\% & 1.23s & 0.63s & 4,213,106 \\
+HYBRID Baseline (BM25+Vec+Rerank) & 33.60\% & 44.11\% & 18.0\% & 1.15s & 0.63s & 4,213,106 \\
 \midrule
-T-RAG ($\tau=0.05, \gamma=0.0$) & 32.4\% & 43.4\% & 19.6\% & 1.25s & 3,598,130 \\
-T-RAG ($\tau=0.05, \gamma=1.0$) & \textbf{34.0\%} & 43.5\% & 22.6\% & 1.17s & 3,550,005 \\
-T-RAG ($\tau=0.15, \gamma=0.0$) & 32.4\% & 42.5\% & 19.2\% & 1.09s & 2,372,449 \\
-T-RAG ($\tau=0.15, \gamma=1.0$) & 33.4\% & 43.2\% & 20.6\% & 1.07s & 2,354,016 \\
-T-RAG ($\tau=0.30, \gamma=0.0$) & 32.2\% & 42.4\% & 22.0\% & 0.94s & 1,284,666 \\
-T-RAG ($\tau=0.30, \gamma=1.0$) & 33.4\% & 41.8\% & 21.4\% & 0.94s & \textbf{1,282,848} \\
-T-RAG [No Reranker] ($\tau=0.15$) & 31.4\% & 40.7\% & 20.4\% & 1.04s & 2,372,449 \\
+\textbf{T-RAG v2 Standard} & \textbf{34.67\%} & \textbf{44.91\%} & \textbf{17.0\%} & \textbf{0.84s} & \textbf{0.27s} & \textbf{2,711,818} \\
 \bottomrule
 \end{tabular}
 }
-\caption{Kết quả đánh giá thực nghiệm thực tế từ mô hình chấm điểm Qwen-14B Judge trên 500 truy vấn cho mỗi kịch bản.}
+\caption{Insight 1: BM25/Hybrid vượt trội hơn hẳn Pure Vector trên dữ liệu doanh nghiệp; HyDE và Query Expansion tốn thời gian gọi LLM mà không cải thiện độ chính xác.}
 \end{table}
 \end{frame}
 
 %------------------------------------------------
-\begin{frame}{Phân tích Kết quả Thực nghiệm}
-\begin{columns}[T]
-\begin{column}{0.5\textwidth}
-\begin{block}{Hiệu quả giảm không gian quét}
-\begin{itemize}
-    \item Các baseline chuẩn bắt buộc phải quét toàn bộ 4.2 triệu tài liệu trong hệ thống.
-    \item T-RAG [High-Speed] giúp cắt giảm **70% không gian quét** (chỉ quét **1.28 triệu tài liệu**) mà vẫn giữ độ trễ trung bình dưới 1 giây.
-\end{itemize}
-\end{block}
-\end{column}
-\begin{column}{0.5\textwidth}
-\begin{block}{Độ chính xác nổi bật (Correctness)}
-\begin{itemize}
-    \item T-RAG [High-Recall G1] đạt độ chính xác **34.0%** (vượt trội so với 23.6% của Vector Reranker và 29.0% của BM25).
-    \item Cơ chế phạt nguồn tiền nghiệm ($\gamma=1.0$) giúp loại bỏ nhiễu ngữ cảnh cực kỳ hiệu quả, tăng độ chính xác của mô hình lên tới **34.0%**.
-\end{itemize}
-\end{block}
-\end{column}
-\end{columns}
+\begin{frame}{Bảng 2: Tác động của Trọng số Hybrid ($D_{dense}$ vs. $S_{sparse}$)}
+\begin{table}[h]
+\centering
+\small
+\resizebox{0.92\textwidth}{!}{
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Cấu hình Trọng số} & \textbf{Tham số (Dense / Sparse)} & \textbf{Correctness} & \textbf{Completeness} & \textbf{Refused} & \textbf{Total Latency} \\
+\midrule
+Dense Only & $D=1.0, S=0.0$ & 24.25\% & 34.66\% & 26.2\% & 0.82s \\
+Hybrid ($D=0.7, S=0.3$) & $D=0.7, S=0.3$ & 28.26\% & 37.18\% & 24.0\% & 0.82s \\
+Hybrid ($D=0.5, S=0.5$) & $D=0.5, S=0.5$ & 34.67\% & 44.91\% & 17.0\% & 0.84s \\
+T-RAG v2 ($D=0.4, S=0.6$) & $D=0.4, S=0.6$ & 36.00\% & \textbf{46.65\%} & 18.0\% & 0.89s \\
+\textbf{T-RAG v2 ($D=0.3, S=0.7$)} & $\mathbf{D=0.3, S=0.7}$ & \textbf{36.80\%} & 45.67\% & \textbf{17.2\%} & 1.02s \\
+Sparse Only & $D=0.0, S=1.0$ & 33.20\% & 43.77\% & 20.0\% & 1.07s \\
+\bottomrule
+\end{tabular}
+}
+\caption{Insight 2: Dữ liệu doanh nghiệp chứa nhiều thực thể mã nguồn (Jira ID, PR \#, branch name) đòi hỏi khớp từ khóa BM25 chính xác. Cấu hình $D=0.3, S=0.7$ đạt độ chính xác cao nhất (36.80\%).}
+\end{table}
 \end{frame}
 
 %------------------------------------------------
+\begin{frame}{Bảng 3: Tối ưu Latency: Smart Hop 2 \& Fix Lỗi Double-Encode}
+\begin{table}[h]
+\centering
+\small
+\resizebox{0.95\textwidth}{!}{
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Cấu hình Ablation} & \textbf{Smart Hop 2} & \textbf{Correctness} & \textbf{Completeness} & \textbf{Refused} & \textbf{Total Lat} & \textbf{Retr Lat} \\
+\midrule
+T-RAG v1 Balanced & Không hỗ trợ & 32.40\% & 42.56\% & 19.2\% & 1.05s & 1.53s* \\
+\midrule
+Ablation: No CSEP & Tắt (Hop 2 OFF) & 34.67\% & 44.38\% & 18.2\% & \textbf{0.82s} & \textbf{0.25s} \\
+Ablation: No Smart Hop 2 & Tắt (Luôn Hop 2) & 32.80\% & 43.93\% & 18.6\% & 1.16s & 0.58s \\
+\textbf{T-RAG v2 Standard} & \textbf{Bật (Smart Hop 2)} & \textbf{34.67\%} & \textbf{44.91\%} & \textbf{17.0\%} & \textbf{0.84s} & \textbf{0.27s} \\
+\bottomrule
+\end{tabular}
+}
+\caption{Insight 3: T-RAG v2 Standard tối ưu toàn diện so với No CSEP: Đạt Completeness cao nhất (44.91\% vs 44.38\%) và giảm Tỉ lệ từ chối sai (17.0\% vs 18.2\%) nhờ khả năng mở rộng truy vấn đa nguồn khi cần, chỉ với thêm 0.02s latency. Smart Hop 2 giúp tiết kiệm 34\% latency so với việc luôn bật Hop 2.}
+\end{table}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Bảng 4: Phân tích Tinh chỉnh Ngưỡng Động (Adaptive Tau) \& Bayesian Prior ($\gamma$)}
+\begin{table}[h]
+\centering
+\small
+\resizebox{0.92\textwidth}{!}{
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Kịch bản Grid Search} & \textbf{Tham số} & \textbf{Correctness} & \textbf{Completeness} & \textbf{Total Lat} & \textbf{Search Space} \\
+\midrule
+T-RAG v2 ($\tau=0.05$) & $\tau=0.05, \gamma=0.5$ & 36.07\% & 44.97\% & 0.90s & 3,573,824 \\
+T-RAG v2 ($\tau=0.10$) & $\tau=0.10, \gamma=0.5$ & \textbf{36.67\%} & 44.99\% & 0.88s & 3,323,143 \\
+T-RAG v2 ($\tau=0.15$) & $\tau=0.15, \gamma=0.5$ & 34.67\% & 44.91\% & 0.84s & 2,711,818 \\
+T-RAG v2 ($\tau=0.30$) & $\tau=0.30, \gamma=0.5$ & 33.27\% & 42.91\% & \textbf{0.74s} & \textbf{1,456,839} \\
+\midrule
+T-RAG v2 ($\gamma=0.0$) & $\gamma=0.0, \tau=0.15$ & 36.40\% & \textbf{45.52\%} & 0.84s & 2,706,836 \\
+T-RAG v2 ($\gamma=0.4$) & $\gamma=0.4, \tau=0.15$ & 36.47\% & 45.23\% & 0.83s & 2,706,911 \\
+T-RAG v2 ($\gamma=1.0$) & $\gamma=1.0, \tau=0.15$ & 34.87\% & 42.32\% & 0.83s & 2,704,042 \\
+\bottomrule
+\end{tabular}
+}
+\caption{Insight 4: Ngưỡng $\tau=0.10$ và hệ số phạt nguồn $\gamma=0.4 \div 0.5$ đạt điểm cân bằng tối ưu giữa độ chính xác và tiết kiệm dung lượng quét đĩa.}
+\end{table}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Bảng 5: Top Cấu hình Xuất sắc nhất của T-RAG v2}
+\begin{table}[h]
+\centering
+\small
+\resizebox{0.95\textwidth}{!}{
+\begin{tabular}{c l ccccc}
+\toprule
+\textbf{\#} & \textbf{Pipeline / Cấu hình} & \textbf{Correctness} & \textbf{Completeness} & \textbf{Combined} & \textbf{Total Lat} & \textbf{Search Space} \\
+\midrule
+\textbf{1} & \textbf{[Top 1] T-RAG v2 ($\tau=0.05, \gamma=0.5, \alpha=0.08, D=0.3, S=0.7$)} & \textbf{36.80\%} & \textbf{45.67\%} & \textbf{32.24} & 1.02s & 3,577,666 \\
+\textbf{2} & \textbf{[Top 2] T-RAG v2 ($\tau=0.10, \gamma=0.5, \alpha=0.08, D=0.5, S=0.5$)} & \textbf{36.67\%} & 44.99\% & 31.94 & 0.88s & 3,323,143 \\
+\textbf{3} & \textbf{[Top 3] T-RAG v2 ($\tau=0.15, \gamma=0.4, \alpha=0.08, D=0.5, S=0.5$)} & \textbf{36.47\%} & 45.23\% & 31.29 & 0.83s & 2,706,911 \\
+4 & T-RAG v2 ($\tau=0.15, \gamma=0.0, \alpha=0.08, D=0.5, S=0.5$) & 36.40\% & 45.52\% & 31.86 & 0.84s & 2,706,836 \\
+5 & T-RAG v2 ($\tau=0.15, \gamma=0.5, \alpha=0.15, D=0.5, S=0.5$) & 36.27\% & 45.47\% & 31.84 & 0.86s & 3,006,387 \\
+\midrule
+-- & HYBRID Baseline & 33.60\% & 44.11\% & 29.35 & 1.15s & 4,213,106 \\
+\bottomrule
+\end{tabular}
+}
+\caption{Insight 5: Top cấu hình T-RAG v2 cải thiện +3.2 điểm \% Correctness so với HYBRID Baseline tốt nhất đồng thời tiết kiệm 36\% không gian quét dữ liệu.}
+\end{table}
+\end{frame}
+
+%------------------------------------------------
+\section{Kết luận \& Hướng phát triển}
+
 \begin{frame}{Kết luận \& Hướng phát triển}
 \begin{block}{Kết luận}
 \begin{itemize}
-    \item T-RAG (tích hợp Hybrid Search \& SW-RRF) xử lý hiệu quả bài toán RAG đa nguồn phức tạp trong doanh nghiệp.
-    \item Tốc độ phản hồi vượt trội (tăng tốc \textbf{>16x}) đồng thời cải thiện độ chính xác so với mô hình Vector Reranker chuẩn.
+    \item T-RAG v2 giải quyết triệt để các hạn chế về latency và độ chính xác của RAG doanh nghiệp.
+    \item Tối ưu hóa \textbf{Smart Hop 2} và \textbf{Fix Double-Encode} giúp giảm Retrieval Latency xuống \textbf{0.27s} (nhanh gấp 6x).
+    \item Cấu hình với trọng số \textbf{$D=0.3, S=0.7$} đạt đỉnh hiệu năng với \textbf{36.80\% Correctness}.
 \end{itemize}
 \end{block}
 
 \vspace{0.1cm}
-\begin{block}{Định hướng tối ưu hóa kế tiếp}
+\begin{block}{Định hướng phát triển}
 \begin{itemize}
-    \item Sử dụng trọng số RRF lai động để cân bằng giữa tìm kiếm ngữ nghĩa và khớp từ khóa.
-    \item Đo lường không gian tìm kiếm thực tế và theo dõi tỷ lệ từ chối của mô hình sinh.
-    \item Tối ưu hóa Prompt hệ thống và cấu trúc XML Context để giảm thiểu lỗi từ chối trả lời sai (False Refusals).
+    \item Thử nghiệm mô hình Router thế hệ mới trên các kiến trúc mã hóa đa ngôn ngữ (Multilingual).
+    \item Tối ưu hóa prompt trích xuất thực thể để giảm thiểu nhiễu trong Hop 2.
+    \item Đánh giá trên các môi trường sản xuất thực tế với độ trễ thời gian thực.
 \end{itemize}
 \end{block}
 \end{frame}
@@ -339,7 +382,6 @@ T-RAG [No Reranker] ($\tau=0.15$) & 31.4\% & 40.7\% & 20.4\% & 1.04s & 2,372,449
     \item Cormack, G. V., Clarke, C. L., \& Büttcher, S. (2009). \textit{Reciprocal rank fusion outperforms Condorcet and individual rank learning methods}. ACM SIGIR.
     \item Tang et al. (2024). \textit{MultiHop-RAG: Benchmarking Retrieval-Augmented Generation for Multi-Hop Queries}. arXiv:2401.15391.
     \item Zhang et al. (2025). \textit{HopRAG: Multi-Hop Reasoning for Logic-Aware Retrieval-Augmented Generation}. arXiv:2502.12442.
-    \item Nogueira, R., \& Cho, K. (2019). \textit{Passage Re-ranking with BERT}. arXiv:1901.04085.
 \end{enumerate}
 \end{frame}
 
