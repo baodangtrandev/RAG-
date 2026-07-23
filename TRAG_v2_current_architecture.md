@@ -224,13 +224,14 @@ Câu hỏi mơ hồ: "What happened in yesterday's meeting about the API?"
 
 **Kết quả benchmark (Alpha Grid Search):**
 
-|        Alpha        | Correctness |  Latency  | Search Space  |
-| :-----------------: | :---------: | :-------: | :-----------: |
-|    0.00 (static)    |    36.5%    |   0.97s   |   2,393,189   |
-|        0.04         |    36.5%    |   1.00s   |   2,562,116   |
-| **0.08 (mặc định)** |  **36.3%**  | **1.00s** | **2,711,818** |
-|        0.25         |    36.7%    |   1.05s   |   3,416,644   |
-|        0.50         |    36.3%    |   1.06s   |   3,573,824   |
+| Pipeline / Cấu hình | Corr% | Comp% | Combined | Refused% | Total Lat | Retr Lat | Search Space |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+| Grid Alpha = 0.00 (static) | 35.67% | 44.19% | 30.69 | 18.0% | **0.82s** | **0.25s** | **2,393,189** |
+| Grid Alpha = 0.04 | 35.07% | 45.20% | 30.77 | 18.6% | 0.83s | 0.26s | 2,562,116 |
+| Grid Alpha = 0.08 (mặc định v2) | 34.67% | 44.91% | 30.72 | **17.0%** | 0.84s | 0.27s | 2,711,818 |
+| Grid Alpha = 0.15 | **36.27%** | **45.47%** | **31.84** | 17.8% | 0.86s | 0.28s | 3,006,387 |
+| Grid Alpha = 0.25 | 34.87% | 44.37% | 30.62 | 17.2% | 0.90s | 0.32s | 3,416,644 |
+| Grid Alpha = 0.50 | 36.07% | 44.99% | 31.40 | 17.4% | 0.90s | 0.33s | 3,573,824 |
 
 > **Nhận xét:** Adaptive Tau (alpha > 0) cho phép tăng nhẹ Search Space ở các câu hỏi khó (mở rộng recall) mà không làm tăng đáng kể latency. Tuy nhiên, hiệu quả trên benchmark hiện tại chưa quá rõ rệt (chênh lệch ~0.2-0.4% Correctness), có thể do tập dữ liệu chưa đủ đa dạng để phân biệt.
 
@@ -249,12 +250,13 @@ Trên **mỗi Shard được kích hoạt**, T-RAG v2 thực hiện đồng th�
 
 **Phát hiện quan trọng từ benchmark:**
 
-| Cấu hình trọng số              | Correctness | Completeness |
-| :----------------------------- | :---------: | :----------: |
-| Dense Only (D=1.0, S=0.0)      |  **25.4%**  |    35.4%     |
-| Hybrid Balanced (D=0.5, S=0.5) |    36.3%    |    46.6%     |
-| Sparse Heavy (D=0.3, S=0.7)    |    35.4%    |  **47.6%**   |
-| Sparse Only (D=0.0, S=1.0)     |    36.0%    |    46.6%     |
+| Pipeline / Cấu hình | Corr% | Comp% | Combined | Refused% | Total Lat | Retr Lat | Search Space |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+| Dense Only (D=1.0, S=0.0) | 24.25% | 34.66% | 21.11 | 26.2% | **0.82s** | **0.25s** | 2,705,415 |
+| Hybrid Balanced (D=0.5, S=0.5) | 34.67% | 44.91% | 30.72 | **17.0%** | 0.84s | 0.27s | 2,711,818 |
+| Hybrid Dense/Sparse (D=0.4, S=0.6) | **36.00%** | **46.65%** | **32.01** | 18.0% | 0.89s | 0.31s | 2,706,057 |
+| Hybrid Sparse Heavy (D=0.3, S=0.7) | 35.80% | 45.61% | 31.85 | 18.6% | 0.92s | 0.36s | **2,687,974** |
+| Sparse Only (D=0.0, S=1.0) | 33.20% | 43.77% | 29.88 | 20.0% | 1.07s | 0.48s | 2,691,477 |
 
 > **Kết luận:** Trên dữ liệu Enterprise, BM25 (Sparse) vượt trội hơn hẳn Vector Search (Dense). Điều này hợp lý vì dữ liệu doanh nghiệp chứa nhiều thực thể đặc thù (ticket ID `PROJ-1234`, PR number `#102`, branch name `fix/auth-bug`) — nơi mà khớp từ khóa chính xác hiệu quả hơn tìm kiếm ngữ nghĩa.
 
@@ -304,13 +306,14 @@ Document B (từ bảng github):
 
 **Kết quả benchmark Gamma Grid Search:**
 
-|         Gamma         | Correctness | Completeness |  Refused  |
-| :-------------------: | :---------: | :----------: | :-------: |
-|   0.0 (không phạt)    |    34.2%    |    46.5%     |   12.4%   |
-|          0.3          |    35.7%    |    45.7%     |   15.4%   |
-| **0.5 (mặc định v2)** |  **36.3%**  |  **46.6%**   | **15.0%** |
-|          0.7          |    34.5%    |    45.8%     |   15.6%   |
-|          1.0          |    33.3%    |    44.8%     |   16.0%   |
+| Pipeline / Cấu hình | Corr% | Comp% | Combined | Refused% | Total Lat | Retr Lat | Search Space |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+| Grid Gamma = 0.0 (không phạt) | 36.40% | **45.52%** | **31.86** | **17.0%** | 0.84s | 0.25s | 2,706,836 |
+| Grid Gamma = 0.3 | 34.47% | 44.54% | 30.19 | 18.0% | **0.82s** | **0.25s** | 2,706,695 |
+| Grid Gamma = 0.4 | **36.47%** | 45.23% | 31.29 | 18.4% | 0.83s | 0.25s | 2,706,911 |
+| Grid Gamma = 0.5 (mặc định v2) | 34.67% | 44.91% | 30.72 | **17.0%** | 0.84s | 0.27s | 2,711,818 |
+| Grid Gamma = 0.7 | 34.07% | 44.39% | 29.84 | 17.6% | 0.83s | 0.25s | **2,698,037** |
+| Grid Gamma = 1.0 | 34.87% | 42.32% | 29.71 | 19.0% | 0.83s | 0.27s | 2,704,042 |
 
 > **Nhận xét:** Gamma = 0.5 là điểm cân bằng tối ưu. Gamma quá thấp (0.0) khiến Router mất ảnh hưởng, Gamma quá cao (1.0) phạt quá nặng các nguồn có xác suất thấp, bỏ sót thông tin hữu ích.
 
@@ -355,11 +358,11 @@ Câu hỏi 2: "What code changes were made for JIRA-5678?"
 
 **Kết quả benchmark Ablation Study:**
 
-| Cấu hình                                   | Correctness | Total Latency | Retrieval Latency |
-| :----------------------------------------- | :---------: | :-----------: | :---------------: |
-| **T-RAG v2 Standard (Smart Hop 2 BẬT)**    |  **36.3%**  |   **1.00s**   |     **0.27s**     |
-| Ablation: No Smart Hop 2 (Luôn chạy Hop 2) |    35.9%    |     1.34s     |       0.60s       |
-| Ablation: No CSEP (Bỏ hoàn toàn Hop 2)     |    34.5%    |     0.98s     |       0.24s       |
+| Pipeline / Cấu hình | Corr% | Comp% | Combined | Refused% | Total Lat | Retr Lat | Search Space |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+| T-RAG v2 Standard (Smart Hop 2 BẬT) | **34.67%** | **44.91%** | **30.72** | **17.0%** | 0.84s | 0.27s | 2,711,818 |
+| Ablation: No Smart Hop 2 (Luôn chạy Hop 2) | 32.80% | 43.93% | 29.39 | 18.6% | 1.16s | 0.58s | **2,681,805** |
+| Ablation: No CSEP (Bỏ hoàn toàn Hop 2) | **34.67%** | 44.38% | 30.13 | 18.2% | **0.82s** | **0.25s** | 2,704,197 |
 
 > **Kết luận:**
 >
@@ -459,13 +462,13 @@ Answer:
 
 ## 4. So Sánh T-RAG v2 vs Baselines vs T-RAG v1 (Highlight)
 
-| Pipeline                        | Correctness | Completeness |  Refused  | Retr Latency | Ghi chú                    |
-| :------------------------------ | :---------: | :----------: | :-------: | :----------: | :------------------------- |
-| VECTOR Baseline                 |    20.0%    |    30.3%     |   32.0%   |    0.21s     | Yếu nhất                   |
-| BM25 Baseline                   |    29.4%    |    39.5%     |   23.0%   |    0.43s     | Từ khóa thuần              |
-| HYBRID Baseline                 |    33.4%    |    44.1%     |   18.0%   |    0.69s     | Kết hợp nhưng quét toàn bộ |
-| T-RAG v1 Best (Tau=0.05, G=1.0) |    34.2%    |    43.5%     |   22.6%   |    2.19s*    | Bị lỗi double-encode       |
-| **T-RAG v2 Standard**           |  **36.3%**  |  **46.6%**   | **15.0%** |  **0.27s**   | **Cấu hình tối ưu**        |
+| Pipeline / Cấu hình | Corr% | Comp% | Combined | Refused% | Total Lat | Retr Lat | Search Space |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+| VECTOR Baseline | 19.60% | 30.24% | 16.47 | 32.0% | **0.60s** | **0.20s** | 4,213,106 |
+| BM25 Baseline | 29.20% | 39.50% | 25.23 | 23.0% | 0.97s | 0.41s | 4,213,106 |
+| HYBRID Baseline | 33.60% | 44.11% | 29.35 | 18.0% | 1.15s | 0.63s | 4,213,106 |
+| T-RAG v1 Best (Tau=0.05, G=1.0) | 33.80% | 43.43% | 29.71 | 22.6% | 1.19s | 2.31s | 3,550,005 |
+| T-RAG v2 Standard | **34.67%** | **44.91%** | **30.72** | **17.0%** | 0.84s | 0.27s | **2,711,818** |
 
 > `*` Retrieval Latency của T-RAG v1 bị phồng do lỗi double-encode (mã hóa vector 2 lần trong Hop 2).
 

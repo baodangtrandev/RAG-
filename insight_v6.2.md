@@ -80,15 +80,15 @@
 
 ### 2.1. Baselines (7 pipelines)
 
-| Pipeline | Corr% | Comp% | Lat | Config |
-|:---|:---:|:---:|:---:|:---|
-| Hybrid | 33.60 | 44.11 | 1.15s | BM25+Vector Hybrid → Rerank → K=5 |
-| HyDE | 33.00 | 42.97 | 1.23s | LLM gen hypothetical → Embed → Hybrid → Rerank |
-| Query Expansion | 32.60 | 43.14 | **2.46s** | LLM gen 3 sub-queries → 4× Hybrid → RRF → Rerank |
-| BM25 | 29.20 | 39.50 | 0.97s | Pure BM25 → K=5 |
-| LLM Router | 27.80 | 38.57 | 0.88s | LLM routes shards → Hybrid → RRF → Rerank |
-| Vector+Reranker | 24.65 | 33.84 | 0.69s | Pure Vector → Rerank → K=5 |
-| Vector | 19.60 | 30.24 | 0.60s | Pure Vector → K=5 |
+| Pipeline / Cấu hình | Corr% | Comp% | Combined | Refused% | Total Lat | Retr Lat | Search Space |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+| HYBRID Baseline (Best Baseline) | **33.60%** | **44.11%** | **29.35** | **18.0%** | 1.15s | 0.63s | 4,213,106 |
+| HyDE Baseline | 33.00% | 42.97% | 28.01 | 18.2% | 1.23s | 0.63s | 4,213,106 |
+| Query Expansion Baseline | 32.60% | 43.14% | 28.34 | 19.8% | 2.46s | 1.91s | 4,213,106 |
+| BM25 Baseline | 29.20% | 39.50% | 25.23 | 23.0% | 0.97s | 0.41s | 4,213,106 |
+| LLM Router Baseline | 27.80% | 38.57% | 23.96 | 21.8% | 0.88s | 0.32s | **2,075,036** |
+| VECTOR_RERANKER Baseline | 24.65% | 33.84% | 20.89 | 26.8% | 0.69s | 0.23s | 4,213,106 |
+| VECTOR Baseline | 19.60% | 30.24% | 16.47 | 32.0% | **0.60s** | **0.20s** | 4,213,106 |
 
 > [!IMPORTANT]
 > **Insight 1:** Hybrid Baseline (33.60%) là baseline mạnh nhất. HyDE và Query Expansion không cải thiện đáng kể mặc dù tốn thêm 1 lần gọi LLM (tăng latency 7-114%). LLM Router kém hơn cả BM25 vì routing sai shard sẽ mất hoàn toàn context.
@@ -100,15 +100,15 @@
 
 ### 2.2. T-RAG v1 (7 pipelines)
 
-| Pipeline | Corr% | Comp% | Retr Lat | Config |
-|:---|:---:|:---:|:---:|:---|
-| Balanced G1 (γ=1.0) | 33.80 | 43.29 | **1.48s** | τ=0.15, γ=1.0 |
-| High-Recall G1 (γ=1.0) | 33.80 | 43.43 | **2.31s** | τ=0.05, γ=1.0 |
-| High-Speed G1 (γ=1.0) | 33.00 | 41.86 | **1.08s** | τ=0.30, γ=1.0 |
-| Balanced (γ=0.0) | 32.40 | 42.56 | **1.53s** | τ=0.15, γ=0.0 |
-| High-Recall (γ=0.0) | 32.40 | 43.25 | **2.28s** | τ=0.05, γ=0.0 |
-| High-Speed (γ=0.0) | 32.20 | 42.44 | **1.01s** | τ=0.30, γ=0.0 |
-| No Reranker | 31.80 | 40.72 | **1.66s** | τ=0.15, no reranker |
+| Pipeline / Cấu hình | Corr% | Comp% | Combined | Refused% | Total Lat | Retr Lat | Search Space |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+| Balanced G1 (Tau=0.15, Gamma=1.0) | **33.80%** | 43.29% | 29.66 | 20.6% | 1.02s | 1.48s | 2,354,016 |
+| High-Recall G1 (Tau=0.05, Gamma=1.0) | **33.80%** | **43.43%** | **29.71** | 22.6% | 1.19s | 2.31s | 3,550,005 |
+| High-Speed G1 (Tau=0.30, Gamma=1.0) | 33.00% | 41.86% | 29.15 | 21.4% | 0.93s | 1.08s | **1,282,848** |
+| Balanced (Tau=0.15, Gamma=0.0) | 32.40% | 42.56% | 27.91 | **19.2%** | 1.05s | 1.53s | 2,372,449 |
+| High-Recall (Tau=0.05, Gamma=0.0) | 32.40% | 43.25% | 28.15 | 19.6% | 1.25s | 2.28s | 3,598,130 |
+| High-Speed (Tau=0.30, Gamma=0.0) | 32.20% | 42.44% | 28.36 | 22.0% | **0.92s** | **1.01s** | 1,284,666 |
+| No Reranker (Tau=0.15, Gamma=0.0) | 31.80% | 40.72% | 27.69 | 20.8% | 1.06s | 1.66s | 2,372,449 |
 
 > [!IMPORTANT]
 > **Insight 3:** T-RAG v1 chỉ đạt tối đa 33.80% (ngang Hybrid Baseline). Retrieval Latency cực cao (1.0s - 2.3s) do bug double-encoding. Gamma=1.0 (G1) luôn tốt hơn gamma=0.0 khoảng 1-1.4% absolute.
@@ -117,13 +117,13 @@
 
 ### 2.3. T-RAG v2 Grid Search: τ_base
 
-| τ_base | Corr% | Comp% | Retr Lat | Search Space |
-|:---:|:---:|:---:|:---:|---:|
-| **0.10** | **36.67** | 44.99 | 0.29s | 3,323,143 |
-| 0.05 | 36.07 | 44.97 | 0.33s | 3,573,824 |
-| 0.15 (default) | 34.67 | 44.91 | 0.27s | 2,711,818 |
-| 0.20 | 35.47 | 44.50 | 0.23s | 2,219,777 |
-| 0.30 | 33.27 | 42.91 | 0.18s | 1,456,839 |
+| Pipeline / Cấu hình | Corr% | Comp% | Combined | Refused% | Total Lat | Retr Lat | Search Space |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+| Grid Tau = 0.10 | **36.67%** | **44.99%** | **31.94** | 18.4% | 0.88s | 0.29s | 3,323,143 |
+| Grid Tau = 0.05 | 36.07% | 44.97% | 31.24 | 17.4% | 0.90s | 0.33s | 3,573,824 |
+| T-RAG v2 Standard (Tau=0.15, default) | 34.67% | 44.91% | 30.72 | **17.0%** | 0.84s | 0.27s | 2,711,818 |
+| Grid Tau = 0.20 | 35.47% | 44.50% | 30.63 | 18.0% | 0.80s | 0.23s | 2,219,777 |
+| Grid Tau = 0.30 | 33.27% | 42.91% | 29.33 | 18.0% | **0.74s** | **0.18s** | **1,456,839** |
 
 > [!IMPORTANT]
 > **Insight 4:** τ=0.10 là **sweet spot** tốt nhất, không phải τ=0.05 (quá rộng → nhiễu) hay τ=0.15 (mặc định, hơi chặt → bỏ sót). Tau nhỏ hơn = lấy nhiều tài liệu hơn ở Hop 1 → Reranker có nhiều ứng viên tốt hơn để chọn.
@@ -132,14 +132,14 @@
 
 ### 2.4. T-RAG v2 Grid Search: γ (Gamma - Diversity Penalty)
 
-| γ | Corr% | Comp% |
-|:---:|:---:|:---:|
-| **0.0** | **36.40** | **45.52** |
-| 0.3 | 34.47 | 44.54 |
-| 0.4 | 36.47 | 45.23 |
-| 0.5 (default) | 34.67 | 44.91 |
-| 0.7 | 34.07 | 44.39 |
-| 1.0 | 34.87 | 42.32 |
+| Pipeline / Cấu hình | Corr% | Comp% | Combined | Refused% | Total Lat | Retr Lat | Search Space |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+| Grid Gamma = 0.0 | 36.40% | **45.52%** | **31.86** | **17.0%** | 0.84s | 0.25s | 2,706,836 |
+| Grid Gamma = 0.4 | **36.47%** | 45.23% | 31.29 | 18.4% | 0.83s | 0.25s | 2,706,911 |
+| Grid Gamma = 0.5 (default) | 34.67% | 44.91% | 30.72 | **17.0%** | 0.84s | 0.27s | 2,711,818 |
+| Grid Gamma = 0.3 | 34.47% | 44.54% | 30.19 | 18.0% | **0.82s** | **0.25s** | 2,706,695 |
+| Grid Gamma = 0.7 | 34.07% | 44.39% | 29.84 | 17.6% | 0.83s | 0.25s | **2,698,037** |
+| Grid Gamma = 1.0 | 34.87% | 42.32% | 29.71 | 19.0% | 0.83s | 0.27s | 2,704,042 |
 
 > [!IMPORTANT]
 > **Insight 5:** γ=0.0 (tắt hoàn toàn diversity penalty) đạt **36.40%**, là giá trị Gamma tốt nhất. γ=0.4 cũng rất tốt (36.47%). Điều này cho thấy: trên tập dữ liệu doanh nghiệp, việc giữ nguyên các tài liệu giống nhau (không phạt trùng lặp) mang lại hiệu quả cao hơn vì các tài liệu "trùng lặp" thực chất là các phiên bản/góc nhìn khác nhau về cùng một chủ đề.
@@ -151,15 +151,15 @@
 
 ### 2.5. T-RAG v2 Grid Search: α (Adaptive Tau Sensitivity)
 
-| α | Corr% | Comp% | Search Space |
-|:---:|:---:|:---:|---:|
-| 0.00 (static) | 35.67 | 44.19 | 2,393,189 |
-| 0.04 | 35.07 | 45.20 | 2,562,116 |
-| 0.08 (default) | 34.67 | 44.91 | 2,711,818 |
-| 0.12 | 35.27 | 44.64 | 2,853,707 |
-| **0.15** | **36.27** | **45.47** | 3,006,387 |
-| 0.25 | 34.87 | 44.37 | 3,416,644 |
-| 0.50 | 36.07 | 44.99 | 3,573,824 |
+| Pipeline / Cấu hình | Corr% | Comp% | Combined | Refused% | Total Lat | Retr Lat | Search Space |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+| Grid Alpha = 0.15 | **36.27%** | **45.47%** | **31.84** | 17.8% | 0.86s | 0.28s | 3,006,387 |
+| Grid Alpha = 0.50 | 36.07% | 44.99% | 31.40 | 17.4% | 0.90s | 0.33s | 3,573,824 |
+| Grid Alpha = 0.00 (static) | 35.67% | 44.19% | 30.69 | 18.0% | **0.82s** | **0.25s** | **2,393,189** |
+| Grid Alpha = 0.12 | 35.27% | 44.64% | 31.00 | 17.8% | 0.84s | 0.27s | 2,853,707 |
+| Grid Alpha = 0.04 | 35.07% | 45.20% | 30.77 | 18.6% | 0.83s | 0.26s | 2,562,116 |
+| Grid Alpha = 0.08 (default) | 34.67% | 44.91% | 30.72 | **17.0%** | 0.84s | 0.27s | 2,711,818 |
+| Grid Alpha = 0.25 | 34.87% | 44.37% | 30.62 | 17.2% | 0.90s | 0.32s | 3,416,644 |
 
 > [!IMPORTANT]
 > **Insight 6:** α=0.15 đạt **36.27%**, tốt hơn mặc định α=0.08 (34.67%). Tuy nhiên α=0.50 cũng đạt 36.07%, cho thấy adaptive tau ở mức vừa phải (0.12-0.15) là tối ưu nhất. α quá lớn làm Search Space phình quá to mà không tăng thêm chất lượng.
@@ -168,17 +168,17 @@
 
 ### 2.6. T-RAG v2 Grid Search: Dense/Sparse Weight
 
-| D / S | Corr% | Comp% | Retr Lat |
-|:---:|:---:|:---:|:---:|
-| 1.0 / 0.0 (Dense Only) | 24.25 | 34.66 | 0.25s |
-| 0.9 / 0.1 | 25.85 | 34.83 | 0.26s |
-| 0.7 / 0.3 | 28.26 | 37.18 | 0.26s |
-| 0.5 / 0.5 (default) | 34.67 | 44.91 | 0.27s |
-| 0.4 / 0.6 | 36.00 | **46.65** | 0.31s |
-| **0.3 / 0.7** | **35.80** | 45.61 | 0.36s |
-| 0.2 / 0.8 | 34.80 | 45.08 | 0.39s |
-| 0.1 / 0.9 | 34.60 | 45.13 | 0.42s |
-| 0.0 / 1.0 (Sparse Only) | 33.20 | 43.77 | 0.48s |
+| Pipeline / Cấu hình | Corr% | Comp% | Combined | Refused% | Total Lat | Retr Lat | Search Space |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+| Hybrid Dense/Sparse (D=0.4, S=0.6) | **36.00%** | **46.65%** | **32.01** | 18.0% | 0.89s | 0.31s | 2,706,057 |
+| Hybrid Sparse Heavy (D=0.3, S=0.7) | 35.80% | 45.61% | 31.85 | 18.6% | 0.92s | 0.36s | **2,687,974** |
+| Hybrid Balanced (D=0.5, S=0.5, default) | 34.67% | 44.91% | 30.72 | **17.0%** | 0.84s | 0.27s | 2,711,818 |
+| Hybrid Sparse (D=0.2, S=0.8) | 34.80% | 45.08% | 30.83 | 18.8% | 0.97s | 0.39s | 2,693,001 |
+| Hybrid Sparse Super-Heavy (D=0.1, S=0.9) | 34.60% | 45.13% | 30.67 | 17.8% | 1.02s | 0.42s | 2,690,576 |
+| Sparse Search Only (D=0.0, S=1.0) | 33.20% | 43.77% | 29.88 | 20.0% | 1.07s | 0.48s | 2,691,477 |
+| Hybrid Dense Heavy (D=0.7, S=0.3) | 28.26% | 37.18% | 24.34 | 24.0% | 0.82s | 0.26s | 2,704,805 |
+| Hybrid Dense Super-Heavy (D=0.9, S=0.1) | 25.85% | 34.83% | 22.14 | 25.4% | **0.82s** | 0.26s | 2,704,805 |
+| Dense Search Only (D=1.0, S=0.0) | 24.25% | 34.66% | 21.11 | 26.2% | 0.82s | **0.25s** | 2,705,415 |
 
 > [!IMPORTANT]
 > **Insight 7 (Critical Finding):** Tỷ lệ **D=0.4/S=0.6** đạt **Completeness cao nhất (46.65%)** trong toàn bộ benchmark. D=0.3/S=0.7 đạt **Correctness cao thứ 2 (35.80%)**. "Sweet Spot" nằm trong khoảng D=0.3-0.4 / S=0.6-0.7.
@@ -190,12 +190,12 @@
 
 ### 2.7. Ablation Study
 
-| Cấu hình | Corr% | Comp% | Retr Lat | Δ vs Standard |
-|:---|:---:|:---:|:---:|:---:|
-| T-RAG v2 Standard (Full) | 34.67 | 44.91 | 0.27s | — |
-| No Adaptive Tau (α=0) | 35.27 | 44.27 | 0.24s | +0.60% |
-| No CSEP (bỏ Hop 2) | 34.67 | 44.38 | 0.25s | 0.00% |
-| No Smart Hop 2 (Hop 2 luôn chạy) | 32.80 | 43.93 | **0.58s** | **-1.87%** |
+| Pipeline / Cấu hình | Corr% | Comp% | Combined | Refused% | Total Lat | Retr Lat | Search Space |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+| T-RAG v2 Standard (Full) | 34.67% | **44.91%** | **30.72** | **17.0%** | 0.84s | 0.27s | 2,711,818 |
+| Ablation: No Adaptive Tau (Alpha=0) | **35.27%** | 44.27% | 30.48 | 18.0% | 0.82s | **0.24s** | **2,393,189** |
+| Ablation: No CSEP (Hop 2 Skipped) | 34.67% | 44.38% | 30.13 | 18.2% | **0.82s** | 0.25s | 2,704,197 |
+| Ablation: No Smart Hop 2 (Hop 2 Always) | 32.80% | 43.93% | 29.39 | 18.6% | 1.16s | 0.58s | 2,681,805 |
 
 > [!IMPORTANT]
 > **Insight 8:** No Smart Hop 2 giảm Correctness **1.87%** và tăng Retrieval Latency **2.15× (0.27s → 0.58s)**. Đây là bằng chứng mạnh nhất cho giá trị của Smart Hop 2.
@@ -207,14 +207,13 @@
 
 ### 2.8. Search Depth & Context Window
 
-| Config | Corr% | Comp% | Refused% |
-|:---|:---:|:---:|:---:|
-| K_final=1 | 22.40 | 33.05 | **40.6%** |
-| K_final=3 | 30.60 | 42.06 | 21.6% |
-| K_final=5 (default) | 34.67 | 44.91 | 17.0% |
-| R_retrieve=10 | 32.40 | 42.29 | 22.2% |
-| R_retrieve=20 (default) | 34.67 | 44.91 | 17.0% |
-| R_retrieve=30 | 34.47 | 44.42 | 16.8% |
+| Pipeline / Cấu hình | Corr% | Comp% | Combined | Refused% | Total Lat | Retr Lat | Search Space |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+| K_final = 5, R_retrieve = 20 (default) | **34.67%** | **44.91%** | **30.72** | 17.0% | 0.84s | 0.27s | 2,711,818 |
+| R_retrieve = 30 | 34.47% | 44.42% | 30.38 | **16.8%** | 0.92s | 0.34s | **2,707,042** |
+| R_retrieve = 10 | 32.40% | 42.29% | 27.85 | 22.2% | 0.71s | **0.16s** | 2,711,610 |
+| K_final = 3 | 30.60% | 42.06% | 27.39 | 21.6% | 0.66s | 0.26s | 2,711,818 |
+| K_final = 1 | 22.40% | 33.05% | 19.63 | 40.6% | **0.48s** | 0.25s | 2,711,818 |
 
 > [!IMPORTANT]
 > **Insight 10:** K_final=5 là tối ưu. K=1 quá ít context → 40.6% refused. K=3 vẫn kém 4% so với K=5. R_retrieve=20 là sweet spot — R=10 thiếu candidate cho Reranker, R=30 tăng latency mà không cải thiện quality.
@@ -331,16 +330,16 @@ CSEP=On, SmartHop2=On, K=5, R=20
 
 Sau khi chạy thực nghiệm 500 câu hỏi đầy đủ trên 8 cấu hình đề xuất (kết quả lưu tại [results_targeted_v6](file:///network-volume/RAG-/T-RAG_Project/results_targeted_v6/)), dưới đây là bảng so sánh chi tiết:
 
-| Pipeline / Config | Correctness% | Completeness% | Refused% | Total Lat | Retr Lat | Space Search (Docs) |
-|:---|:---:|:---:|:---:|:---:|:---:|---:|
-| **Targeted D: Alpha Sweet Spot** | **36.00** | 45.30 | 17.2 | 0.96s | 0.36s | 3,566,845 |
-| **Targeted G: Minimalist Best** | 35.60 | **45.90** | **17.0** | 0.99s | 0.40s | 3,558,410 |
-| Targeted H: Speed King v2 | 34.60 | 43.80 | 19.0 | **0.84s** | **0.26s** | 2,387,237 |
-| Targeted B: Precision Strike | 33.20 | 43.70 | 19.2 | 0.96s | 0.36s | 3,566,651 |
-| Targeted A: Ultimate Combo | 32.40 | 42.80 | 21.4 | 1.00s | 0.39s | 3,591,459 |
-| Targeted F: Wide Net Balanced | 32.20 | 43.30 | 19.4 | 1.01s | 0.42s | 3,575,488 |
-| Targeted E: Low Gamma High Alpha | 31.80 | 43.50 | 21.2 | 1.00s | 0.39s | 3,483,602 |
-| Targeted C: Gamma Zero Low Tau | 31.00 | 43.50 | 21.2 | 1.00s | 0.38s | 3,323,775 |
+| Pipeline / Cấu hình | Corr% | Comp% | Combined | Refused% | Total Lat | Retr Lat | Search Space |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+| Targeted D: Alpha Sweet Spot | **36.00%** | 45.32% | 31.10 | 17.2% | 0.96s | 0.36s | 3,566,845 |
+| Targeted G: Minimalist Best | 35.60% | **45.87%** | **31.24** | **17.0%** | 0.99s | 0.40s | 3,558,410 |
+| Targeted H: Speed King v2 | 34.60% | 43.75% | 30.32 | 19.0% | **0.84s** | **0.26s** | **2,387,237** |
+| Targeted B: Precision Strike | 33.20% | 43.72% | 28.59 | 19.2% | 0.96s | 0.36s | 3,566,651 |
+| Targeted A: Ultimate Combo | 32.40% | 42.77% | 28.41 | 21.4% | 1.00s | 0.39s | 3,591,459 |
+| Targeted F: Wide Net Balanced | 32.20% | 43.34% | 27.79 | 19.4% | 1.01s | 0.42s | 3,575,488 |
+| Targeted E: Low Gamma High Alpha | 31.80% | 43.46% | 28.17 | 21.2% | 1.00s | 0.39s | 3,483,602 |
+| Targeted C: Gamma Zero Low Tau | 31.00% | 43.51% | 27.55 | 21.2% | 1.00s | 0.38s | 3,323,775 |
 
 > [!IMPORTANT]
 > **Phát hiện quan trọng 1: Sự tương tác phức tạp giữa $\tau_{base}$ và $\gamma$ (Diversity Penalty)**
