@@ -32,7 +32,7 @@
 \large Hệ thống RAG doanh nghiệp phân tách nguồn thông minh với Adaptive Tau \& Smart Hop 2}
 \author{Trình bày: Đăng Bảo \& Đinh Bằng}
 \date{Tháng 7, 2026}
-\institute{Báo cáo Kết quả Thực nghiệm Toàn diện 53 Cấu hình --- T-RAG v2}
+\institute{}
 
 \begin{document}
 
@@ -280,7 +280,7 @@ Sparse Only ($D=0.0, S=1.0$) & 33.20\% & 43.77\% & 29.88 & 20.0\% & 1.07s & 0.48
 \end{frame}
 
 %------------------------------------------------
-\begin{frame}{Bảng 3: Tối ưu Latency: Smart Hop 2 \& Fix Lỗi Double-Encode}
+\begin{frame}{Bảng 3: Tối ưu Latency: Smart Hop 2 \& Double-Encode}
 \begin{table}[h]
 \centering
 \small
@@ -301,7 +301,7 @@ T-RAG v2 Standard (Smart Hop 2 BẬT) & \textbf{34.67\%} & \textbf{44.91\%} & \t
 \end{frame}
 
 %------------------------------------------------
-\begin{frame}{Bảng 4: Phân tích Tinh chỉnh Ngưỡng Động (Adaptive Tau) \& Bayesian Prior ($\gamma$)}
+\begin{frame}{Bảng 4: Phân tích Adaptive Tau \& Bayesian Prior ($\gamma$)}
 \begin{table}[h]
 \centering
 \small
@@ -354,7 +354,7 @@ T-RAG v2 ($\gamma=1.0, \tau=0.15$) & 34.87\% & 42.32\% & 29.71 & 19.0\% & 0.83s 
 \begin{block}{Kết luận}
 \begin{itemize}
     \item T-RAG v2 giải quyết triệt để các hạn chế về latency và độ chính xác của RAG doanh nghiệp.
-    \item Tối ưu hóa \textbf{Smart Hop 2} và \textbf{Fix Double-Encode} giúp giảm Retrieval Latency xuống \textbf{0.27s} (nhanh gấp 6x).
+    \item Tối ưu hóa \textbf{Smart Hop 2} và \textbf{Double-Encode} giúp giảm Retrieval Latency xuống \textbf{0.27s} (nhanh gấp 6x).
     \item Cấu hình với trọng số \textbf{$D=0.3, S=0.7$} đạt đỉnh hiệu năng với \textbf{36.80\% Correctness}.
 \end{itemize}
 \end{block}
