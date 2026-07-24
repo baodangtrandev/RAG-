@@ -1,4 +1,4 @@
-\documentclass[a4paper,9pt]{article}
+\documentclass[a4paper,10pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T5]{fontenc}
 \usepackage[vietnamese]{babel}
@@ -6,8 +6,13 @@
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
-\usepackage{xcolor}
+\usepackage[table]{xcolor}
 \usepackage{hyperref}
+
+\definecolor{tragblue}{RGB}{0,82,155}
+\definecolor{tragv2bg}{RGB}{235,243,250}
+\definecolor{tragv1bg}{RGB}{235,247,238}
+\definecolor{baselinebg}{RGB}{253,242,233}
 
 \setlength{\tabcolsep}{3.5pt}
 \renewcommand{\arraystretch}{1.25}
@@ -15,77 +20,118 @@
 \begin{document}
 \pagestyle{empty}
 
-\fontsize{7.0pt}{8.5pt}\selectfont
 \centering
+
+%------------------------------------------------
+% EXECUTIVE HEADER BLOCK
+%------------------------------------------------
+\vspace*{-0.3cm}
+{\color{tragblue}\rule{\linewidth}{1.5pt}}\\[3pt]
+{\Large\bfseries\color{tragblue} BẢNG TỔNG HỢP KẾT QUẢ BENCHMARK TOÀN DIỆN T-RAG v2}\\[2pt]
+{\small\itshape Báo Cáo Đánh Giá Chi Tiết 61 Cấu Hình Thử Nghiệm Trên Tập Dữ Liệu EnterpriseRAG-Bench (500 Câu Hỏi Multi-Hop/Single-Hop)}\\[3pt]
+{\color{tragblue}\rule{\linewidth}{0.6pt}}\\[3pt]
+
+\vspace*{-0.1cm}
+\begin{center}
+\fontsize{7.2pt}{8.8pt}\selectfont
+\begin{tabular}{|>{\raggedright\arraybackslash}p{9.4cm}|>{\raggedright\arraybackslash}p{9.4cm}|}
+\hline
+\rowcolor{gray!15} \textbf{Môi Trường Thử Nghiệm \& Tập Dữ Liệu Benchmark} & \textbf{Đóng Góp Kỹ Thuật Cốt Lõi Của T-RAG v2} \\ \hline
+$\bullet$ \textbf{Tập Dữ Liệu:} EnterpriseRAG-Bench (500 câu hỏi, 9 Shards, 4,213,106 Chunks).\newline
+$\bullet$ \textbf{LLM Generator:} Qwen2.5-14B-Instruct (vLLM Engine, Temperature=0.0).\newline
+$\bullet$ \textbf{Dense Retrieval:} LanceDB IVF-PQ (\texttt{BAAI/bge-large-en-v1.5}, 1024-dim).\newline
+$\bullet$ \textbf{Sparse Retrieval:} Tantivy BM25 ($k_1=0.9, b=0.4$, Trọng số Sparse $S=0.7$).\newline
+$\bullet$ \textbf{Cross-Encoder Reranker:} \texttt{BAAI/bge-reranker-large} (Top-K=5).
+&
+$\bullet$ \textbf{PSR Router:} Dự đoán xác suất Shard theo Entropy Shannon ($conf = 1 - H/\ln K$).\newline
+$\bullet$ \textbf{Adaptive Tau:} Ngưỡng quét $\tau_{eff} = \tau_{base} + \alpha \cdot (conf - 0.5)$ tự động điều chỉnh.\newline
+$\bullet$ \textbf{Smart Hop 2:} Bypass Hop 2 nếu $active\_shards < 2$ hoặc $dist < 0.55$ (giảm 34\% latency).\newline
+$\bullet$ \textbf{Zero-Copy Vector Reuse:} Tái sử dụng embedding Hop 1 cho Hop 2 (tăng tốc 6x truy xuất).\newline
+$\bullet$ \textbf{CSEP:} Trích xuất thực thể ngữ cảnh theo Shard đã kích hoạt. \\ \hline
+\end{tabular}
+\end{center}
+
+\vspace*{-0.2cm}
+\begin{center}
+\fontsize{7.0pt}{8.5pt}\selectfont
+\colorbox{tragv2bg}{\strut \textbf{\,T-RAG v2 Configurations (47)\,}} \qquad
+\colorbox{tragv1bg}{\strut \textbf{\,T-RAG v1 Pipelines (7)\,}} \qquad
+\colorbox{baselinebg}{\strut \textbf{\,Standard Baselines (7)\,}}\\[3pt]
+\textbf{Corr\%}: Correctness \ \vline \ \textbf{Comp\%}: Completeness \ \vline \ \textbf{Combined}: Corr $\times$ Comp \ \vline \ \textbf{Refused\%}: Tỉ lệ từ chối
+\vspace*{-0.2cm}
+\end{center}
+
+\fontsize{7.0pt}{8.5pt}\selectfont
 \begin{longtable}{|>{\centering\arraybackslash}m{0.5cm}|m{2.8cm}|m{5.2cm}|>{\centering\arraybackslash}m{1.0cm}|>{\centering\arraybackslash}m{1.0cm}|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.2cm}|>{\centering\arraybackslash}m{1.3cm}|>{\centering\arraybackslash}m{1.3cm}|>{\centering\arraybackslash}m{1.5cm}|}
 \hline
+\rowcolor{gray!15}
 \textbf{\#} & \textbf{Pipeline / Cấu hình} & \textbf{Thông số Kỹ thuật Chi tiết} & \textbf{Corr} & \textbf{Comp} & \textbf{Combined} & \textbf{Refused} & \textbf{Total Lat} & \textbf{Retr Lat} & \textbf{Search Space} \\ \hline
 \endhead
 
 \hline
 \endfoot
 
-1 & OPT: High Recall + Sparse Heavy & $\tau=0.05, \gamma=0.5, \alpha=0.08, D=0.3/S=0.7$, CSEP, SmartHop2, AdaptTau & \textbf{36.80\%} & 45.67\% & \textbf{32.24} & 17.2\% & 1.02s & 0.43s & 3,577,666 \\ \hline
-2 & Grid Tau=0.10 & $\tau=0.10, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 36.67\% & 44.99\% & 31.94 & 18.4\% & 0.88s & 0.29s & 3,323,143 \\ \hline
-3 & OPT: Gamma=0.4 & $\tau=0.15, \gamma=0.4, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 36.47\% & 45.23\% & 31.29 & 18.4\% & 0.83s & 0.25s & 2,706,911 \\ \hline
-4 & Grid Gamma=0.0 & $\tau=0.15, \gamma=0.0, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 36.40\% & 45.52\% & 31.86 & 17.0\% & 0.84s & 0.25s & 2,706,836 \\ \hline
-5 & Grid Alpha=0.15 & $\tau=0.15, \gamma=0.5, \alpha=0.15, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 36.27\% & 45.47\% & 31.84 & 17.8\% & 0.86s & 0.28s & 3,006,387 \\ \hline
-6 & Grid Alpha=0.50 & $\tau=0.15, \gamma=0.5, \alpha=0.50, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 36.07\% & 44.99\% & 31.40 & 17.4\% & 0.90s & 0.33s & 3,573,824 \\ \hline
-7 & Grid Tau=0.05 & $\tau=0.05, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 36.07\% & 44.97\% & 31.24 & 17.4\% & 0.90s & 0.33s & 3,573,824 \\ \hline
-8 & OPT: D=0.4/S=0.6 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.4/S=0.6$, CSEP, SmartHop2, AdaptTau & 36.00\% & \textbf{46.65\%} & 32.01 & 18.0\% & 0.89s & 0.31s & 2,706,057 \\ \hline
-9 & Targeted D: Alpha Sweet Spot & $\tau=0.05, \gamma=0.4, \alpha=0.15, D=0.4/S=0.6$, CSEP, SmartHop2, AdaptTau & 36.00\% & 45.32\% & 31.10 & 17.2\% & 0.96s & 0.36s & 3,566,845 \\ \hline
-10 & Grid Dense=0.3 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.3/S=0.7$, CSEP, SmartHop2, AdaptTau & 35.80\% & 45.61\% & 31.85 & 18.6\% & 0.92s & 0.36s & 2,687,974 \\ \hline
-11 & Grid Alpha=0.00 & $\tau=0.15, \gamma=0.5, \alpha=0.00, D=0.5/S=0.5$, CSEP, SmartHop2 & 35.67\% & 44.19\% & 30.69 & 18.0\% & 0.82s & 0.25s & 2,393,189 \\ \hline
-12 & OPT: Best Completeness & $\tau=0.15, \gamma=0.5, \alpha=0.04, D=0.3/S=0.7$, CSEP, SmartHop2, AdaptTau & 35.60\% & 45.84\% & 31.38 & 19.8\% & 0.91s & 0.33s & 2,540,258 \\ \hline
-13 & Targeted G: Minimalist Best & $\tau=0.10, \gamma=0.4, \alpha=0.15, D=0.3/S=0.7$, CSEP, SmartHop2, AdaptTau & 35.60\% & 45.87\% & 31.24 & 17.0\% & 0.99s & 0.40s & 3,558,410 \\ \hline
-14 & Grid Tau=0.20 & $\tau=0.20, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 35.47\% & 44.50\% & 30.63 & 18.0\% & 0.80s & 0.23s & 2,219,777 \\ \hline
-15 & Grid Alpha=0.12 & $\tau=0.15, \gamma=0.5, \alpha=0.12, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 35.27\% & 44.64\% & 31.00 & 17.8\% & 0.84s & 0.27s & 2,853,707 \\ \hline
-16 & Ablation: No AdaptTau & $\tau=0.15, \gamma=0.5, \alpha=0.00$ (forced), D=0.5/S=0.5, CSEP, SmartHop2 & 35.27\% & 44.27\% & 30.48 & 18.0\% & 0.82s & 0.24s & 2,393,189 \\ \hline
-17 & OPT: Low Latency & $\tau=0.20, \gamma=0.3, \alpha=0.00, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 35.27\% & 43.71\% & 30.21 & 19.0\% & 0.76s & 0.20s & 1,964,143 \\ \hline
-18 & OPT: Speed+Sparse & $\tau=0.20, \gamma=0.5, \alpha=0.00, D=0.3/S=0.7$, CSEP, SmartHop2, AdaptTau & 35.20\% & 44.65\% & 30.68 & 18.4\% & 0.85s & 0.27s & 1,944,632 \\ \hline
-19 & OPT: Balanced & $\tau=0.15, \gamma=0.5, \alpha=0.04, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 35.07\% & 45.21\% & 30.89 & 18.6\% & 0.83s & 0.26s & 2,562,116 \\ \hline
-20 & Grid Alpha=0.04 & $\tau=0.15, \gamma=0.5, \alpha=0.04, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 35.07\% & 45.20\% & 30.77 & 18.6\% & 0.83s & 0.26s & 2,562,116 \\ \hline
-21 & Grid Alpha=0.25 & $\tau=0.15, \gamma=0.5, \alpha=0.25, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 34.87\% & 44.37\% & 30.62 & 17.2\% & 0.90s & 0.32s & 3,416,644 \\ \hline
-22 & Grid Gamma=1.0 & $\tau=0.15, \gamma=1.0, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 34.87\% & 42.32\% & 29.71 & 19.0\% & 0.83s & 0.27s & 2,704,042 \\ \hline
-23 & OPT: D=0.2/S=0.8 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.2/S=0.8$, CSEP, SmartHop2, AdaptTau & 34.80\% & 45.08\% & 30.83 & 18.8\% & 0.97s & 0.39s & 2,693,001 \\ \hline
-24 & T-RAG v2 Standard & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 34.67\% & 44.91\% & 30.72 & 17.0\% & 0.84s & 0.27s & 2,711,818 \\ \hline
-25 & Ablation: No CSEP & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, No CSEP, SmartHop2, AdaptTau & 34.67\% & 44.38\% & 30.13 & 18.2\% & 0.82s & 0.25s & 2,704,197 \\ \hline
-26 & Grid Dense=0.1 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.1/S=0.9$, CSEP, SmartHop2, AdaptTau & 34.60\% & 45.13\% & 30.67 & 17.8\% & 1.02s & 0.42s & 2,690,576 \\ \hline
-27 & Targeted H: Speed King v2 & $\tau=0.15, \gamma=0.0, \alpha=0.00, D=0.4/S=0.6$, CSEP, SmartHop2 & 34.60\% & 43.75\% & 30.32 & 19.0\% & 0.84s & 0.26s & 2,387,237 \\ \hline
-28 & OPT: Retrieve Depth=30 & $\tau=0.15, \gamma=0.5, \alpha=0.08, R=30, K=5$, CSEP, SmartHop2, AdaptTau & 34.47\% & 44.42\% & 30.38 & \textbf{16.8\%} & 0.92s & 0.34s & 2,707,042 \\ \hline
-29 & Grid Gamma=0.3 & $\tau=0.15, \gamma=0.3, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 34.47\% & 44.54\% & 30.19 & 18.0\% & 0.82s & 0.25s & 2,706,695 \\ \hline
-30 & Grid Gamma=0.7 & $\tau=0.15, \gamma=0.7, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 34.07\% & 44.39\% & 29.84 & 17.6\% & 0.83s & 0.25s & 2,698,037 \\ \hline
-31 & OPT: Best Correctness & $\tau=0.15, \gamma=0.5, \alpha=0.25, D=0.1/S=0.9$, CSEP, SmartHop2, AdaptTau & 34.00\% & 44.03\% & 29.67 & 19.2\% & 1.07s & 0.47s & 3,392,562 \\ \hline
-32 & T-RAG v1 High-Recall G1 & $\tau=0.05, \gamma=1.0$, No CSEP, No AdaptTau & 33.80\% & 43.43\% & 29.71 & 22.6\% & 1.19s & 2.31s & 3,550,005 \\ \hline
-33 & T-RAG v1 Balanced G1 & $\tau=0.15, \gamma=1.0$, No CSEP, No AdaptTau & 33.80\% & 43.29\% & 29.66 & 20.6\% & 1.02s & 1.48s & 2,354,016 \\ \hline
-34 & OPT: High Speed Sparse Heavy & $\tau=0.30, \gamma=0.5, \alpha=0.08, D=0.1/S=0.9$, CSEP, SmartHop2, AdaptTau & 33.60\% & 44.77\% & 29.52 & 19.8\% & 0.86s & 0.29s & 1,438,218 \\ \hline
-35 & Hybrid Baseline & BM25 + Vector Hybrid, Reranker, K=5 & 33.60\% & 44.11\% & 29.35 & 18.0\% & 1.15s & 0.63s & 4,213,106 \\ \hline
-36 & Grid Tau=0.30 & $\tau=0.30, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 33.27\% & 42.91\% & 29.33 & 18.0\% & 0.74s & 0.18s & 1,456,839 \\ \hline
-37 & Sparse Only & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.0/S=1.0$, CSEP, SmartHop2, AdaptTau & 33.20\% & 43.77\% & 29.88 & 20.0\% & 1.07s & 0.48s & 2,691,477 \\ \hline
-38 & OPT: Max Performance & $\tau=0.10, \gamma=0.5, \alpha=0.04, D=0.1/S=0.9$, CSEP, SmartHop2, AdaptTau & 33.20\% & 43.67\% & 29.17 & 18.8\% & 1.04s & 0.45s & 3,100,597 \\ \hline
-39 & Targeted B: Precision Strike & $\tau=0.10, \gamma=0.0, \alpha=0.15, D=0.4/S=0.6$, CSEP, SmartHop2, AdaptTau & 33.20\% & 43.72\% & 28.59 & 19.2\% & 0.96s & 0.36s & 3,566,651 \\ \hline
-40 & T-RAG v1 High-Speed G1 & $\tau=0.30, \gamma=1.0$, No CSEP, No AdaptTau & 33.00\% & 41.86\% & 29.15 & 21.4\% & 0.93s & 1.08s & \textbf{1,282,848} \\ \hline
-41 & HyDE Baseline & HyDE (LLM Hypothetical Gen) $\rightarrow$ Hybrid $\rightarrow$ Rerank & 33.00\% & 42.97\% & 28.01 & 18.2\% & 1.23s & 0.63s & 4,213,106 \\ \hline
-42 & Ablation: No Smart Hop2 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, Always Hop2 ON & 32.80\% & 43.93\% & 29.39 & 18.6\% & 1.16s & 0.58s & 2,681,805 \\ \hline
-43 & Query Expansion Baseline & LLM 3 Sub-queries $\rightarrow$ Parallel Hybrid $\rightarrow$ RRF $\rightarrow$ Rerank & 32.60\% & 43.14\% & 28.34 & 19.8\% & 2.46s & 1.91s & 4,213,106 \\ \hline
-44 & Targeted A: Ultimate Combo & $\tau=0.05, \gamma=0.0, \alpha=0.15, D=0.3/S=0.7$, CSEP, SmartHop2, AdaptTau & 32.40\% & 42.77\% & 28.41 & 21.4\% & 1.00s & 0.39s & 3,591,459 \\ \hline
-45 & T-RAG v1 High-Recall & $\tau=0.05, \gamma=0.0$, No CSEP, No AdaptTau & 32.40\% & 43.25\% & 28.15 & 19.6\% & 1.25s & 2.28s & 3,598,130 \\ \hline
-46 & T-RAG v1 Balanced & $\tau=0.15, \gamma=0.0$, No CSEP, No AdaptTau & 32.40\% & 42.56\% & 27.91 & 19.2\% & 1.05s & 1.53s & 2,372,449 \\ \hline
-47 & OPT: Retrieve Depth=10 & $\tau=0.15, \gamma=0.5, \alpha=0.08, R=10, K=5$, CSEP, SmartHop2 & 32.40\% & 42.29\% & 27.85 & 22.2\% & 0.71s & \textbf{0.16s} & 2,711,610 \\ \hline
-48 & T-RAG v1 High-Speed & $\tau=0.30, \gamma=0.0$, No CSEP, No AdaptTau & 32.20\% & 42.44\% & 28.36 & 22.0\% & 0.92s & 1.01s & 1,284,666 \\ \hline
-49 & Targeted F: Wide Net Balanced & $\tau=0.05, \gamma=0.0, \alpha=0.08, R=25, K=5$, CSEP, SmartHop2 & 32.20\% & 43.34\% & 27.79 & 19.4\% & 1.01s & 0.42s & 3,575,488 \\ \hline
-50 & Targeted E: Low Gamma High Alpha & $\tau=0.10, \gamma=0.0, \alpha=0.12, D=0.3/S=0.7$, CSEP, SmartHop2 & 31.80\% & 43.46\% & 28.17 & 21.2\% & 1.00s & 0.39s & 3,483,602 \\ \hline
-51 & T-RAG v1 No Reranker & $\tau=0.15, \gamma=0.0$, No Reranker, No CSEP, No AdaptTau & 31.80\% & 40.72\% & 27.69 & 20.8\% & 1.06s & 1.66s & 2,372,449 \\ \hline
-52 & Targeted C: Gamma Zero Low Tau & $\tau=0.10, \gamma=0.0, \alpha=0.08, D=0.3/S=0.7$, CSEP, SmartHop2 & 31.00\% & 43.51\% & 27.55 & 21.2\% & 1.00s & 0.38s & 3,323,775 \\ \hline
-53 & OPT: TopK=3 & $\tau=0.15, \gamma=0.5, \alpha=0.08, K=3$, CSEP, SmartHop2 & 30.60\% & 42.06\% & 27.39 & 21.6\% & 0.66s & 0.26s & 2,711,818 \\ \hline
-54 & BM25 Baseline & Pure BM25, K=5 & 29.20\% & 39.50\% & 25.23 & 23.0\% & 0.97s & 0.41s & 4,213,106 \\ \hline
-55 & Grid Dense=0.7 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.7/S=0.3$, CSEP, SmartHop2 & 28.26\% & 37.18\% & 24.34 & 24.0\% & 0.82s & 0.26s & 2,704,805 \\ \hline
-56 & LLM Router Baseline & LLM Prompting Router $\rightarrow$ Hybrid $\rightarrow$ RRF $\rightarrow$ Rerank & 27.80\% & 38.57\% & 23.96 & 21.8\% & 0.88s & 0.32s & 2,075,036 \\ \hline
-57 & Grid Dense=0.9 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.9/S=0.1$, CSEP, SmartHop2 & 25.85\% & 34.83\% & 22.14 & 25.4\% & 0.82s & 0.25s & 2,704,805 \\ \hline
-58 & VECTOR\_RERANKER Baseline & Pure Vector $\rightarrow$ Cross-Encoder Reranker, K=5 & 24.65\% & 33.84\% & 20.89 & 26.8\% & 0.69s & 0.23s & 4,213,106 \\ \hline
-59 & Dense Only & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=1.0/S=0.0$, CSEP, SmartHop2 & 24.25\% & 34.66\% & 21.11 & 26.2\% & 0.82s & 0.25s & 2,705,415 \\ \hline
-60 & OPT: TopK=1 & $\tau=0.15, \gamma=0.5, \alpha=0.08, K=1$, CSEP, SmartHop2 & 22.40\% & 33.05\% & 19.63 & 40.6\% & \textbf{0.48s} & 0.25s & 2,711,818 \\ \hline
-61 & Vector Baseline & Pure Vector, K=5 & 19.60\% & 30.24\% & 16.47 & 32.0\% & 0.60s & 0.20s & 4,213,106 \\ \hline
+\rowcolor{tragv2bg} 1 & OPT: High Recall + Sparse Heavy & $\tau=0.05, \gamma=0.5, \alpha=0.08, D=0.3/S=0.7$, CSEP, SmartHop2, AdaptTau & \textbf{36.80\%} & 45.67\% & \textbf{32.24} & 17.2\% & 1.02s & 0.43s & 3,577,666 \\ \hline
+\rowcolor{tragv2bg} 2 & Grid Tau=0.10 & $\tau=0.10, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 36.67\% & 44.99\% & 31.94 & 18.4\% & 0.88s & 0.29s & 3,323,143 \\ \hline
+\rowcolor{tragv2bg} 3 & OPT: Gamma=0.4 & $\tau=0.15, \gamma=0.4, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 36.47\% & 45.23\% & 31.29 & 18.4\% & 0.83s & 0.25s & 2,706,911 \\ \hline
+\rowcolor{tragv2bg} 4 & Grid Gamma=0.0 & $\tau=0.15, \gamma=0.0, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 36.40\% & 45.52\% & 31.86 & 17.0\% & 0.84s & 0.25s & 2,706,836 \\ \hline
+\rowcolor{tragv2bg} 5 & Grid Alpha=0.15 & $\tau=0.15, \gamma=0.5, \alpha=0.15, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 36.27\% & 45.47\% & 31.84 & 17.8\% & 0.86s & 0.28s & 3,006,387 \\ \hline
+\rowcolor{tragv2bg} 6 & Grid Alpha=0.50 & $\tau=0.15, \gamma=0.5, \alpha=0.50, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 36.07\% & 44.99\% & 31.40 & 17.4\% & 0.90s & 0.33s & 3,573,824 \\ \hline
+\rowcolor{tragv2bg} 7 & Grid Tau=0.05 & $\tau=0.05, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 36.07\% & 44.97\% & 31.24 & 17.4\% & 0.90s & 0.33s & 3,573,824 \\ \hline
+\rowcolor{tragv2bg} 8 & OPT: D=0.4/S=0.6 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.4/S=0.6$, CSEP, SmartHop2, AdaptTau & 36.00\% & \textbf{46.65\%} & 32.01 & 18.0\% & 0.89s & 0.31s & 2,706,057 \\ \hline
+\rowcolor{tragv2bg} 9 & Targeted D: Alpha Sweet Spot & $\tau=0.05, \gamma=0.4, \alpha=0.15, D=0.4/S=0.6$, CSEP, SmartHop2, AdaptTau & 36.00\% & 45.32\% & 31.10 & 17.2\% & 0.96s & 0.36s & 3,566,845 \\ \hline
+\rowcolor{tragv2bg} 10 & Grid Dense=0.3 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.3/S=0.7$, CSEP, SmartHop2, AdaptTau & 35.80\% & 45.61\% & 31.85 & 18.6\% & 0.92s & 0.36s & 2,687,974 \\ \hline
+\rowcolor{tragv2bg} 11 & Grid Alpha=0.00 & $\tau=0.15, \gamma=0.5, \alpha=0.00, D=0.5/S=0.5$, CSEP, SmartHop2 & 35.67\% & 44.19\% & 30.69 & 18.0\% & 0.82s & 0.25s & 2,393,189 \\ \hline
+\rowcolor{tragv2bg} 12 & OPT: Best Completeness & $\tau=0.15, \gamma=0.5, \alpha=0.04, D=0.3/S=0.7$, CSEP, SmartHop2, AdaptTau & 35.60\% & 45.84\% & 31.38 & 19.8\% & 0.91s & 0.33s & 2,540,258 \\ \hline
+\rowcolor{tragv2bg} 13 & Targeted G: Minimalist Best & $\tau=0.10, \gamma=0.4, \alpha=0.15, D=0.3/S=0.7$, CSEP, SmartHop2, AdaptTau & 35.60\% & 45.87\% & 31.24 & 17.0\% & 0.99s & 0.40s & 3,558,410 \\ \hline
+\rowcolor{tragv2bg} 14 & Grid Tau=0.20 & $\tau=0.20, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 35.47\% & 44.50\% & 30.63 & 18.0\% & 0.80s & 0.23s & 2,219,777 \\ \hline
+\rowcolor{tragv2bg} 15 & Grid Alpha=0.12 & $\tau=0.15, \gamma=0.5, \alpha=0.12, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 35.27\% & 44.64\% & 31.00 & 17.8\% & 0.84s & 0.27s & 2,853,707 \\ \hline
+\rowcolor{tragv2bg} 16 & Ablation: No AdaptTau & $\tau=0.15, \gamma=0.5, \alpha=0.00$ (forced), D=0.5/S=0.5, CSEP, SmartHop2 & 35.27\% & 44.27\% & 30.48 & 18.0\% & 0.82s & 0.24s & 2,393,189 \\ \hline
+\rowcolor{tragv2bg} 17 & OPT: Low Latency & $\tau=0.20, \gamma=0.3, \alpha=0.00, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 35.27\% & 43.71\% & 30.21 & 19.0\% & 0.76s & 0.20s & 1,964,143 \\ \hline
+\rowcolor{tragv2bg} 18 & OPT: Speed+Sparse & $\tau=0.20, \gamma=0.5, \alpha=0.00, D=0.3/S=0.7$, CSEP, SmartHop2, AdaptTau & 35.20\% & 44.65\% & 30.68 & 18.4\% & 0.85s & 0.27s & 1,944,632 \\ \hline
+\rowcolor{tragv2bg} 19 & OPT: Balanced & $\tau=0.15, \gamma=0.5, \alpha=0.04, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 35.07\% & 45.21\% & 30.89 & 18.6\% & 0.83s & 0.26s & 2,562,116 \\ \hline
+\rowcolor{tragv2bg} 20 & Grid Alpha=0.04 & $\tau=0.15, \gamma=0.5, \alpha=0.04, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 35.07\% & 45.20\% & 30.77 & 18.6\% & 0.83s & 0.26s & 2,562,116 \\ \hline
+\rowcolor{tragv2bg} 21 & Grid Alpha=0.25 & $\tau=0.15, \gamma=0.5, \alpha=0.25, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 34.87\% & 44.37\% & 30.62 & 17.2\% & 0.90s & 0.32s & 3,416,644 \\ \hline
+\rowcolor{tragv2bg} 22 & Grid Gamma=1.0 & $\tau=0.15, \gamma=1.0, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 34.87\% & 42.32\% & 29.71 & 19.0\% & 0.83s & 0.27s & 2,704,042 \\ \hline
+\rowcolor{tragv2bg} 23 & OPT: D=0.2/S=0.8 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.2/S=0.8$, CSEP, SmartHop2, AdaptTau & 34.80\% & 45.08\% & 30.83 & 18.8\% & 0.97s & 0.39s & 2,693,001 \\ \hline
+\rowcolor{tragv2bg} 24 & T-RAG v2 Standard & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 34.67\% & 44.91\% & 30.72 & 17.0\% & 0.84s & 0.27s & 2,711,818 \\ \hline
+\rowcolor{tragv2bg} 25 & Ablation: No CSEP & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, No CSEP, SmartHop2, AdaptTau & 34.67\% & 44.38\% & 30.13 & 18.2\% & 0.82s & 0.25s & 2,704,197 \\ \hline
+\rowcolor{tragv2bg} 26 & Grid Dense=0.1 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.1/S=0.9$, CSEP, SmartHop2, AdaptTau & 34.60\% & 45.13\% & 30.67 & 17.8\% & 1.02s & 0.42s & 2,690,576 \\ \hline
+\rowcolor{tragv2bg} 27 & Targeted H: Speed King v2 & $\tau=0.15, \gamma=0.0, \alpha=0.00, D=0.4/S=0.6$, CSEP, SmartHop2 & 34.60\% & 43.75\% & 30.32 & 19.0\% & 0.84s & 0.26s & 2,387,237 \\ \hline
+\rowcolor{tragv2bg} 28 & OPT: Retrieve Depth=30 & $\tau=0.15, \gamma=0.5, \alpha=0.08, R=30, K=5$, CSEP, SmartHop2, AdaptTau & 34.47\% & 44.42\% & 30.38 & \textbf{16.8\%} & 0.92s & 0.34s & 2,707,042 \\ \hline
+\rowcolor{tragv2bg} 29 & Grid Gamma=0.3 & $\tau=0.15, \gamma=0.3, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 34.47\% & 44.54\% & 30.19 & 18.0\% & 0.82s & 0.25s & 2,706,695 \\ \hline
+\rowcolor{tragv2bg} 30 & Grid Gamma=0.7 & $\tau=0.15, \gamma=0.7, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 34.07\% & 44.39\% & 29.84 & 17.6\% & 0.83s & 0.25s & 2,698,037 \\ \hline
+\rowcolor{tragv2bg} 31 & OPT: Best Correctness & $\tau=0.15, \gamma=0.5, \alpha=0.25, D=0.1/S=0.9$, CSEP, SmartHop2, AdaptTau & 34.00\% & 44.03\% & 29.67 & 19.2\% & 1.07s & 0.47s & 3,392,562 \\ \hline
+\rowcolor{tragv1bg} 32 & T-RAG v1 High-Recall G1 & $\tau=0.05, \gamma=1.0$, No CSEP, No AdaptTau & 33.80\% & 43.43\% & 29.71 & 22.6\% & 1.19s & 2.31s & 3,550,005 \\ \hline
+\rowcolor{tragv1bg} 33 & T-RAG v1 Balanced G1 & $\tau=0.15, \gamma=1.0$, No CSEP, No AdaptTau & 33.80\% & 43.29\% & 29.66 & 20.6\% & 1.02s & 1.48s & 2,354,016 \\ \hline
+\rowcolor{tragv2bg} 34 & OPT: High Speed Sparse Heavy & $\tau=0.30, \gamma=0.5, \alpha=0.08, D=0.1/S=0.9$, CSEP, SmartHop2, AdaptTau & 33.60\% & 44.77\% & 29.52 & 19.8\% & 0.86s & 0.29s & 1,438,218 \\ \hline
+\rowcolor{baselinebg} 35 & Hybrid Baseline & BM25 + Vector Hybrid, Reranker, K=5 & 33.60\% & 44.11\% & 29.35 & 18.0\% & 1.15s & 0.63s & 4,213,106 \\ \hline
+\rowcolor{tragv2bg} 36 & Grid Tau=0.30 & $\tau=0.30, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2, AdaptTau & 33.27\% & 42.91\% & 29.33 & 18.0\% & 0.74s & 0.18s & 1,456,839 \\ \hline
+\rowcolor{tragv2bg} 37 & Sparse Only & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.0/S=1.0$, CSEP, SmartHop2, AdaptTau & 33.20\% & 43.77\% & 29.88 & 20.0\% & 1.07s & 0.48s & 2,691,477 \\ \hline
+\rowcolor{tragv2bg} 38 & OPT: Max Performance & $\tau=0.10, \gamma=0.5, \alpha=0.04, D=0.1/S=0.9$, CSEP, SmartHop2, AdaptTau & 33.20\% & 43.67\% & 29.17 & 18.8\% & 1.04s & 0.45s & 3,100,597 \\ \hline
+\rowcolor{tragv2bg} 39 & Targeted B: Precision Strike & $\tau=0.10, \gamma=0.0, \alpha=0.15, D=0.4/S=0.6$, CSEP, SmartHop2, AdaptTau & 33.20\% & 43.72\% & 28.59 & 19.2\% & 0.96s & 0.36s & 3,566,651 \\ \hline
+\rowcolor{tragv1bg} 40 & T-RAG v1 High-Speed G1 & $\tau=0.30, \gamma=1.0$, No CSEP, No AdaptTau & 33.00\% & 41.86\% & 29.15 & 21.4\% & 0.93s & 1.08s & \textbf{1,282,848} \\ \hline
+\rowcolor{baselinebg} 41 & HyDE Baseline & HyDE (LLM Hypothetical Gen) $\rightarrow$ Hybrid $\rightarrow$ Rerank & 33.00\% & 42.97\% & 28.01 & 18.2\% & 1.23s & 0.63s & 4,213,106 \\ \hline
+\rowcolor{tragv2bg} 42 & Ablation: No Smart Hop2 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, Always Hop2 ON & 32.80\% & 43.93\% & 29.39 & 18.6\% & 1.16s & 0.58s & 2,681,805 \\ \hline
+\rowcolor{baselinebg} 43 & Query Expansion Baseline & LLM 3 Sub-queries $\rightarrow$ Parallel Hybrid $\rightarrow$ RRF $\rightarrow$ Rerank & 32.60\% & 43.14\% & 28.34 & 19.8\% & 2.46s & 1.91s & 4,213,106 \\ \hline
+\rowcolor{tragv2bg} 44 & Targeted A: Ultimate Combo & $\tau=0.05, \gamma=0.0, \alpha=0.15, D=0.3/S=0.7$, CSEP, SmartHop2, AdaptTau & 32.40\% & 42.77\% & 28.41 & 21.4\% & 1.00s & 0.39s & 3,591,459 \\ \hline
+\rowcolor{tragv1bg} 45 & T-RAG v1 High-Recall & $\tau=0.05, \gamma=0.0$, No CSEP, No AdaptTau & 32.40\% & 43.25\% & 28.15 & 19.6\% & 1.25s & 2.28s & 3,598,130 \\ \hline
+\rowcolor{tragv1bg} 46 & T-RAG v1 Balanced & $\tau=0.15, \gamma=0.0$, No CSEP, No AdaptTau & 32.40\% & 42.56\% & 27.91 & 19.2\% & 1.05s & 1.53s & 2,372,449 \\ \hline
+\rowcolor{tragv2bg} 47 & OPT: Retrieve Depth=10 & $\tau=0.15, \gamma=0.5, \alpha=0.08, R=10, K=5$, CSEP, SmartHop2 & 32.40\% & 42.29\% & 27.85 & 22.2\% & 0.71s & \textbf{0.16s} & 2,711,610 \\ \hline
+\rowcolor{tragv1bg} 48 & T-RAG v1 High-Speed & $\tau=0.30, \gamma=0.0$, No CSEP, No AdaptTau & 32.20\% & 42.44\% & 28.36 & 22.0\% & 0.92s & 1.01s & 1,284,666 \\ \hline
+\rowcolor{tragv2bg} 49 & Targeted F: Wide Net Balanced & $\tau=0.05, \gamma=0.0, \alpha=0.08, R=25, K=5$, CSEP, SmartHop2 & 32.20\% & 43.34\% & 27.79 & 19.4\% & 1.01s & 0.42s & 3,575,488 \\ \hline
+\rowcolor{tragv2bg} 50 & Targeted E: Low Gamma High Alpha & $\tau=0.10, \gamma=0.0, \alpha=0.12, D=0.3/S=0.7$, CSEP, SmartHop2 & 31.80\% & 43.46\% & 28.17 & 21.2\% & 1.00s & 0.39s & 3,483,602 \\ \hline
+\rowcolor{tragv1bg} 51 & T-RAG v1 No Reranker & $\tau=0.15, \gamma=0.0$, No Reranker, No CSEP, No AdaptTau & 31.80\% & 40.72\% & 27.69 & 20.8\% & 1.06s & 1.66s & 2,372,449 \\ \hline
+\rowcolor{tragv2bg} 52 & Targeted C: Gamma Zero Low Tau & $\tau=0.10, \gamma=0.0, \alpha=0.08, D=0.3/S=0.7$, CSEP, SmartHop2 & 31.00\% & 43.51\% & 27.55 & 21.2\% & 1.00s & 0.38s & 3,323,775 \\ \hline
+\rowcolor{tragv2bg} 53 & OPT: TopK=3 & $\tau=0.15, \gamma=0.5, \alpha=0.08, K=3$, CSEP, SmartHop2 & 30.60\% & 42.06\% & 27.39 & 21.6\% & 0.66s & 0.26s & 2,711,818 \\ \hline
+\rowcolor{baselinebg} 54 & BM25 Baseline & Pure BM25, K=5 & 29.20\% & 39.50\% & 25.23 & 23.0\% & 0.97s & 0.41s & 4,213,106 \\ \hline
+\rowcolor{tragv2bg} 55 & Grid Dense=0.7 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.7/S=0.3$, CSEP, SmartHop2 & 28.26\% & 37.18\% & 24.34 & 24.0\% & 0.82s & 0.26s & 2,704,805 \\ \hline
+\rowcolor{baselinebg} 56 & LLM Router Baseline & LLM Prompting Router $\rightarrow$ Hybrid $\rightarrow$ RRF $\rightarrow$ Rerank & 27.80\% & 38.57\% & 23.96 & 21.8\% & 0.88s & 0.32s & 2,075,036 \\ \hline
+\rowcolor{tragv2bg} 57 & Grid Dense=0.9 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.9/S=0.1$, CSEP, SmartHop2 & 25.85\% & 34.83\% & 22.14 & 25.4\% & 0.82s & 0.25s & 2,704,805 \\ \hline
+\rowcolor{baselinebg} 58 & VECTOR\_RERANKER Baseline & Pure Vector $\rightarrow$ Cross-Encoder Reranker, K=5 & 24.65\% & 33.84\% & 20.89 & 26.8\% & 0.69s & 0.23s & 4,213,106 \\ \hline
+\rowcolor{tragv2bg} 59 & Dense Only & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=1.0/S=0.0$, CSEP, SmartHop2 & 24.25\% & 34.66\% & 21.11 & 26.2\% & 0.82s & 0.25s & 2,705,415 \\ \hline
+\rowcolor{tragv2bg} 60 & OPT: TopK=1 & $\tau=0.15, \gamma=0.5, \alpha=0.08, K=1$, CSEP, SmartHop2 & 22.40\% & 33.05\% & 19.63 & 40.6\% & \textbf{0.48s} & 0.25s & 2,711,818 \\ \hline
+\rowcolor{baselinebg} 61 & Vector Baseline & Pure Vector, K=5 & 19.60\% & 30.24\% & 16.47 & 32.0\% & 0.60s & 0.20s & 4,213,106 \\ \hline
 \end{longtable}
 
 \end{document}
