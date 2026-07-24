@@ -1,4 +1,4 @@
-\documentclass[aspectratio=169,11pt]{beamer}
+\documentclass[aspectratio=169,10pt]{beamer}
 \usetheme{Madrid}
 \usecolortheme{whale}
 
@@ -50,39 +50,39 @@
 \section{Bối cảnh \& Phát biểu Bài toán}
 
 \begin{frame}{Thách thức: RAG trên Dữ liệu Doanh nghiệp}
-
+\small
 \begin{columns}
 \begin{column}{0.5\textwidth}
 \begin{block}{Bộ dữ liệu thử nghiệm: EnterpriseRAG-Bench}
 \begin{itemize}
-    \item \textbf{4,213,106 tài liệu (chunks)} phân tán trên 9 nguồn dữ liệu doanh nghiệp
-    \item Slack, Gmail, Jira, Confluence, GitHub, Fireflies, HubSpot, Linear, GDrive
-    \item \textbf{500 câu hỏi đánh giá} thuộc 10 dạng câu hỏi doanh nghiệp thực tế
-    \item Nhiễu thông tin: Xung đột ngữ nghĩa, thuật ngữ mã nguồn, ID ticket
+    \item \textbf{4,213,106 tài liệu (chunks)} phân tán trên 9 nguồn dữ liệu doanh nghiệp.
+    \item Slack, Gmail, Jira, Confluence, GitHub, Fireflies, HubSpot, Linear, GDrive.
+    \item \textbf{500 câu hỏi đánh giá} thuộc 10 dạng câu hỏi doanh nghiệp thực tế.
+    \item Nhiễu thông tin: Xung đột ngữ nghĩa, thuật ngữ mã nguồn, ID ticket.
 \end{itemize}
 \end{block}
 \end{column}
 \begin{column}{0.5\textwidth}
 \begin{alertblock}{3 Hạn chế cốt lõi của Standard RAG}
 \begin{enumerate}
-    \item \textbf{Mơ hồ nguồn (Source Ambiguity)}: Quét toàn cục gây nhiễu và làm phồng không gian vector.
-    \item \textbf{Bất đồng nhất từ vựng (Vocabulary Mismatch)}: Thuật ngữ kỹ thuật (Jira ID, PR \#, branch) bị Vector Search bỏ sót.
+    \item \textbf{Mơ hồ nguồn (Source Ambiguity)}: Quét toàn cục gây nhiễu và phồng không gian vector.
+    \item \textbf{Bất đồng nhất từ vựng (Vocabulary Mismatch)}: Thuật ngữ kỹ thuật (Jira ID, PR \#, branch) bị Vector Search bỏ sót (Vector Baseline chỉ đạt 19.6\%).
     \item \textbf{Lập luận đa nguồn (Multi-source Hop)}: Đòi hỏi liên kết thông tin chéo nguồn mà 1 lượt search không đáp ứng được.
 \end{enumerate}
 \end{alertblock}
 \end{column}
 \end{columns}
 
-\vspace{0.4cm}
+\vspace{0.3cm}
 \begin{center}
 \textit{T-RAG v2 được thiết kế để giải quyết cả 3 thách thức trên với tốc độ và độ chính xác tối ưu.}
 \end{center}
 \end{frame}
 
 %------------------------------------------------
-\section{Tính Mới \& Đóng góp Khoa học của T-RAG v2}
+\section{Đóng góp Kỹ thuật Cốt lõi của T-RAG v2}
 
-\begin{frame}{4 Cải tiến Thế hệ Mới trong T-RAG v2}
+\begin{frame}{Các Đóng góp Kỹ thuật Cốt lõi trong T-RAG v2}
 \small
 \begin{columns}[T]
 \begin{column}{0.49\textwidth}
@@ -113,13 +113,12 @@ Tăng trọng số BM25 trên từ khóa kỹ thuật ($D=0.3, S=0.7$) kết h�
 \section{Kiến trúc Pipeline T-RAG v2}
 
 \begin{frame}{Tổng quan Pipeline T-RAG v2 (End-to-End)}
-
 \vspace{-0.2cm}
 \centering
 \resizebox{0.96\textwidth}{!}{
 \begin{tikzpicture}[
-  node distance=0.45cm and 0.4cm,
-  box/.style={rectangle, rounded corners=5pt, minimum width=2.5cm, minimum height=1.0cm, text centered, font=\small\bfseries, align=center},
+  node distance=0.5cm and 0.5cm,
+  box/.style={rectangle, rounded corners=5pt, minimum width=2.4cm, minimum height=1.0cm, text centered, font=\small\bfseries, align=center},
   arrow/.style={-{Stealth[length=5pt]}, thick},
   bluebox/.style={box, fill=tragblue!15, draw=tragblue!80, text=tragblue},
   orangebox/.style={box, fill=tragorange!15, draw=tragorange!80, text=tragorange},
@@ -128,76 +127,182 @@ Tăng trọng số BM25 trên từ khóa kỹ thuật ($D=0.3, S=0.7$) kết h�
 ]
 
 % Top Row: Forward Flow
-\node[graybox, minimum width=2.0cm] (q) {User Query $Q$};
-\node[bluebox, right=0.5cm of q] (psr) {PSR Router\\\& Adaptive Tau};
-\node[bluebox, right=0.5cm of psr] (shard) {Active Shards\\Sub-space};
-\node[orangebox, right=0.5cm of shard] (hybrid) {Hop 1: Hybrid\\SW-RRF Search};
-\node[orangebox, right=0.5cm of hybrid] (smarthop) {Smart Hop 2\\(Conditional)};
+\node[graybox, minimum width=1.9cm] (q) {User Query $Q$};
+\node[bluebox, right=1.0cm of q] (psr) {PSR Router\\\& Adaptive Tau};
+\node[bluebox, right=1.0cm of psr] (shard) {Active Shards\\Sub-space};
+\node[orangebox, right=1.0cm of shard] (hybrid) {Hop 1: Hybrid\\SW-RRF Search};
+\node[orangebox, right=1.0cm of hybrid] (smarthop) {Smart Hop 2\\(Conditional)};
 
 % Bottom Row: Processing & Output
-\node[greenbox, below=1.2cm of smarthop] (rerank) {Cross-Encoder\\Reranker};
-\node[greenbox, left=1.2cm of rerank] (gen) {vLLM Generator\\(Qwen2.5-14B)};
-\node[graybox, left=1.2cm of gen, minimum width=2.0cm] (ans) {Đáp án};
+\node[greenbox, below=1.5cm of smarthop] (rerank) {Cross-Encoder\\Reranker};
+\node[greenbox, left=1.8cm of rerank] (gen) {vLLM Generator\\(Qwen2.5-14B)};
+\node[graybox, left=1.8cm of gen, minimum width=1.9cm] (ans) {Đáp án};
 
 % Arrows Top Row
 \draw[arrow] (q) -- (psr);
-\draw[arrow] (psr) -- node[above,font=\scriptsize,text=tragblue]{$\tau_{eff}$} (shard);
-\draw[arrow] (shard) -- node[above,font=\scriptsize,text=tragblue]{$S_{active}$} (hybrid);
-\draw[arrow] (hybrid) -- node[above,font=\scriptsize,text=tragorange]{Top K} (smarthop);
+\draw[arrow] (psr) -- node[above=2pt,font=\scriptsize\bfseries,text=tragblue]{$\tau_{eff}$} node[below=2pt,font=\tiny,text=tragblue]{$P(s_i|Q)$} (shard);
+\draw[arrow] (shard) -- node[above=2pt,font=\scriptsize\bfseries,text=tragblue]{$S_{active}$} (hybrid);
+\draw[arrow] (hybrid) -- node[above=2pt,font=\scriptsize\bfseries,text=tragorange]{Top K} (smarthop);
 
 % Arrow Top to Bottom
-\draw[arrow] (smarthop) -- node[right,font=\scriptsize,text width=1.8cm,align=center,text=tragorange]{Skip / Hop 2\\Candidates} (rerank);
+\draw[arrow] (smarthop) -- node[right=4pt,font=\scriptsize,text width=2.0cm,align=left,text=tragorange]{Skip / Hop 2\\Candidates} (rerank);
 
 % Arrows Bottom Row
-\draw[arrow] (rerank) -- node[above,font=\scriptsize,text=traggreen]{Top 7} (gen);
+\draw[arrow] (rerank) -- node[above=2pt,font=\scriptsize\bfseries,text=traggreen]{Top 7} (gen);
 \draw[arrow] (gen) -- (ans);
 
 \end{tikzpicture}
 }
 
-\vspace{0.4cm}
+\vspace{0.3cm}
 \begin{columns}
 \begin{column}{0.33\textwidth}
-\centering\small
+\centering\footnotesize
 \textcolor{tragblue}{\textbf{Giai đoạn 1: Tiền truy vấn}}\\Encoder (1 lần) + Dynamic Tau
 \end{column}
 \begin{column}{0.33\textwidth}
-\centering\small
+\centering\footnotesize
 \textcolor{tragorange}{\textbf{Giai đoạn 2: Truy vấn linh hoạt}}\\Local Hybrid + Smart Hop 2
 \end{column}
 \begin{column}{0.33\textwidth}
-\centering\small
+\centering\footnotesize
 \textcolor{traggreen}{\textbf{Giai đoạn 3: Hậu truy vấn}}\\GPU Rerank + vLLM Generation
 \end{column}
 \end{columns}
 \end{frame}
 
 %------------------------------------------------
-\begin{frame}{Stage 1: PSR Router \& Ngưỡng động Adaptive Tau}
+\begin{frame}{Stage 1: PSR Router \& Lý thuyết Adaptive Tau}
 \small
 \begin{columns}[T]
 \begin{column}{0.54\textwidth}
-\textbf{Công thức PSR Router:}
+\textbf{Công thức PSR Router (Logistic Regression):}
 $$\boxed{P(s_i | Q) = \sigma(W_i \cdot \text{Encoder}(Q) + b_i)}$$
 
 \textbf{Thuật toán Adaptive Tau (Dynamic Thresholding):}
 \begin{enumerate}
-    \item Shannon Entropy: $H = -\sum_{i=1}^K p_i \ln(p_i)$
-    \item Confidence: $conf = 1.0 - \frac{H}{\ln(K)}$
+    \item Shannon Entropy: $H = -\sum_{i=1}^K n_i \ln(n_i + 1e^{-10})$, với $n_i = p_i / \sum p_k$
+    \item Confidence: $conf = 1.0 - \frac{H}{\ln(K)}$ \quad ($K=9$ shards)
     \item Ngưỡng hiệu dụng $\tau_{eff}$:
     $$\boxed{\tau_{eff} = \tau_{base} + \alpha \cdot (conf - 0.5)}$$
-    $\tau_{eff}$ được kẹp trong khoảng $[0.05, 0.40]$.
+    kẹp an toàn trong khoảng $[0.05, 0.40]$.
 \end{enumerate}
 \end{column}
+
 \begin{column}{0.44\textwidth}
-\begin{exampleblock}{Cơ chế tự thích ứng theo câu hỏi}
+\begin{exampleblock}{Tự điều chỉnh theo loại câu hỏi}
 \begin{itemize}
-    \item \textbf{Câu hỏi rõ ràng} (\textit{"Fix GitHub Actions pipeline error"}):\\
-    Entropy $H$ thấp $\rightarrow conf = 0.84 \rightarrow \tau_{eff} = 0.177 \rightarrow$ Chỉ quét 1 bảng \texttt{github}.
-    \item \textbf{Câu hỏi mơ hồ} (\textit{"API discussion yesterday"}):\\
-    Entropy $H$ cao $\rightarrow conf = 0.11 \rightarrow \tau_{eff} = 0.119 \rightarrow$ Quét rộng 4 bảng để tăng Recall.
+    \item \textbf{Câu hỏi rõ nguồn}: Router dự đoán xác suất tập trung vào 1 shard $\rightarrow H$ thấp $\rightarrow conf$ cao $\rightarrow \tau_{eff}$ tăng lên $\rightarrow$ \textbf{Chỉ quét 1 Shard}.
+    \item \textbf{Câu hỏi mơ hồ}: Xác suất san đều $\rightarrow H$ cao $\rightarrow conf$ thấp $\rightarrow \tau_{eff}$ hạ xuống $\rightarrow$ \textbf{Mở rộng quét 3-4 Shards} để bảo toàn Recall.
 \end{itemize}
 \end{exampleblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Ví dụ Tính toán (1/2): PSR Router \& Chuẩn hóa Phân phối}
+\small
+\textbf{Câu hỏi truy vấn ($Q$):} \textit{"Có ticket Jira nào liên quan đến lỗi out of memory của cổng OpenAI API được nhắc đến trên Slack không?"}
+
+\vspace{0.2cm}
+\begin{columns}[T]
+\begin{column}{0.49\textwidth}
+\begin{block}{Bước 1: Dự đoán xác suất PSR $P(s_i|Q)$}
+Sigmoid Logistic Regression dự đoán xác suất từng Shard chứa câu trả lời:
+\begin{itemize}
+    \item $P(\text{slack}|Q) = \mathbf{0.85}$ (Slack)
+    \item $P(\text{jira}|Q) = \mathbf{0.75}$ (Jira)
+    \item $P(\text{github}|Q) = 0.12$ (GitHub)
+    \item $P(\text{confluence}|Q) = 0.05$ (Confluence)
+    \item Các nguồn khác (\texttt{gmail, gdrive...}): $\le 0.02$
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.49\textwidth}
+\begin{block}{Bước 2: Phân phối chuẩn hóa $n_i = p_i / S$}
+Tính tổng xác suất $S = \sum_{i=1}^9 p_i = \mathbf{1.83}$ và chuẩn hóa về phân phối đơn vị $n_i$:
+\begin{itemize}
+    \item $n_{\text{slack}} = 0.85 / 1.83 = \mathbf{0.464}$
+    \item $n_{\text{jira}} = 0.75 / 1.83 = \mathbf{0.410}$
+    \item $n_{\text{github}} = 0.12 / 1.83 = \mathbf{0.066}$
+    \item $n_{\text{confluence}} = 0.05 / 1.83 = \mathbf{0.027}$
+    \item $n_{\text{khác}} \le 0.011$ ($\sum_{i=1}^9 n_i = 1.0$)
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Ví dụ Tính toán (2/2): Adaptive Tau \& Chọn Active Shards}
+\small
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+\begin{alertblock}{Bước 3: Tính toán Adaptive Tau}
+\begin{enumerate}
+    \item \textbf{Shannon Entropy}:
+    $$H = -\sum_{i=1}^9 n_i \ln n_i \approx \mathbf{1.25}$$
+    \item \textbf{Entropy tối đa}: $H_{max} = \ln(9) \approx \mathbf{2.197}$
+    \item \textbf{Hệ số tự tin (Confidence)}:
+    $$conf = 1.0 - \frac{1.25}{2.197} = \mathbf{0.431}$$
+    \item \textbf{Ngưỡng hiệu dụng $\tau_{eff}$}:
+    $$\tau_{eff} = 0.15 + 0.08 \times (0.431 - 0.5) = \mathbf{0.1445}$$
+\end{enumerate}
+\end{alertblock}
+\end{column}
+
+\begin{column}{0.46\textwidth}
+\begin{block}{Ý nghĩa Tham số ($\tau_{base}=0.15, \alpha=0.08$)}
+\begin{itemize}
+    \item $\mathbf{\tau_{base} = 0.15}$: Ngưỡng định tuyến cơ sở được tối ưu qua Grid Search.
+    \item $\mathbf{\alpha = 0.08}$: Hệ số điều chỉnh biên độ ($\pm 0.04$). Vì Router mơ hồ ($conf = 0.431 < 0.5$), $\tau_{eff}$ tự động hạ từ $0.15 \rightarrow 0.1445$ để mở rộng khung quét.
+\end{itemize}
+\end{block}
+
+\begin{exampleblock}{Kết quả Chọn Active Shards ($P \ge 0.1445$)}
+$\rightarrow$ Active Shards: \textbf{\{\texttt{slack}, \texttt{jira}\}} (2/9 shards).\\
+Đóng băng 7/9 shards, tiết kiệm \textbf{75\% Search Space}!
+\end{exampleblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Thực nghiệm Router: Routing Hit Rate vs. Active Shards}
+\small
+\begin{columns}[T]
+\begin{column}{0.55\textwidth}
+\begin{table}[h]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ccc}
+\toprule
+\textbf{Ngưỡng Tau ($\tau$)} & \textbf{Routing Hit Rate (\%)} & \textbf{Avg. Active Shards} \\
+\midrule
+\textbf{0.10} & \textbf{97.9\%} & \textbf{6.82 / 9} \\
+0.15 & 94.9\% & 5.83 / 9 \\
+0.20 & 91.7\% & 4.98 / 9 \\
+0.25 & 88.5\% & 4.24 / 9 \\
+0.30 & 84.0\% & 3.62 / 9 \\
+0.40 & 76.2\% & 2.64 / 9 \\
+0.50 & 64.3\% & 1.93 / 9 \\
+\bottomrule
+\end{tabular}
+}
+\caption{Bảng đánh giá Tradeoff giữa Routing Hit Rate và Không gian Shard kích hoạt.}
+\end{table}
+\end{column}
+
+\begin{column}{0.43\textwidth}
+\begin{block}{Insight về Điểm Cân Bằng (Sweet Spot)}
+\begin{itemize}
+    \item Ở $\mathbf{\tau=0.10}$: Hit Rate đạt cực cao \textbf{97.9\%} (bỏ sót chưa tới 2.1\% đáp án), đồng thời cắt giảm bớt 2.18 shards không cần thiết.
+    \item Ở $\mathbf{\tau=0.15}$: Hit Rate đạt \textbf{94.9\%}, giảm gần 40\% số shards cần quét (quét trung bình 5.83/9 shards).
+    \item Nếu $\tau \ge 0.40$: Hit Rate sụt giảm nghiêm trọng ($<76\%$), gây mất ngữ cảnh đáp án.
+\end{itemize}
+\end{block}
 \end{column}
 \end{columns}
 \end{frame}
@@ -212,7 +317,8 @@ $$\boxed{Score(d) = P(s_d|Q)^\gamma \cdot \left( \frac{W_{dense}}{k + r_{dense}}
 \begin{itemize}
     \item \textbf{Dense Search}: LanceDB IVF-PQ index.
     \item \textbf{Sparse Search}: BM25 Tantivy FTS.
-    \item Trọng số tối ưu: $W_{dense}=0.3, W_{sparse}=0.7$ ($D=0.3, S=0.7$).
+    \item Trọng số tối ưu: $W_{dense}=0.3, W_{sparse}=0.7$.
+    \item Bayesian Prior $\gamma=0.4 \div 0.5$: Ưu tiên shard có xác suất Router cao.
 \end{itemize}
 \end{block}
 \end{column}
@@ -222,8 +328,15 @@ $$\boxed{Score(d) = P(s_d|Q)^\gamma \cdot \left( \frac{W_{dense}}{k + r_{dense}}
     \item \textbf{Đơn nguồn}: $active\_shards\_count < 2 \rightarrow$ \textbf{SKIP Hop 2}.
     \item \textbf{Match Hop 1 xuất sắc}: $top1\_dist < 0.55 \rightarrow$ \textbf{SKIP Hop 2}.
 \end{enumerate}
-Nếu không thỏa mãn $\rightarrow$ Call LLM batch entity extraction $\rightarrow$ Hop 2 Search $\rightarrow$ Merge \& Dedup.
 \end{alertblock}
+
+\begin{exampleblock}{Ví dụ tiếp tục (Q ví dụ trên):}
+\begin{itemize}
+    \item $active\_shards = 2 \ge 2$ (Chưa SKIP1).
+    \item $top1\_dist = 0.58 \ge 0.55$ (Chưa SKIP2).
+    \item $\rightarrow$ \textbf{TRIGGER Hop 2}: Trích xuất thực thể \texttt{"SDK-402, OpenAI API"} qua LLM $\rightarrow$ Tìm thêm được PR Link liên quan trên Jira.
+\end{itemize}
+\end{exampleblock}
 \end{column}
 \end{columns}
 \end{frame}
@@ -252,7 +365,7 @@ T-RAG v2 Standard & \textbf{34.67\%} & \textbf{44.91\%} & \textbf{30.72} & \text
 \bottomrule
 \end{tabular}
 }
-\caption{Insight 1: BM25/Hybrid vượt trội hơn hẳn Pure Vector trên dữ liệu doanh nghiệp; HyDE và Query Expansion tốn thời gian gọi LLM mà không cải thiện độ chính xác.}
+\caption{Insight 1: BM25/Hybrid vượt trội hơn hẳn Pure Vector trên dữ liệu doanh nghiệp; LLM Router (27.80\%) bị suy giảm độ chính xác nghiêm trọng do định tuyến sai shard gây mất hoàn toàn ngữ cảnh.}
 \end{table}
 \end{frame}
 
@@ -325,7 +438,7 @@ T-RAG v2 ($\gamma=1.0, \tau=0.15$) & 34.87\% & 42.32\% & 29.71 & 19.0\% & 0.83s 
 \end{frame}
 
 %------------------------------------------------
-\begin{frame}{Bảng 5: Top Cấu hình Xuất sắc nhất của T-RAG v2}
+\begin{frame}{Bảng 5: Top T-RAG v2}
 \begin{table}[h]
 \centering
 \small
@@ -351,18 +464,20 @@ T-RAG v2 ($\gamma=1.0, \tau=0.15$) & 34.87\% & 42.32\% & 29.71 & 19.0\% & 0.83s 
 \section{Kết luận \& Hướng phát triển}
 
 \begin{frame}{Kết luận \& Hướng phát triển}
+\small
 \begin{block}{Kết luận}
 \begin{itemize}
     \item T-RAG v2 giải quyết triệt để các hạn chế về latency và độ chính xác của RAG doanh nghiệp.
     \item Tối ưu hóa \textbf{Smart Hop 2} và \textbf{Double-Encode} giúp giảm Retrieval Latency xuống \textbf{0.27s} (nhanh gấp 6x).
     \item Cấu hình với trọng số \textbf{$D=0.3, S=0.7$} đạt đỉnh hiệu năng với \textbf{36.80\% Correctness}.
+    \item Xuất bản bộ dữ liệu Benchmark EnterpriseRAG-Bench cùng 53 cấu hình thực nghiệm làm cơ sở tham chiếu cho cộng đồng.
 \end{itemize}
 \end{block}
 
 \vspace{0.1cm}
 \begin{block}{Định hướng phát triển}
 \begin{itemize}
-    \item Thử nghiệm mô hình Router thế hệ mới trên các kiến trúc mã hóa đa ngôn ngữ (Multilingual).
+    \item Thử nghiệm mô hình Router nâng cao trên các kiến trúc mã hóa đa ngôn ngữ (Multilingual).
     \item Tối ưu hóa prompt trích xuất thực thể để giảm thiểu nhiễu trong Hop 2.
     \item Đánh giá trên các môi trường sản xuất thực tế với độ trễ thời gian thực.
 \end{itemize}
@@ -379,6 +494,124 @@ T-RAG v2 ($\gamma=1.0, \tau=0.15$) & 34.87\% & 42.32\% & 29.71 & 19.0\% & 0.83s 
     \item Tang et al. (2024). \textit{MultiHop-RAG: Benchmarking Retrieval-Augmented Generation for Multi-Hop Queries}. arXiv:2401.15391.
     \item Zhang et al. (2025). \textit{HopRAG: Multi-Hop Reasoning for Logic-Aware Retrieval-Augmented Generation}. arXiv:2502.12442.
 \end{enumerate}
+\end{frame}
+
+%------------------------------------------------
+% BACKUP SLIDES / PHỤ LỤC
+%------------------------------------------------
+\section*{Phụ lục: Bảng Kết Quả Toàn Diện (61 Cấu Hình)}
+
+\begin{frame}{Phụ lục (1/4): Bảng Master Kết quả (Cấu hình 1 -- 15)}
+\fontsize{6.5pt}{7.5pt}\selectfont
+\centering
+\resizebox{0.99\textwidth}{!}{
+\begin{tabular}{c l l ccccccc}
+\toprule
+\textbf{\#} & \textbf{Pipeline / Cấu hình} & \textbf{Thông số Cấu hình Details} & \textbf{Corr\%} & \textbf{Comp\%} & \textbf{Combined} & \textbf{Refused} & \textbf{Total Lat} & \textbf{Retr Lat} & \textbf{Search Space} \\
+\midrule
+\textbf{1} & \textbf{OPT: High Recall + Sparse Heavy} & $\tau=0.05, \gamma=0.5, \alpha=0.08, D=0.3/S=0.7$, CSEP, SmartHop2 & \textbf{36.80\%} & 45.67\% & \textbf{32.24} & 17.2\% & 1.02s & 0.43s & 3,577,666 \\
+\textbf{2} & \textbf{Grid Tau=0.10} & $\tau=0.10, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2 & \textbf{36.67\%} & 44.99\% & 31.94 & 18.4\% & 0.88s & 0.29s & 3,323,143 \\
+\textbf{3} & \textbf{OPT: Gamma=0.4} & $\tau=0.15, \gamma=0.4, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2 & \textbf{36.47\%} & 45.23\% & 31.29 & 18.4\% & 0.83s & 0.25s & 2,706,911 \\
+4 & Grid Gamma=0.0 & $\tau=0.15, \gamma=0.0, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2 & 36.40\% & 45.52\% & 31.86 & \textbf{17.0\%} & 0.84s & 0.25s & 2,706,836 \\
+5 & Grid Alpha=0.15 & $\tau=0.15, \gamma=0.5, \alpha=0.15, D=0.5/S=0.5$, CSEP, SmartHop2 & 36.27\% & 45.47\% & 31.84 & 17.8\% & 0.86s & 0.28s & 3,006,387 \\
+6 & Grid Alpha=0.50 & $\tau=0.15, \gamma=0.5, \alpha=0.50, D=0.5/S=0.5$, CSEP, SmartHop2 & 36.07\% & 44.99\% & 31.40 & 17.4\% & 0.90s & 0.33s & 3,573,824 \\
+7 & Grid Tau=0.05 & $\tau=0.05, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2 & 36.07\% & 44.97\% & 31.24 & 17.4\% & 0.90s & 0.33s & 3,573,824 \\
+8 & OPT: D=0.4/S=0.6 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.4/S=0.6$, CSEP, SmartHop2 & 36.00\% & \textbf{46.65\%} & \textbf{32.01} & 18.0\% & 0.89s & 0.31s & 2,706,057 \\
+9 & Targeted D: Alpha Sweet Spot & $\tau=0.05, \gamma=0.4, \alpha=0.15, D=0.4/S=0.6$, CSEP, SmartHop2 & 36.00\% & 45.32\% & 31.10 & 17.2\% & 0.96s & 0.36s & 3,566,845 \\
+10 & Grid Dense=0.3 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.3/S=0.7$, CSEP, SmartHop2 & 35.80\% & 45.61\% & 31.85 & 18.6\% & 0.92s & 0.36s & 2,687,974 \\
+11 & Grid Alpha=0.00 & $\tau=0.15, \gamma=0.5, \alpha=0.00, D=0.5/S=0.5$, CSEP, SmartHop2 & 35.67\% & 44.19\% & 30.69 & 18.0\% & 0.82s & 0.25s & 2,393,189 \\
+12 & OPT: Best Completeness & $\tau=0.15, \gamma=0.5, \alpha=0.04, D=0.3/S=0.7$, CSEP, SmartHop2 & 35.60\% & 45.84\% & 31.38 & 19.8\% & 0.91s & 0.33s & 2,540,258 \\
+13 & Targeted G: Minimalist Best & $\tau=0.10, \gamma=0.4, \alpha=0.15, D=0.3/S=0.7$, CSEP, SmartHop2 & 35.60\% & \textbf{45.87\%} & 31.24 & \textbf{17.0\%} & 0.99s & 0.40s & 3,558,410 \\
+14 & Grid Tau=0.20 & $\tau=0.20, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2 & 35.47\% & 44.50\% & 30.63 & 18.0\% & 0.80s & 0.23s & 2,219,777 \\
+15 & Grid Alpha=0.12 & $\tau=0.15, \gamma=0.5, \alpha=0.12, D=0.5/S=0.5$, CSEP, SmartHop2 & 35.27\% & 44.64\% & 31.00 & 17.8\% & 0.84s & 0.27s & 2,853,707 \\
+\bottomrule
+\end{tabular}
+}
+\end{frame}
+
+\begin{frame}{Phụ lục (2/4): Bảng Master Kết quả (Cấu hình 16 -- 30)}
+\fontsize{6.5pt}{7.5pt}\selectfont
+\centering
+\resizebox{0.99\textwidth}{!}{
+\begin{tabular}{c l l ccccccc}
+\toprule
+\textbf{\#} & \textbf{Pipeline / Cấu hình} & \textbf{Thông số Cấu hình Details} & \textbf{Corr\%} & \textbf{Comp\%} & \textbf{Combined} & \textbf{Refused} & \textbf{Total Lat} & \textbf{Retr Lat} & \textbf{Search Space} \\
+\midrule
+16 & Ablation: No AdaptTau & $\tau=0.15, \gamma=0.5, \alpha=0.00$ (forced), CSEP, SmartHop2 & 35.27\% & 44.27\% & 30.48 & 18.0\% & 0.82s & 0.24s & 2,393,189 \\
+17 & OPT: Low Latency & $\tau=0.20, \gamma=0.3, \alpha=0.00, D=0.5/S=0.5$, CSEP, SmartHop2 & 35.27\% & 43.71\% & 30.21 & 19.0\% & 0.76s & \textbf{0.20s} & 1,964,143 \\
+18 & OPT: Speed+Sparse & $\tau=0.20, \gamma=0.5, \alpha=0.00, D=0.3/S=0.7$, CSEP, SmartHop2 & 35.20\% & 44.65\% & 30.68 & 18.4\% & 0.85s & 0.27s & 1,944,632 \\
+19 & OPT: Balanced & $\tau=0.15, \gamma=0.5, \alpha=0.04, D=0.5/S=0.5$, CSEP, SmartHop2 & 35.07\% & 45.21\% & 30.89 & 18.6\% & 0.83s & 0.26s & 2,562,116 \\
+20 & Grid Alpha=0.04 & $\tau=0.15, \gamma=0.5, \alpha=0.04, D=0.5/S=0.5$, CSEP, SmartHop2 & 35.07\% & 45.20\% & 30.77 & 18.6\% & 0.83s & 0.26s & 2,562,116 \\
+21 & Grid Alpha=0.25 & $\tau=0.15, \gamma=0.5, \alpha=0.25, D=0.5/S=0.5$, CSEP, SmartHop2 & 34.87\% & 44.37\% & 30.62 & 17.2\% & 0.90s & 0.32s & 3,416,644 \\
+22 & Grid Gamma=1.0 & $\tau=0.15, \gamma=1.0, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2 & 34.87\% & 42.32\% & 29.71 & 19.0\% & 0.83s & 0.27s & 2,704,042 \\
+23 & OPT: D=0.2/S=0.8 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.2/S=0.8$, CSEP, SmartHop2 & 34.80\% & 45.08\% & 30.83 & 18.8\% & 0.97s & 0.39s & 2,693,001 \\
+24 & \textbf{T-RAG v2 Standard} & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2 & 34.67\% & 44.91\% & 30.72 & \textbf{17.0\%} & 0.84s & 0.27s & 2,711,818 \\
+25 & Ablation: No CSEP & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, No CSEP, SmartHop2 & 34.67\% & 44.38\% & 30.13 & 18.2\% & 0.82s & 0.25s & 2,704,197 \\
+26 & Grid Dense=0.1 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.1/S=0.9$, CSEP, SmartHop2 & 34.60\% & 45.13\% & 30.67 & 17.8\% & 1.02s & 0.42s & 2,690,576 \\
+27 & Targeted H: Speed King v2 & $\tau=0.15, \gamma=0.0, \alpha=0.00, D=0.4/S=0.6$, CSEP, SmartHop2 & 34.60\% & 43.75\% & 30.32 & 19.0\% & 0.84s & 0.26s & 2,387,237 \\
+28 & OPT: Retrieve Depth=30 & $\tau=0.15, \gamma=0.5, \alpha=0.08, R=30, K=5$, CSEP, SmartHop2 & 34.47\% & 44.42\% & 30.38 & \textbf{16.8\%} & 0.92s & 0.34s & 2,707,042 \\
+29 & Grid Gamma=0.3 & $\tau=0.15, \gamma=0.3, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2 & 34.47\% & 44.54\% & 30.19 & 18.0\% & 0.82s & 0.25s & 2,706,695 \\
+30 & Grid Gamma=0.7 & $\tau=0.15, \gamma=0.7, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2 & 34.07\% & 44.39\% & 29.84 & 17.6\% & 0.83s & 0.25s & 2,698,037 \\
+\bottomrule
+\end{tabular}
+}
+\end{frame}
+
+\begin{frame}{Phụ lục (3/4): Bảng Master Kết quả (Cấu hình 31 -- 45)}
+\fontsize{6.5pt}{7.5pt}\selectfont
+\centering
+\resizebox{0.99\textwidth}{!}{
+\begin{tabular}{c l l ccccccc}
+\toprule
+\textbf{\#} & \textbf{Pipeline / Cấu hình} & \textbf{Thông số Cấu hình Details} & \textbf{Corr\%} & \textbf{Comp\%} & \textbf{Combined} & \textbf{Refused} & \textbf{Total Lat} & \textbf{Retr Lat} & \textbf{Search Space} \\
+\midrule
+31 & OPT: Best Correctness & $\tau=0.15, \gamma=0.5, \alpha=0.25, D=0.1/S=0.9$, CSEP, SmartHop2 & 34.00\% & 44.03\% & 29.67 & 19.2\% & 1.07s & 0.47s & 3,392,562 \\
+32 & T-RAG v1 High-Recall G1 & $\tau=0.05, \gamma=1.0$, No CSEP, No AdaptTau & 33.80\% & 43.43\% & 29.71 & 22.6\% & 1.19s & 2.31s & 3,550,005 \\
+33 & T-RAG v1 Balanced G1 & $\tau=0.15, \gamma=1.0$, No CSEP, No AdaptTau & 33.80\% & 43.29\% & 29.66 & 20.6\% & 1.02s & 1.48s & 2,354,016 \\
+34 & OPT: High Speed Sparse Heavy & $\tau=0.30, \gamma=0.5, \alpha=0.08, D=0.1/S=0.9$, CSEP, SmartHop2 & 33.60\% & 44.77\% & 29.52 & 19.8\% & 0.86s & 0.29s & \textbf{1,438,218} \\
+35 & \textbf{Hybrid Baseline} & BM25 + Vector Hybrid, Reranker, K=5 & 33.60\% & 44.11\% & 29.35 & 18.0\% & 1.15s & 0.63s & 4,213,106 \\
+36 & Grid Tau=0.30 & $\tau=0.30, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, CSEP, SmartHop2 & 33.27\% & 42.91\% & 29.33 & 18.0\% & \textbf{0.74s} & \textbf{0.18s} & \textbf{1,456,839} \\
+37 & Sparse Only & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.0/S=1.0$, CSEP, SmartHop2 & 33.20\% & 43.77\% & 29.88 & 20.0\% & 1.07s & 0.48s & 2,691,477 \\
+38 & OPT: Max Performance & $\tau=0.10, \gamma=0.5, \alpha=0.04, D=0.1/S=0.9$, CSEP, SmartHop2 & 33.20\% & 43.67\% & 29.17 & 18.8\% & 1.04s & 0.45s & 3,100,597 \\
+39 & Targeted B: Precision Strike & $\tau=0.10, \gamma=0.0, \alpha=0.15, D=0.4/S=0.6$, CSEP, SmartHop2 & 33.20\% & 43.72\% & 28.59 & 19.2\% & 0.96s & 0.36s & 3,566,651 \\
+40 & T-RAG v1 High-Speed G1 & $\tau=0.30, \gamma=1.0$, No CSEP, No AdaptTau & 33.00\% & 41.86\% & 29.15 & 21.4\% & 0.93s & 1.08s & \textbf{1,282,848} \\
+41 & HyDE Baseline & HyDE (Hypothetical Doc Gen) $\rightarrow$ Hybrid $\rightarrow$ Rerank & 33.00\% & 42.97\% & 28.01 & 18.2\% & 1.23s & 0.63s & 4,213,106 \\
+42 & Ablation: No Smart Hop2 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.5/S=0.5$, Always Hop2 ON & 32.80\% & 43.93\% & 29.39 & 18.6\% & 1.16s & 0.58s & 2,681,805 \\
+43 & Query Expansion Baseline & LLM 3 Sub-queries $\rightarrow$ Parallel Hybrid $\rightarrow$ RRF $\rightarrow$ Rerank & 32.60\% & 43.14\% & 28.34 & 19.8\% & 2.46s & 1.91s & 4,213,106 \\
+44 & Targeted A: Ultimate Combo & $\tau=0.05, \gamma=0.0, \alpha=0.15, D=0.3/S=0.7$, CSEP, SmartHop2 & 32.40\% & 42.77\% & 28.41 & 21.4\% & 1.00s & 0.39s & 3,591,459 \\
+45 & T-RAG v1 High-Recall & $\tau=0.05, \gamma=0.0$, No CSEP, No AdaptTau & 32.40\% & 43.25\% & 28.15 & 19.6\% & 1.25s & 2.28s & 3,598,130 \\
+\bottomrule
+\end{tabular}
+}
+\end{frame}
+
+\begin{frame}{Phụ lục (4/4): Bảng Master Kết quả (Cấu hình 46 -- 61)}
+\fontsize{6.5pt}{7.5pt}\selectfont
+\centering
+\resizebox{0.99\textwidth}{!}{
+\begin{tabular}{c l l ccccccc}
+\toprule
+\textbf{\#} & \textbf{Pipeline / Cấu hình} & \textbf{Thông số Cấu hình Details} & \textbf{Corr\%} & \textbf{Comp\%} & \textbf{Combined} & \textbf{Refused} & \textbf{Total Lat} & \textbf{Retr Lat} & \textbf{Search Space} \\
+\midrule
+46 & T-RAG v1 Balanced & $\tau=0.15, \gamma=0.0$, No CSEP, No AdaptTau & 32.40\% & 42.56\% & 27.91 & 19.2\% & 1.05s & 1.53s & 2,372,449 \\
+47 & OPT: Retrieve Depth=10 & $\tau=0.15, \gamma=0.5, \alpha=0.08, R=10, K=5$, CSEP, SmartHop2 & 32.40\% & 42.29\% & 27.85 & 22.2\% & 0.71s & \textbf{0.16s} & 2,711,610 \\
+48 & T-RAG v1 High-Speed & $\tau=0.30, \gamma=0.0$, No CSEP, No AdaptTau & 32.20\% & 42.44\% & 28.36 & 22.0\% & 0.92s & 1.01s & 1,284,666 \\
+49 & Targeted F: Wide Net Balanced & $\tau=0.05, \gamma=0.0, \alpha=0.08, R=25, K=5$, CSEP, SmartHop2 & 32.20\% & 43.34\% & 27.79 & 19.4\% & 1.01s & 0.42s & 3,575,488 \\
+50 & Targeted E: Low Gamma High Alpha & $\tau=0.10, \gamma=0.0, \alpha=0.12, D=0.3/S=0.7$, CSEP, SmartHop2 & 31.80\% & 43.46\% & 28.17 & 21.2\% & 1.00s & 0.39s & 3,483,602 \\
+51 & T-RAG v1 No Reranker & $\tau=0.15, \gamma=0.0$, No Reranker, No CSEP, No AdaptTau & 31.80\% & 40.72\% & 27.69 & 20.8\% & 1.06s & 1.66s & 2,372,449 \\
+52 & Targeted C: Gamma Zero Low Tau & $\tau=0.10, \gamma=0.0, \alpha=0.08, D=0.3/S=0.7$, CSEP, SmartHop2 & 31.00\% & 43.51\% & 27.55 & 21.2\% & 1.00s & 0.38s & 3,323,775 \\
+53 & OPT: TopK=3 & $\tau=0.15, \gamma=0.5, \alpha=0.08, K=3$, CSEP, SmartHop2 & 30.60\% & 42.06\% & 27.39 & 21.6\% & \textbf{0.66s} & 0.26s & 2,711,818 \\
+54 & \textbf{BM25 Baseline} & Pure BM25, K=5 & 29.20\% & 39.50\% & 25.23 & 23.0\% & 0.97s & 0.41s & 4,213,106 \\
+55 & Grid Dense=0.7 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.7/S=0.3$, CSEP, SmartHop2 & 28.26\% & 37.18\% & 24.34 & 24.0\% & 0.82s & 0.26s & 2,704,805 \\
+56 & \textbf{LLM Router Baseline} & LLM Prompting Router $\rightarrow$ Hybrid $\rightarrow$ RRF $\rightarrow$ Rerank & 27.80\% & 38.57\% & 23.96 & 21.8\% & 0.88s & 0.32s & \textbf{2,075,036} \\
+57 & Grid Dense=0.9 & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=0.9/S=0.1$, CSEP, SmartHop2 & 25.85\% & 34.83\% & 22.14 & 25.4\% & 0.82s & 0.26s & 2,704,805 \\
+58 & \textbf{VECTOR\_RERANKER Baseline} & Pure Vector $\rightarrow$ Cross-Encoder Reranker, K=5 & 24.65\% & 33.84\% & 20.89 & 26.8\% & 0.69s & 0.23s & 4,213,106 \\
+59 & Dense Only & $\tau=0.15, \gamma=0.5, \alpha=0.08, D=1.0/S=0.0$, CSEP, SmartHop2 & 24.25\% & 34.66\% & 21.11 & 26.2\% & 0.82s & 0.25s & 2,705,415 \\
+60 & OPT: TopK=1 & $\tau=0.15, \gamma=0.5, \alpha=0.08, K=1$, CSEP, SmartHop2 & 22.40\% & 33.05\% & 19.63 & 40.6\% & \textbf{0.48s} & 0.25s & 2,711,818 \\
+61 & \textbf{Vector Baseline} & Pure Vector, K=5 & 19.60\% & 30.24\% & 16.47 & 32.0\% & \textbf{0.60s} & \textbf{0.20s} & 4,213,106 \\
+\bottomrule
+\end{tabular}
+}
 \end{frame}
 
 \end{document}
