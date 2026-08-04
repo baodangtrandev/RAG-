@@ -5,7 +5,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import lancedb
 
@@ -23,7 +23,12 @@ class EnterpriseRetriever:
     """
 
     def __init__(
-        self, db_uri: str = None, model_dir: str = None, tau: float = None, gamma: float = None, k_rrf: int = None
+        self,
+        db_uri: Optional[str] = None,
+        model_dir: Optional[str] = None,
+        tau: Optional[float] = None,
+        gamma: Optional[float] = None,
+        k_rrf: Optional[int] = None,
     ):
         from dotenv import load_dotenv
 
@@ -98,7 +103,7 @@ class EnterpriseRetriever:
 
         if not active_shards:
             logger.warning("Không có Shard nào vượt qua Threshold. Kích hoạt Fallback (Top-1).")
-            best_source = max(source_probs, key=source_probs.get)
+            best_source = max(source_probs, key=source_probs.__getitem__)
             active_shards.append(best_source)
 
         logger.info(f"🔍 [Query]: '{query}'")

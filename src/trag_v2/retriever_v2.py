@@ -4,7 +4,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 import logging
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import lancedb
 import numpy as np
@@ -22,8 +22,8 @@ class EnterpriseRetrieverV2:
 
     def __init__(
         self,
-        db_uri: str = None,
-        model_dir: str = None,
+        db_uri: Optional[str] = None,
+        model_dir: Optional[str] = None,
         tau_base: float = 0.15,
         tau_alpha: float = 0.08,
         adaptive_tau: bool = True,
@@ -90,7 +90,7 @@ class EnterpriseRetrieverV2:
 
         active_shards = [s for s, p in source_probs.items() if p >= tau_eff]
         if not active_shards:
-            best_source = max(source_probs, key=source_probs.get)
+            best_source = max(source_probs, key=source_probs.__getitem__)
             active_shards.append(best_source)
 
         logger.debug(f"[Router v2] tau_eff={tau_eff:.4f} | Quét {len(active_shards)}/9 bảng -> {active_shards}")

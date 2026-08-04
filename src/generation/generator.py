@@ -79,9 +79,9 @@ class VLLMGenerator:
 
     def __init__(
         self,
-        model_name: str = None,
-        gpu_memory_utilization: float = None,
-        top_k_final: int = None,
+        model_name: Optional[str] = None,
+        gpu_memory_utilization: Optional[float] = None,
+        top_k_final: Optional[int] = None,
     ):
         self.model_name = model_name or os.environ.get("LOCAL_LLM_MODEL", "meta-llama/Meta-Llama-3.1-8B-Instruct")
         self.gpu_memory_utilization = (

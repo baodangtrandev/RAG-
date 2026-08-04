@@ -11,7 +11,7 @@ Output: List[dict] — moi entry co "docs" (da rerank) va "is_unanswerable" flag
 import logging
 import os
 import time
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import torch
 from dotenv import load_dotenv
@@ -39,7 +39,7 @@ def _load_env_float(key: str, default: float) -> float:
 class CrossEncoderReranker:
     """Cross-Encoder Reranker voi kha nang batch inference tren GPU."""
 
-    def __init__(self, model_name: str = None, threshold: float = None):
+    def __init__(self, model_name: Optional[str] = None, threshold: Optional[float] = None):
         self.model_name = model_name or os.environ.get("RERANKER_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2")
         self.threshold = threshold if threshold is not None else _load_env_float("RERANKER_THRESHOLD", 0.0)
 

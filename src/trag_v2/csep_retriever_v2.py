@@ -75,7 +75,7 @@ class CSEPRetrieverV2:
         self,
         retriever=None,
         llm_generate_fn=None,
-        top_k_retrieve: int = None,
+        top_k_retrieve: Optional[int] = None,
         smart_hop2: bool = True,
         hop1_dist_threshold: float = 0.55,
         csep: bool = True,
@@ -120,9 +120,9 @@ class CSEPRetrieverV2:
         logger.info(f"[CSEP v2] INPUT: {n} queries.")
 
         t0 = time.perf_counter()
-        hop1_results: List[List[Dict]] = [None] * n
-        hop1_source_probs: List[Dict[str, float]] = [None] * n
-        hop1_embs: List[np.ndarray] = [None] * n
+        hop1_results: List[List[Dict[str, Any]]] = [[] for _ in range(n)]
+        hop1_source_probs: List[Dict[str, float]] = [{} for _ in range(n)]
+        hop1_embs: List[Optional[np.ndarray]] = [None] * n
 
         def process_query_hop1(idx: int, query: str):
             docs, source_probs, emb = self.retriever.retrieve(query, top_k=self.top_k_retrieve)

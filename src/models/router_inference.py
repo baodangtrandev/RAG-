@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from typing import Optional
 
 import joblib
 import numpy as np
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 class ProbabilisticSourceRouter:
     """Probabilistic Source Router for multi-label source prediction."""
 
-    def __init__(self, model_dir: str = None, embedding_model: str = None):
+    def __init__(self, model_dir: Optional[str] = None, embedding_model: Optional[str] = None):
         self.model_dir = model_dir or os.environ.get("PSR_MODEL_DIR", "models/psr_v2")
         embedding_model = embedding_model or os.environ.get("EMBEDDING_MODEL", "BAAI/bge-large-en-v1.5")
 

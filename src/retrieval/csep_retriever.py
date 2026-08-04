@@ -106,7 +106,7 @@ class CSEPRetriever:
     goi LLM mot lan duy nhat cho entity extraction.
     """
 
-    def __init__(self, retriever=None, llm_generate_fn=None, top_k_retrieve: int = None):
+    def __init__(self, retriever=None, llm_generate_fn=None, top_k_retrieve: Optional[int] = None):
         """
         Args:
             retriever:       Instance cua EnterpriseRetriever (hoac None de tu tao).
@@ -200,8 +200,8 @@ class CSEPRetriever:
         logger.info("[CSEP] INPUT: %d queries. CSEP_FOR_ALL=%s", n, self.enable_csep_for_all)
 
         t0 = time.perf_counter()
-        hop1_results: List[List[Dict]] = [None] * n
-        hop1_source_probs: List[Dict[str, float]] = [None] * n
+        hop1_results: List[List[Dict[str, Any]]] = [[] for _ in range(n)]
+        hop1_source_probs: List[Dict[str, float]] = [{} for _ in range(n)]
 
         def process_query_hop1(idx: int, query: str):
             docs = self.retriever.retrieve(query, top_k=self.top_k_retrieve)
