@@ -8,7 +8,6 @@ import anthropic
 from src.llm.interface import LLMInterface, Message, ReasoningLevel, ToolCall
 from src.llm.tracing import get_current_span, init_tracing, is_tracing_enabled
 
-
 LLM_API_KEY = os.environ.get("LLM_API_KEY")
 LLM_MODEL_NAME = os.environ.get("LLM_MODEL_NAME", "claude-sonnet-4-6")
 CHEAP_LLM_MODEL_NAME = os.environ.get("CHEAP_LLM_MODEL_NAME", "claude-haiku-4-5")
@@ -37,9 +36,7 @@ class AnthropicLLM(LLMInterface):
         """
         self.api_key = api_key or LLM_API_KEY
         if not self.api_key:
-            raise ValueError(
-                "Anthropic API key required. Set LLM_API_KEY env var or pass api_key."
-            )
+            raise ValueError("Anthropic API key required. Set LLM_API_KEY env var or pass api_key.")
         self.model = model or LLM_MODEL_NAME
         self.tools = self._convert_tools(tools) if tools else None
         self.quiet = quiet
@@ -62,16 +59,12 @@ class AnthropicLLM(LLMInterface):
                     {
                         "name": tool["name"],
                         "description": tool.get("description", ""),
-                        "input_schema": tool.get(
-                            "parameters", {"type": "object", "properties": {}}
-                        ),
+                        "input_schema": tool.get("parameters", {"type": "object", "properties": {}}),
                     }
                 )
         return anthropic_tools
 
-    def _build_messages(
-        self, messages: list[Message]
-    ) -> tuple[str | None, list[dict[str, Any]]]:
+    def _build_messages(self, messages: list[Message]) -> tuple[str | None, list[dict[str, Any]]]:
         """Convert messages to Anthropic format, extracting system message."""
         system_message: str | None = None
         anthropic_messages: list[dict[str, Any]] = []
@@ -125,9 +118,7 @@ class AnthropicLLM(LLMInterface):
 
         return system_message, anthropic_messages
 
-    def generate(
-        self, messages: list[Message]
-    ) -> Generator[str | ToolCall, None, None]:
+    def generate(self, messages: list[Message]) -> Generator[str | ToolCall, None, None]:
         """
         Generate a streaming response from Anthropic.
 
@@ -216,11 +207,7 @@ class AnthropicLLM(LLMInterface):
                         tool_calls.append(
                             ToolCall(
                                 name=current_tool["name"],
-                                args=(
-                                    json.loads(current_tool["input"])
-                                    if current_tool["input"]
-                                    else {}
-                                ),
+                                args=(json.loads(current_tool["input"]) if current_tool["input"] else {}),
                                 call_id=current_tool["id"],
                             )
                         )

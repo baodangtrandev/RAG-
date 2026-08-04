@@ -4,16 +4,8 @@ import json
 import os
 
 from src.llm import Message, get_llm
-from src.schemas.field_labels import (
-    parse_field_labels,
-    validate_field_labels,
-    validate_field_labels_against_document,
-)
-from src.utils.field_ordering import (
-    needs_reordering,
-    reorder_document_fields,
-    strip_metadata_fields,
-)
+from src.schemas.field_labels import parse_field_labels, validate_field_labels, validate_field_labels_against_document
+from src.utils.field_ordering import needs_reordering, reorder_document_fields, strip_metadata_fields
 from src.utils.file_io import load_json_file, write_json_file
 from src.utils.json_extraction import extract_json_from_response
 
@@ -95,9 +87,7 @@ def label_document_fields(document: dict, quiet: bool = False) -> dict:
     field_labels = parse_field_labels(json_str)
 
     # Validate that the field names exist in the document
-    doc_validation_error = validate_field_labels_against_document(
-        field_labels, document
-    )
+    doc_validation_error = validate_field_labels_against_document(field_labels, document)
     if doc_validation_error:
         raise ValueError(f"Field labels reference invalid keys: {doc_validation_error}")
 
@@ -108,9 +98,7 @@ def label_document_fields(document: dict, quiet: bool = False) -> dict:
     return document
 
 
-def label_single_document(
-    file_path: str, quiet: bool = False, fix_ordering: bool = True
-) -> tuple[bool, str]:
+def label_single_document(file_path: str, quiet: bool = False, fix_ordering: bool = True) -> tuple[bool, str]:
     """
     Add field labels to a single document file.
 

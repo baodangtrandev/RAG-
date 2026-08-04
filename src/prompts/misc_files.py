@@ -1,6 +1,5 @@
 from src.paths import AGENTS_MD_FILE
-from src.tools import MKDIR_TOOL, FINISH_TOOL
-from src.tools import WRITE_TOOL
+from src.tools import FINISH_TOOL, MKDIR_TOOL, WRITE_TOOL
 
 MISC_FILES_SYSTEM_PROMPT = f"""
 You are a dataset generation assistant that specializes in adding miscellaneous type directories to a dataset to add noise and complexity. Work with the user to determine the miscellaneous type directories to create. \

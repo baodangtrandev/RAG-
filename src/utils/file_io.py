@@ -6,7 +6,6 @@ import tempfile
 import unicodedata
 from typing import Any
 
-
 _HOMOGLYPH_MAP: dict[str, str] = {
     # Cyrillic lowercase → Latin
     "\u0430": "a",  # а

@@ -1,6 +1,5 @@
 from src.tools import READ_TOOL
 
-
 PROJECT_RELATED_QUERIES_PROMPT = f"""
 You are an expert dataset question generation engineer. Given a list of documents from a project, generate an interesting query that is related to the project. \
 See below for things that make a query interesting. These are not requirements/exhaustive but instead just examples that may help you generate an interesting query. \

@@ -1,6 +1,5 @@
 from src.paths import AGENTS_MD_FILE
-from src.tools import GLOB_TOOL, READ_TOOL, WRITE_TOOL, FINISH_TOOL
-
+from src.tools import FINISH_TOOL, GLOB_TOOL, READ_TOOL, WRITE_TOOL
 
 COMPLETENESS_SYSTEM_PROMPT = f"""
 You are a helpful assistant that helps the user come up with a question and a set of hypothetical documents (4-10 documents) that would be needed to answer the question. The question is specifically a "high-recall" or "completeness" type question which requires exhaustive retrieval. \

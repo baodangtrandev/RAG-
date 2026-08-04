@@ -1,18 +1,24 @@
 import json
 import logging
-import os
 import sys
 import time
 from pathlib import Path
 from typing import Optional
 
+import pandas as pd
 import typer
 from dotenv import load_dotenv
+from vllm import SamplingParams
+from vllm.sampling_params import GuidedDecodingParams
 
 load_dotenv()
 
-# Thêm thư mục gốc vào sys.path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
+from src.generation.generator import VLLMGenerator
+from src.reranker.reranker import CrossEncoderReranker
+from src.trag_v2.csep_retriever_v2 import CSEPRetrieverV2
+from src.trag_v2.retriever_v2 import EnterpriseRetrieverV2
 
 logging.basicConfig(
     level=logging.INFO,
@@ -27,16 +33,19 @@ app = typer.Typer(
     add_completion=False,
 )
 
+
 @app.command()
 def run(
     questions_file: str = typer.Option(
         "data/EnterpriseRAG-Bench/data/questions/test.parquet",
-        "--questions", "-q",
+        "--questions",
+        "-q",
         help="Path tới file chứa các câu hỏi (parquet hoặc jsonl).",
     ),
     output_file: str = typer.Option(
         "results_v6/trag_v2_standard.jsonl",
-        "--output", "-o",
+        "--output",
+        "-o",
         help="File kết quả đầu ra (JSONL).",
     ),
     tau_base: float = typer.Option(
@@ -91,7 +100,8 @@ def run(
     ),
     limit: Optional[int] = typer.Option(
         None,
-        "--limit", "-l",
+        "--limit",
+        "-l",
         help="Giới hạn số câu hỏi để test nhanh.",
     ),
 ):
@@ -114,18 +124,11 @@ def run(
     logger.info(f"  Sparse Weight   : {sparse_weight}")
     logger.info("=" * 60)
 
-    # ============================================================
-    # Stage 0: Khởi tạo Generator
-    # ============================================================
-    logger.info("[Stage 0] Khởi tạo vLLM Generator...")
-    from src.generation.generator import VLLMGenerator
+    logger.info("[Stage 0] Initializing vLLM Generator...")
     generator = VLLMGenerator(top_k_final=top_k_final)
 
     pipeline_start = time.perf_counter()
 
-    # ============================================================
-    # Stage 1: Load Questions Dataset
-    # ============================================================
     logger.info(f"[Stage 1] Loading questions from: {questions_file}")
     qpath = Path(questions_file)
     if not qpath.exists():
@@ -133,7 +136,6 @@ def run(
         raise typer.Exit(code=1)
 
     if qpath.suffix == ".parquet":
-        import pandas as pd
         df = pd.read_parquet(questions_file)
         queries = df["question"].tolist()
         question_ids = df.index.tolist() if "question_id" not in df.columns else df["question_id"].tolist()
@@ -145,23 +147,16 @@ def run(
                 queries.append(item["question"])
                 question_ids.append(item.get("question_id", idx))
     else:
-        logger.error(f"Format file không được hỗ trợ: {qpath.suffix}")
+        logger.error(f"Unsupported file format: {qpath.suffix}")
         raise typer.Exit(code=1)
 
     if limit:
         queries = queries[:limit]
         question_ids = question_ids[:limit]
 
-    logger.info(f"[Stage 1] Đã tải {len(queries)} câu hỏi.")
+    logger.info(f"[Stage 1] Loaded {len(queries)} questions.")
 
-    # ============================================================
-    # Stage 2: Batch CSEP Retrieval
-    # ============================================================
-    logger.info("[Stage 2] Khởi chạy CSEP Retrieval...")
-    t_s2 = time.perf_counter()
-
-    from src.trag_v2.retriever_v2 import EnterpriseRetrieverV2
-    from src.trag_v2.csep_retriever_v2 import CSEPRetrieverV2
+    logger.info("[Stage 2] Running CSEP Retrieval...")
 
     retriever = EnterpriseRetrieverV2(
         tau_base=tau_base,
@@ -170,29 +165,21 @@ def run(
         gamma=gamma,
         k_rrf=60,
         dense_weight=dense_weight,
-        sparse_weight=sparse_weight
+        sparse_weight=sparse_weight,
     )
 
-    # Dựng csep_llm_fn
     def csep_llm_fn(prompts):
-        from vllm import SamplingParams
-        from vllm.sampling_params import GuidedDecodingParams
         schema = {
             "type": "object",
-            "properties": {
-                "entities": {
-                    "type": "array",
-                    "items": {"type": "string"}
-                }
-            },
-            "required": ["entities"]
+            "properties": {"entities": {"type": "array", "items": {"type": "string"}}},
+            "required": ["entities"],
         }
         guided_decoding = GuidedDecodingParams(json=schema)
         entity_params = SamplingParams(
             temperature=0.0,
             max_tokens=256,
             stop=["\n\n", "\nDocuments:", "\nEntities:", "<|im_end|>", "<|endoftext|>", "NONE", ", NONE"],
-            guided_decoding=guided_decoding
+            guided_decoding=guided_decoding,
         )
         outputs = generator.llm.generate(prompts, entity_params)
         return [o.outputs[0].text.strip() for o in outputs]
@@ -202,46 +189,29 @@ def run(
         llm_generate_fn=csep_llm_fn,
         top_k_retrieve=top_k_retrieve,
         smart_hop2=smart_hop2,
-        csep=csep
+        csep=csep,
     )
 
-    # Đo latency retrieval thực tế bao gồm toàn bộ Hop 1 + Smart Hop 2 / Hop 2 cho mỗi query
-    # (Để đo chuẩn end-to-end cho từng query mà không bị chia trung bình sai)
-    per_query_retrieval_times = []
-    
-    # Một helper để bọc csep_retriever.retrieve_batch và đo lường
-    # Tuy nhiên, retrieve_batch chạy ThreadPool cho Hop 1 và Hop 2, ta có thể đo tổng thời gian chạy batch
-    # rồi chia đều cho các query để lấy retrieval_latency_sec chính xác của batch
     t_ret_start = time.perf_counter()
     all_docs = csep_retriever.retrieve_batch(queries)
     batch_retrieval_time = time.perf_counter() - t_ret_start
     avg_retrieval = batch_retrieval_time / max(len(queries), 1)
 
-    logger.info(f"[Stage 2] Retrieval hoàn thành trong {batch_retrieval_time:.2f}s.")
+    logger.info(f"[Stage 2] Retrieval completed in {batch_retrieval_time:.2f}s.")
 
-    # ============================================================
-    # Stage 3: Batch Cross-Encoder Reranking
-    # ============================================================
-    logger.info("[Stage 3] Khởi chạy Cross-Encoder Reranking...")
+    logger.info("[Stage 3] Running Cross-Encoder Reranking...")
     t_s3 = time.perf_counter()
-    from src.reranker.reranker import CrossEncoderReranker
 
     reranker = CrossEncoderReranker()
     reranked_results = reranker.rerank_batch(queries, all_docs)
-    logger.info(f"[Stage 3] Reranking hoàn thành trong {time.perf_counter() - t_s3:.2f}s.")
+    logger.info(f"[Stage 3] Reranking completed in {time.perf_counter() - t_s3:.2f}s.")
 
-    # ============================================================
-    # Stage 4: Batch LLM Generation
-    # ============================================================
-    logger.info("[Stage 4] Khởi chạy LLM Generation...")
+    logger.info("[Stage 4] Running LLM Generation...")
     t_s4 = time.perf_counter()
     answers = generator.generate_batch(queries, reranked_results)
-    logger.info(f"[Stage 4] Generation hoàn thành trong {time.perf_counter() - t_s4:.2f}s.")
+    logger.info(f"[Stage 4] Generation completed in {time.perf_counter() - t_s4:.2f}s.")
 
-    # ============================================================
-    # Stage 5: Ghi kết quả
-    # ============================================================
-    logger.info(f"[Stage 5] Ghi kết quả ra file: {output_file}")
+    logger.info(f"[Stage 5] Saving results to file: {output_file}")
     out_path = Path(output_file)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -256,8 +226,8 @@ def run(
             docs_for_query = all_docs[idx]
             search_space = docs_for_query[0].get("search_space_docs", 0) if docs_for_query else 0
             search_spaces.append(search_space)
-            
-            if 'do not have enough' in answer.lower() or 'i don' in answer.lower():
+
+            if "do not have enough" in answer.lower() or "i don" in answer.lower():
                 refused_count += 1
 
             record = {
@@ -266,7 +236,7 @@ def run(
                 "answer": answer,
                 "latency_sec": round(avg_latency, 4),
                 "retrieval_latency_sec": round(avg_retrieval, 4),
-                "search_space_docs": int(search_space)
+                "search_space_docs": int(search_space),
             }
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
@@ -277,8 +247,11 @@ def run(
     logger.info(f"  Avg Latency     : {avg_latency:.4f}s")
     logger.info(f"  Avg Retrieval   : {avg_retrieval:.4f}s")
     logger.info(f"  Avg Search Space: {avg_search_space:,.0f} docs")
-    logger.info(f"  Refused Rate    : {refused_count}/{len(queries)} ({100 * refused_count / max(len(queries), 1):.1f}%)")
+    logger.info(
+        f"  Refused Rate    : {refused_count}/{len(queries)} ({100 * refused_count / max(len(queries), 1):.1f}%)"
+    )
     logger.info("=" * 60)
+
 
 if __name__ == "__main__":
     app()

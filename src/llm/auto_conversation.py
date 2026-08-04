@@ -6,14 +6,13 @@ import json
 import time
 from concurrent.futures import ThreadPoolExecutor, TimeoutError, as_completed
 from dataclasses import dataclass
-from typing import Any, Callable
+from typing import Callable
 
 from src.llm.factory import get_llm
 from src.llm.interface import LLMInterface, Message, ToolCall
 from src.llm.tracing import log_to_span, traced_span
 from src.tools.exceptions import ToolTerminationSignal
 from src.tools.runner import ToolRunner
-
 
 # ---------------------------------------------------------------------------
 # Shared helpers
@@ -63,10 +62,7 @@ def prune_messages(
     drop = 0
     idx = 2
     while total_chars > max_chars and idx + 1 < len(messages):
-        if (
-            messages[idx].role == "tool_call"
-            and messages[idx + 1].role == "tool_result"
-        ):
+        if messages[idx].role == "tool_call" and messages[idx + 1].role == "tool_result":
             total_chars -= len(messages[idx].content or "")
             total_chars -= len(messages[idx + 1].content or "")
             drop += 2
@@ -104,10 +100,7 @@ def _run_llm_step(
 
         log_to_span(
             step_span,
-            input=[
-                {"role": m.role, "content": (m.content or "")[:500]}
-                for m in messages[-3:]
-            ],
+            input=[{"role": m.role, "content": (m.content or "")[:500]} for m in messages[-3:]],
             output=full_response if full_response else None,
             metadata={
                 "tool_calls": (
@@ -249,8 +242,7 @@ def _execute_single_tool(
         return _ToolResult(
             tool_call=tool_call,
             result=(
-                f"[error] unknown tool '{tool_call.name}'. "
-                f"Available tools: {', '.join(sorted(executors.keys()))}."
+                f"[error] unknown tool '{tool_call.name}'. " f"Available tools: {', '.join(sorted(executors.keys()))}."
             ),
             signal=None,
         )
@@ -292,10 +284,7 @@ def _dispatch_tool_calls_executor_parallel(
 
     # Submit all tool calls to a thread pool
     with ThreadPoolExecutor(max_workers=len(tool_calls)) as pool:
-        future_to_idx = {
-            pool.submit(_execute_single_tool, tc, executors): i
-            for i, tc in enumerate(tool_calls)
-        }
+        future_to_idx = {pool.submit(_execute_single_tool, tc, executors): i for i, tc in enumerate(tool_calls)}
 
         # Collect results, respecting timeout.  If some futures don't
         # finish in time, as_completed raises TimeoutError — we catch it
@@ -389,9 +378,7 @@ def run_auto_conversation(
         for _ in range(max_iterations):
             step += 1
 
-            full_response, tool_calls = _run_llm_step(
-                current_llm, messages, step, quiet=True
-            )
+            full_response, tool_calls = _run_llm_step(current_llm, messages, step, quiet=True)
 
             # Handle tool calls
             if tool_calls:
@@ -413,9 +400,7 @@ def run_auto_conversation(
                     current_llm = get_llm(tools=None, quiet=quiet)
                     continue
 
-                signal = _dispatch_tool_calls_toolrunner(
-                    tool_calls, tool_runner, messages
-                )
+                signal = _dispatch_tool_calls_toolrunner(tool_calls, tool_runner, messages)
                 if signal is not None:
                     log_to_span(
                         conversation_span,
@@ -552,8 +537,7 @@ def run_agent_conversation(
             if (
                 not shutdown_injected
                 and shutdown_message
-                and (time.monotonic() - start_time - credit)
-                >= timeout_seconds - shutdown_warning_seconds
+                and (time.monotonic() - start_time - credit) >= timeout_seconds - shutdown_warning_seconds
             ):
                 shutdown_injected = True
                 messages.append(Message(role="user", content=shutdown_message))
@@ -566,9 +550,7 @@ def run_agent_conversation(
 
             # LLM call with retry on error
             try:
-                full_response, tool_calls = _run_llm_step(
-                    llm, messages, step, quiet=quiet
-                )
+                full_response, tool_calls = _run_llm_step(llm, messages, step, quiet=quiet)
             except Exception as llm_err:
                 # Reactive compaction: if the LLM rejects the request
                 # because the context is too large, compact and retry.
@@ -662,8 +644,7 @@ def run_agent_conversation(
         elapsed = time.monotonic() - start_time
         if not quiet:
             print(
-                f"\n[warn] time limit ({timeout_seconds}s) reached "
-                f"after {step} step(s) (elapsed: {elapsed:.1f}s)"
+                f"\n[warn] time limit ({timeout_seconds}s) reached " f"after {step} step(s) (elapsed: {elapsed:.1f}s)"
             )
 
         if force_finish_llm is not None:
@@ -676,13 +657,9 @@ def run_agent_conversation(
             # Allow one reactive compaction + retry during forced finish.
             for _attempt in range(2):
                 try:
-                    full_response, tool_calls = _run_llm_step(
-                        force_finish_llm, messages, step + 1, quiet=True
-                    )
+                    full_response, tool_calls = _run_llm_step(force_finish_llm, messages, step + 1, quiet=True)
                     if tool_calls:
-                        signal = _dispatch_tool_calls_executor(
-                            tool_calls, executors, messages, quiet=quiet
-                        )
+                        signal = _dispatch_tool_calls_executor(tool_calls, executors, messages, quiet=quiet)
                         if signal is not None:
                             log_to_span(
                                 conversation_span,
@@ -702,9 +679,7 @@ def run_agent_conversation(
                                 llm_retries=llm_retries,
                             )
                     elif full_response:
-                        messages.append(
-                            Message(role="assistant", content=full_response)
-                        )
+                        messages.append(Message(role="assistant", content=full_response))
                     break  # success — no retry needed
                 except Exception as exc:
                     if (
@@ -716,8 +691,7 @@ def run_agent_conversation(
                         compaction_count += 1
                         if not quiet:
                             print(
-                                "\n[compaction] context overflow during "
-                                "forced finish, compacting...",
+                                "\n[compaction] context overflow during " "forced finish, compacting...",
                                 flush=True,
                             )
                         context_compaction_fn(messages)

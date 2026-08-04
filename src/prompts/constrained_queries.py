@@ -1,4 +1,4 @@
-from src.tools import FINISH_TOOL, GLOB_TOOL, READ_TOOL, GREP_TOOL, LS_TOOL
+from src.tools import FINISH_TOOL, GLOB_TOOL, GREP_TOOL, LS_TOOL, READ_TOOL
 
 CONSTRAINED_QUERIES_SYSTEM_PROMPT = f"""
 You are an expert dataset engineer building evaluation queries for a RAG (retrieval-augmented generation) system. Your task is to create a "constrained query" along with the small set of documents that answer it. \
@@ -97,7 +97,9 @@ When calling {FINISH_TOOL}, provide a JSON object with this structure (without t
 
 CONSTRAINED_QUERIES_USER_PROMPT = "Explore the sources directory, find a cluster of topically related documents, and propose a constrained query. Show me the query, the gold documents, the distractor documents, and explain how each qualifier filters."
 
-CONSTRAINED_QUERIES_ERROR_PROMPT = f"The {FINISH_TOOL} was called with an invalid JSON object. Please fix the output and call {FINISH_TOOL} again."
+CONSTRAINED_QUERIES_ERROR_PROMPT = (
+    f"The {FINISH_TOOL} was called with an invalid JSON object. Please fix the output and call {FINISH_TOOL} again."
+)
 
 
 # The documents (relevant_document_contents) will be in format:

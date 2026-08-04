@@ -4,7 +4,6 @@ from typing import Any, Literal
 
 from pydantic import BaseModel
 
-
 ReasoningLevel = Literal["low", "medium", "high"] | None
 
 
@@ -31,9 +30,7 @@ class LLMInterface(ABC):
     """Abstract interface for LLM providers."""
 
     @abstractmethod
-    def generate(
-        self, messages: list[Message]
-    ) -> Generator[str | ToolCall, None, None]:
+    def generate(self, messages: list[Message]) -> Generator[str | ToolCall, None, None]:
         """
         Generate a streaming response from the LLM.
 

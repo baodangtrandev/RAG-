@@ -12,7 +12,7 @@ TOGGLE qua bien moi truong ENABLE_CSEP_FOR_ALL:
 QUAN TRONG VE PERFORMANCE (Stage-based Batching):
     Entity Extraction PHAI chay theo Batch Stage. Khong duoc goi LLM
     tuan tu trong vong lap for-loop vi se pha vo uu the cua vLLM PagedAttention.
-    
+
     Dung chay luong:
         Hop 1 retrieval (tat ca N queries)
         -> Batch entity extraction (1 lan goi LLM voi N prompts)
@@ -24,11 +24,11 @@ Config doc tu .env:
     RAG_TAU, RAG_GAMMA, RAG_K_RRF, RAG_TOP_K_RETRIEVE  -- retrieval params
 """
 
-import os
-import re
 import logging
+import os
 import time
-from typing import List, Dict, Any, Optional
+from concurrent.futures import ThreadPoolExecutor
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -65,6 +65,7 @@ import json
 # Max ky tu cho entity string (chan babbling)
 _MAX_ENTITY_LEN = 200
 
+
 def _parse_entities(raw: str) -> str:
     """
     Parse chuoi JSON do vLLM sinh ra (guided_json).
@@ -78,21 +79,21 @@ def _parse_entities(raw: str) -> str:
         entities = data.get("entities", [])
         if not isinstance(entities, list):
             return "NONE"
-            
+
         # Filter and clean
         clean_entities = []
         for e in entities:
             e = str(e).strip()
             if e and e.upper() not in ("NONE", "N", "NULL", "UNKNOWN"):
                 clean_entities.append(e)
-                
+
         if not clean_entities:
             return "NONE"
-            
+
         result = ", ".join(clean_entities)
         return result[:_MAX_ENTITY_LEN]
     except json.JSONDecodeError:
-        # Fallback: neu LLM sinh text cat ngang hong the parse, tot nhat tra ve NONE 
+        # Fallback: neu LLM sinh text cat ngang hong the parse, tot nhat tra ve NONE
         # de khong bi noi chuoi raw JSON vao query gay nhieu vector space.
         return "NONE"
 
@@ -114,23 +115,23 @@ class CSEPRetriever:
             top_k_retrieve:  So docs moi query lay ra moi hop.
         """
         from dotenv import load_dotenv
+
         load_dotenv()
 
         self.enable_csep_for_all = _load_env_bool("ENABLE_CSEP_FOR_ALL", True)
-        self.top_k_retrieve = (
-            top_k_retrieve
-            if top_k_retrieve is not None
-            else _load_env_int("RAG_TOP_K_RETRIEVE", 20)
-        )
+        self.top_k_retrieve = top_k_retrieve if top_k_retrieve is not None else _load_env_int("RAG_TOP_K_RETRIEVE", 20)
         self.retrieve_workers = _load_env_int("RAG_RETRIEVE_WORKERS", 8)
 
         logger.info(
             "[CSEP] Init: enable_csep_for_all=%s, top_k_retrieve=%d, retrieve_workers=%d",
-            self.enable_csep_for_all, self.top_k_retrieve, self.retrieve_workers,
+            self.enable_csep_for_all,
+            self.top_k_retrieve,
+            self.retrieve_workers,
         )
 
         if retriever is None:
             from src.retrieval.retriever import EnterpriseRetriever
+
             self.retriever = EnterpriseRetriever()
         else:
             self.retriever = retriever
@@ -162,9 +163,7 @@ class CSEPRetriever:
 
         prompts = []
         for docs in anchor_docs_per_query:
-            context = "\n---\n".join(
-                d.get("content", "")[:300] for d in docs[:3]
-            )
+            context = "\n---\n".join(d.get("content", "")[:300] for d in docs[:3])
             prompts.append(ENTITY_EXTRACTION_PROMPT.format(context=context))
 
         logger.info("[CSEP] Entity extraction: calling LLM with %d prompts.", len(prompts))
@@ -200,25 +199,17 @@ class CSEPRetriever:
         n = len(queries)
         logger.info("[CSEP] INPUT: %d queries. CSEP_FOR_ALL=%s", n, self.enable_csep_for_all)
 
-        # ============================================================
-        # Sub-stage A: Hop 1 Retrieval cho tat ca queries
-        # ============================================================
         t0 = time.perf_counter()
         hop1_results: List[List[Dict]] = [None] * n
         hop1_source_probs: List[Dict[str, float]] = [None] * n
 
         def process_query_hop1(idx: int, query: str):
             docs = self.retriever.retrieve(query, top_k=self.top_k_retrieve)
-            # Lay source_probs tu router (encode lai query)
             emb = self.retriever.router.encoder.encode([query], normalize_embeddings=True)
             probs = self.retriever.router.clf.predict_proba(emb)[0]
-            source_probs = {
-                self.retriever.router.classes[j]: float(probs[j])
-                for j in range(len(probs))
-            }
+            source_probs = {self.retriever.router.classes[j]: float(probs[j]) for j in range(len(probs))}
             return idx, docs, source_probs
 
-        from concurrent.futures import ThreadPoolExecutor
         with ThreadPoolExecutor(max_workers=self.retrieve_workers) as executor:
             futures = [executor.submit(process_query_hop1, idx, q) for idx, q in enumerate(queries)]
             for fut in futures:
@@ -229,7 +220,6 @@ class CSEPRetriever:
         elapsed_hop1 = time.perf_counter() - t0
         logger.info("[CSEP] Hop 1 done: %d queries in %.2fs.", n, elapsed_hop1)
 
-        # Kiem tra CSEP flag
         csep_flags = [self._should_run_csep(sp) for sp in hop1_source_probs]
         n_csep = sum(csep_flags)
 
@@ -240,23 +230,15 @@ class CSEPRetriever:
 
         logger.info("[CSEP] CSEP will run for %d/%d queries.", n_csep, n)
 
-        # ============================================================
-        # Sub-stage B: Batch Entity Extraction (1 lan goi LLM)
-        # Chi trich xuat entity cho cac query can CSEP
-        # ============================================================
         csep_indices = [i for i, flag in enumerate(csep_flags) if flag]
         anchor_docs_for_csep = [hop1_results[i] for i in csep_indices]
 
         entities_for_csep = self._extract_entities_batch(anchor_docs_for_csep)
 
-        # Map entities ve dung index query
         entities_per_query: List[Optional[str]] = [None] * n
         for rank, orig_idx in enumerate(csep_indices):
             entities_per_query[orig_idx] = entities_for_csep[rank]
 
-        # ============================================================
-        # Sub-stage C: Hop 2 Retrieval voi augmented queries
-        # ============================================================
         t2 = time.perf_counter()
         hop2_results: List[Optional[List[Dict]]] = [None] * n
 
@@ -274,7 +256,8 @@ class CSEPRetriever:
             augmented_query = queries[i] + " " + entity_str
             logger.debug(
                 "[CSEP] Query[%d]: augmented_query (first 120 chars): %s",
-                i, augmented_query[:120],
+                i,
+                augmented_query[:120],
             )
             hop2_queries[i] = augmented_query
             n_hop2_run += 1
@@ -284,10 +267,9 @@ class CSEPRetriever:
             active_aug_queries = [hop2_queries[idx] for idx in active_indices]
 
             with ThreadPoolExecutor(max_workers=self.retrieve_workers) as executor:
-                active_hop2_results = list(executor.map(
-                    lambda q: self.retriever.retrieve(q, top_k=self.top_k_retrieve),
-                    active_aug_queries
-                ))
+                active_hop2_results = list(
+                    executor.map(lambda q: self.retriever.retrieve(q, top_k=self.top_k_retrieve), active_aug_queries)
+                )
 
             for idx, res in zip(active_indices, active_hop2_results):
                 hop2_results[idx] = res
@@ -313,7 +295,7 @@ class CSEPRetriever:
 
             # Re-sort by sw_rrf_score sau khi merge
             merged.sort(key=lambda x: x.get("sw_rrf_score", 0.0), reverse=True)
-            final_results.append(merged[:self.top_k_retrieve])
+            final_results.append(merged[: self.top_k_retrieve])
 
             logger.debug(
                 "[CSEP] Query[%d]: hop1=%d, hop2=%d, merged=%d docs.",

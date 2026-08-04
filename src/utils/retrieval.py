@@ -57,11 +57,7 @@ def format_context_documents(
     for i, uuid in enumerate(doc_uuids, 1):
         try:
             title, content = load_document_content_by_uuid(uuid, uuid_index)
-            parts.append(
-                f"--- Document {i} (ID: {uuid}) ---\n" f"Title: {title}\n\n{content}"
-            )
+            parts.append(f"--- Document {i} (ID: {uuid}) ---\n" f"Title: {title}\n\n{content}")
         except Exception as e:
-            parts.append(
-                f"--- Document {i} (ID: {uuid}) ---\n" f"[Error loading document: {e}]"
-            )
+            parts.append(f"--- Document {i} (ID: {uuid}) ---\n" f"[Error loading document: {e}]")
     return "\n\n".join(parts)

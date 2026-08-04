@@ -17,6 +17,7 @@ logger = logging.getLogger("bm25_baseline")
 
 app = typer.Typer(name="bm25-baseline")
 
+
 @app.command()
 def run(
     questions_file: str = typer.Option("data/EnterpriseRAG-Bench/data/questions/test.parquet", "--questions", "-q"),
@@ -29,6 +30,7 @@ def run(
     logger.info("=" * 60)
 
     from src.generation.generator import VLLMGenerator
+
     logger.info("Initializing vLLM Generator...")
     generator = VLLMGenerator()
 
@@ -39,6 +41,7 @@ def run(
     queries, question_ids = [], []
     if qpath.suffix == ".parquet":
         import pandas as pd
+
         df = pd.read_parquet(questions_file)
         queries = df["question"].tolist()
         question_ids = df.index.tolist() if "question_id" not in df.columns else df["question_id"].tolist()
@@ -55,12 +58,12 @@ def run(
 
     # Khởi tạo BM25 Retriever (Dùng tính năng Full Text Search của LanceDB)
     import lancedb
-    
+
     db = lancedb.connect(os.environ.get("RAG_DB_URI", "data/lancedb"))
-    
+
     top_k_retrieve = int(os.environ.get("RAG_TOP_K_RETRIEVE", 20))
     top_k_final = int(os.environ.get("RAG_TOP_K_FINAL", 5))
-    
+
     logger.info("Bắt đầu BM25 (FTS) Baseline...")
     table_names = db.table_names()
     tables = []
@@ -73,7 +76,7 @@ def run(
         except Exception as e:
             logger.warning(f"  Không thể tạo FTS Index cho bảng {name}: {e}")
         tables.append(table)
-    
+
     all_docs = []
     per_query_retrieval_times = []
     for q_idx, q in enumerate(queries):
@@ -85,12 +88,14 @@ def run(
                 # thay vì Vector Search mặc định
                 res = table.search(q, query_type="fts").limit(top_k_retrieve).to_list()
                 for r in res:
-                    q_results.append({
-                        "content": r.get("content", ""),
-                        "title": r.get("title", ""),
-                        "source": table_names[t_idx],
-                        "score": r.get("_score", r.get("score", 0.0))
-                    })
+                    q_results.append(
+                        {
+                            "content": r.get("content", ""),
+                            "title": r.get("title", ""),
+                            "source": table_names[t_idx],
+                            "score": r.get("_score", r.get("score", 0.0)),
+                        }
+                    )
             except Exception as e:
                 if q_idx == 0:  # Chỉ log lần đầu để tránh spam
                     logger.warning(f"  BM25 search lỗi ở bảng {table_names[t_idx]}: {e}")
@@ -100,13 +105,13 @@ def run(
         top_final_docs = [doc for doc in q_results[:top_k_final]]
         all_docs.append(top_final_docs)
         per_query_retrieval_times.append(time.perf_counter() - t_q)
-    
+
     answers = generator.generate_batch(queries, all_docs)
 
     # Save output
     out_path = Path(output_file)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     total_elapsed = time.perf_counter() - pipeline_start
     avg_latency = total_elapsed / max(len(queries), 1)
 
@@ -118,11 +123,12 @@ def run(
                 "answer": answer,
                 "latency_sec": round(avg_latency, 4),
                 "retrieval_latency_sec": round(per_query_retrieval_times[idx], 4),
-                "search_space_docs": 4213106
+                "search_space_docs": 4213106,
             }
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
     logger.info("Done. Avg latency: %.4fs", avg_latency)
+
 
 if __name__ == "__main__":
     app()

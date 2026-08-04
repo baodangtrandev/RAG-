@@ -61,8 +61,6 @@ def update_statistics(stage_name: str, step_name: str, stats: dict[str, Any]) ->
             continue
         stage_data = data[stage_key]
         if isinstance(stage_data, dict):
-            data[stage_key] = dict(
-                sorted(stage_data.items(), key=lambda x: _step_sort_key(x[0]))
-            )
+            data[stage_key] = dict(sorted(stage_data.items(), key=lambda x: _step_sort_key(x[0])))
 
     _save_stats(data)

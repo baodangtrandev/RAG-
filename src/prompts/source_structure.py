@@ -1,11 +1,4 @@
-from src.tools import (
-    FINISH_TOOL,
-    MKDIR_TOOL,
-    MVDIR_TOOL,
-    READ_EMPLOYEE_DIRECTORY_TOOL,
-    RMDIR_TOOL,
-    TREE_TOOL,
-)
+from src.tools import FINISH_TOOL, MKDIR_TOOL, MVDIR_TOOL, READ_EMPLOYEE_DIRECTORY_TOOL, RMDIR_TOOL, TREE_TOOL
 
 SOURCE_STRUCTURE_SYSTEM_PROMPT = f"""
 You are a helpful assistant that helps create a directory structure for organizing company data sources. \

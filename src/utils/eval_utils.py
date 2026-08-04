@@ -146,8 +146,7 @@ def build_document_path_map(
         if remainder > 0:
             preview = f"{preview}, ... (+{remainder} more)"
         raise MissingDocumentIdsError(
-            "Referenced document ids missing from the source index. "
-            f"Underlying data is invalid: {preview}"
+            "Referenced document ids missing from the source index. " f"Underlying data is invalid: {preview}"
         )
 
     return {dsid: uuid_index[dsid] for dsid in sorted(referenced_ids)}
@@ -176,8 +175,7 @@ def resolve_document_path_map(
         print(f"\n  [WARN] {exc}")
         try:
             should_regenerate = confirm_yes_no(
-                "Referenced document IDs are missing from the UUID index cache. "
-                "Regenerate the cache now?",
+                "Referenced document IDs are missing from the UUID index cache. " "Regenerate the cache now?",
                 default=False,
                 retry_on_invalid=True,
             )
@@ -385,10 +383,7 @@ def evaluate_documents_with_consensus(
             document_path_map=document_path_map,
         )
         if eval_result is None:
-            print(
-                f"    [WARN] Consensus run {run_idx + 1}/{num_runs} "
-                f"failed: {eval_error}"
-            )
+            print(f"    [WARN] Consensus run {run_idx + 1}/{num_runs} " f"failed: {eval_error}")
             continue
         all_results.append(eval_result)
 
@@ -404,10 +399,7 @@ def evaluate_documents_with_consensus(
             if entry.get("classification") == "required":
                 run_required.add(dsid)
         if run_required == gold_set:
-            print(
-                f"    Consensus run {run_idx + 1}/{num_runs} "
-                f"confirmed gold documents"
-            )
+            print(f"    Consensus run {run_idx + 1}/{num_runs} " f"confirmed gold documents")
             return (eval_result, True, None)
 
     if not all_results:
@@ -472,10 +464,7 @@ def evaluate_documents_with_consensus(
         print("    Consensus majority vote confirmed gold documents")
         return (majority_result, True, None)
 
-    print(
-        f"    Consensus: {len(all_results)}/{num_runs} runs completed, "
-        f"majority vote differs from gold"
-    )
+    print(f"    Consensus: {len(all_results)}/{num_runs} runs completed, " f"majority vote differs from gold")
     return (majority_result, False, None)
 
 
@@ -538,9 +527,7 @@ def validate_single_fact(answer: str, statement: str) -> bool:
                 if isinstance(chunk, str):
                     response += chunk
 
-            first_line = (
-                response.strip().splitlines()[0].strip() if response.strip() else ""
-            )
+            first_line = response.strip().splitlines()[0].strip() if response.strip() else ""
             return re.search(r"\byes\b", first_line, re.IGNORECASE) is not None
         except Exception:
             if attempt == _MAX_LLM_RETRIES - 1:

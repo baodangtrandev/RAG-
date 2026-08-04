@@ -30,9 +30,7 @@ def extract_document_content(doc_data: dict) -> tuple[str, str]:
 
     title_field_name = doc_data["title_field_name"]
     if title_field_name not in doc_data:
-        raise DocumentFieldError(
-            f"title_field_name '{title_field_name}' not found in document"
-        )
+        raise DocumentFieldError(f"title_field_name '{title_field_name}' not found in document")
 
     title = str(doc_data[title_field_name])
 
@@ -50,9 +48,7 @@ def extract_document_content(doc_data: dict) -> tuple[str, str]:
     # Validate all content field names exist in document
     for field_name in content_field_names:
         if field_name not in doc_data:
-            raise DocumentFieldError(
-                f"content_field_name '{field_name}' not found in document"
-            )
+            raise DocumentFieldError(f"content_field_name '{field_name}' not found in document")
 
     # Build content string
     if len(content_field_names) == 1:

@@ -14,7 +14,11 @@ lint:
 	isort --check-only scripts src tests
 
 test:
-	pytest tests/ --cov=scripts --cov=src --cov-report=term-missing
+	@if python3 -c "import pytest_cov" 2>/dev/null; then \
+		pytest tests/ --cov=scripts --cov=src --cov-report=term-missing; \
+	else \
+		pytest tests/; \
+	fi
 
 check: format lint test
 

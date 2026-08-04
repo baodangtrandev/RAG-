@@ -32,6 +32,9 @@ import re
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+from src.llm import Message, get_llm
+from src.prompts.answer_evaluation import ANSWER_WHOLISTIC_EVALUATION_PROMPT
+from src.utils.document_index import DEFAULT_UUID_INDEX_CACHE_FILE
 from src.utils.eval_utils import (
     DEFAULT_QUESTIONS_FILE,
     build_type_order,
@@ -48,16 +51,9 @@ from src.utils.eval_utils import (
     update_gold_answer,
     validate_single_fact,
 )
-from src.llm import Message, get_llm
-from src.prompts.answer_evaluation import ANSWER_WHOLISTIC_EVALUATION_PROMPT
-from src.utils.document_index import DEFAULT_UUID_INDEX_CACHE_FILE
 from src.utils.file_io import load_json_file, write_json_file
 from src.utils.json_extraction import extract_json_from_response
-from src.utils.questions import (
-    extract_answer_facts,
-    extract_anti_hallucination_facts,
-    extract_source_type,
-)
+from src.utils.questions import extract_answer_facts, extract_anti_hallucination_facts, extract_source_type
 
 _MAX_LLM_RETRIES = 3
 
@@ -169,8 +165,7 @@ def process_question_docs(
 
     if eval_result is None:
         return (
-            f"[WARN] document evaluation returned unusable output ({eval_error}); "
-            "using original gold set",
+            f"[WARN] document evaluation returned unusable output ({eval_error}); " "using original gold set",
             None,
         )
 
@@ -208,8 +203,7 @@ def process_question_docs(
 
     if not required_doc_ids:
         return (
-            "[WARN] document evaluation marked no documents as required; "
-            "using original gold set",
+            "[WARN] document evaluation marked no documents as required; " "using original gold set",
             None,
         )
 
@@ -312,9 +306,7 @@ def score_answer(
     expected_doc_ids = question_data.get("expected_doc_ids") or []
     answer_facts = question_data.get("answer_facts", [])
     question_type = original_question_data.get("question_type")
-    gold_answer_updated = original_question_data.get(
-        "gold_answer"
-    ) != question_data.get("gold_answer")
+    gold_answer_updated = original_question_data.get("gold_answer") != question_data.get("gold_answer")
     docs_updated = set(original_question_data.get("expected_doc_ids", [])) != set(
         question_data.get("expected_doc_ids", [])
     )
@@ -340,9 +332,7 @@ def score_answer(
 
     # Answer completeness (fact-level) and correctness (wholistic) in parallel
     gold_answer = question_data.get("gold_answer", "")
-    question_text = question_data.get(
-        "question", original_question_data.get("question", "")
-    )
+    question_text = question_data.get("question", original_question_data.get("question", ""))
 
     completeness_pct = 0.0
     answer_correct = False
@@ -354,10 +344,7 @@ def score_answer(
         correctness_future = None
 
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            fact_futures = [
-                executor.submit(validate_single_fact, answer_text, statement)
-                for statement in answer_facts
-            ]
+            fact_futures = [executor.submit(validate_single_fact, answer_text, statement) for statement in answer_facts]
 
             if gold_answer:
                 correctness_future = executor.submit(
@@ -387,12 +374,8 @@ def score_answer(
             # Collect correctness result
             if correctness_future is not None:
                 try:
-                    correctness_result, correctness_reasoning = (
-                        correctness_future.result()
-                    )
-                    answer_correct = (
-                        correctness_result if correctness_result is not None else False
-                    )
+                    correctness_result, correctness_reasoning = correctness_future.result()
+                    answer_correct = correctness_result if correctness_result is not None else False
                 except Exception:
                     answer_correct = False
             else:
@@ -405,9 +388,7 @@ def score_answer(
         "answer_correct": answer_correct,
         "correctness_reasoning": correctness_reasoning,
         "completeness_pct": round(completeness_pct, 2),
-        "document_recall_pct": (
-            round(document_recall_pct, 2) if document_recall_pct is not None else None
-        ),
+        "document_recall_pct": (round(document_recall_pct, 2) if document_recall_pct is not None else None),
         "invalid_extra_docs": invalid_extra_docs,
     }
 
@@ -435,14 +416,8 @@ def compute_stats_for_group(results: list[dict]) -> dict[str, float | int]:
             "average_invalid_extra_docs": 0.0,
         }
 
-    recall_values = [
-        r["document_recall_pct"]
-        for r in results
-        if r["document_recall_pct"] is not None
-    ]
-    invalid_extra_values = [
-        r["invalid_extra_docs"] for r in results if r["invalid_extra_docs"] is not None
-    ]
+    recall_values = [r["document_recall_pct"] for r in results if r["document_recall_pct"] is not None]
+    invalid_extra_values = [r["invalid_extra_docs"] for r in results if r["invalid_extra_docs"] is not None]
 
     return {
         "count": n,
@@ -455,8 +430,7 @@ def compute_stats_for_group(results: list[dict]) -> dict[str, float | int]:
             2,
         ),
         "combined_correctness_completeness_score": round(
-            sum(r["completeness_pct"] if r["answer_correct"] else 0.0 for r in results)
-            / n,
+            sum(r["completeness_pct"] if r["answer_correct"] else 0.0 for r in results) / n,
             2,
         ),
         "average_recall_pct": (
@@ -522,9 +496,7 @@ def write_results_snapshot(
         skip_count=skip_count,
         total_questions=total_questions,
     )
-    results_output["question_type_stats"] = build_question_type_stats(
-        question_results, type_order=type_order
-    )
+    results_output["question_type_stats"] = build_question_type_stats(question_results, type_order=type_order)
     results_output["questions"] = sorted_question_results
     write_json_file(results_file, results_output)
 
@@ -535,9 +507,7 @@ def write_results_snapshot(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Evaluate answer files against gold questions"
-    )
+    parser = argparse.ArgumentParser(description="Evaluate answer files against gold questions")
     parser.add_argument(
         "--answers-file",
         default=DEFAULT_ANSWERS_FILE,
@@ -561,10 +531,7 @@ def main() -> None:
     parser.add_argument(
         "--uuid-index-cache-file",
         default=DEFAULT_UUID_INDEX_CACHE_FILE,
-        help=(
-            "Path to the UUID index cache JSON file "
-            f"(default: {DEFAULT_UUID_INDEX_CACHE_FILE})"
-        ),
+        help=("Path to the UUID index cache JSON file " f"(default: {DEFAULT_UUID_INDEX_CACHE_FILE})"),
     )
     parser.add_argument(
         "--parallelism",
@@ -600,9 +567,7 @@ def main() -> None:
         action="store_true",
         help="Skip questions already in results file",
     )
-    parser.add_argument(
-        "--limit", type=int, default=None, help="Max questions to process"
-    )
+    parser.add_argument("--limit", type=int, default=None, help="Max questions to process")
     args = parser.parse_args()
 
     # Validate input files exist
@@ -655,14 +620,9 @@ def main() -> None:
         print(f"\n  {skip_count} rows skipped due to failures")
 
     if args.question_id:
-        selected_rows = [
-            row for row in valid_rows if row["question_id"] == args.question_id
-        ]
+        selected_rows = [row for row in valid_rows if row["question_id"] == args.question_id]
         if not selected_rows:
-            print(
-                f"Error: question_id '{args.question_id}' not found in the "
-                "validated answer rows"
-            )
+            print(f"Error: question_id '{args.question_id}' not found in the " "validated answer rows")
             sys.exit(1)
         if len(selected_rows) > 1:
             print(
@@ -692,10 +652,7 @@ def main() -> None:
                     if qid and qid != args.question_id:
                         completed_qids.add(qid)
             except Exception:
-                print(
-                    f"  [WARN] Could not load existing results from "
-                    f"{args.results_file}, starting fresh"
-                )
+                print(f"  [WARN] Could not load existing results from " f"{args.results_file}, starting fresh")
     elif args.resume and os.path.exists(args.results_file):
         try:
             existing_results = load_json_file(args.results_file)
@@ -705,10 +662,7 @@ def main() -> None:
                 if qid:
                     completed_qids.add(qid)
         except Exception:
-            print(
-                f"  [WARN] Could not load existing results from "
-                f"{args.results_file}, starting fresh"
-            )
+            print(f"  [WARN] Could not load existing results from " f"{args.results_file}, starting fresh")
 
     answer_qids = {row["question_id"] for row in valid_rows}
     new_qids = answer_qids - completed_qids
@@ -716,10 +670,7 @@ def main() -> None:
 
     if completed_qids and not args.question_id:
         overlapping_qids = answer_qids & completed_qids
-        print(
-            f"\n  Found {len(completed_qids)} already-evaluated questions "
-            f"in {args.results_file}"
-        )
+        print(f"\n  Found {len(completed_qids)} already-evaluated questions " f"in {args.results_file}")
         print(f"  {len(overlapping_qids)} overlapping with current answer set")
         print(f"  {len(new_qids)} new questions to evaluate")
 
@@ -740,17 +691,11 @@ def main() -> None:
     document_path_map: dict[str, str] = {}
 
     if args.no_correction:
-        print(
-            "  --no-correction set; skipping updated-questions load and "
-            "document path resolution"
-        )
+        print("  --no-correction set; skipping updated-questions load and " "document path resolution")
     else:
         updated_questions = load_updated_questions(args.updated_questions_file)
         if updated_questions:
-            print(
-                f"  Loaded {len(updated_questions)} updated questions from "
-                f"{args.updated_questions_file}"
-            )
+            print(f"  Loaded {len(updated_questions)} updated questions from " f"{args.updated_questions_file}")
         if args.question_id:
             updated_questions.pop(args.question_id, None)
 
@@ -769,9 +714,7 @@ def main() -> None:
     # 4. Prepare worker pool and incremental output state
     # =========================================================================
 
-    remaining_rows = [
-        row for row in valid_rows if row["question_id"] not in completed_qids
-    ]
+    remaining_rows = [row for row in valid_rows if row["question_id"] not in completed_qids]
     if args.limit is not None:
         remaining_rows = remaining_rows[: args.limit]
         print(f"  Processing {len(remaining_rows)} questions (--limit {args.limit})")
@@ -783,9 +726,7 @@ def main() -> None:
 
     # When resuming, the original skip_count is not recoverable
     display_skip_count: int | str = "N/A" if is_resuming else skip_count
-    results_output_file: str | None = (
-        None if args.no_correction else args.updated_questions_file
-    )
+    results_output_file: str | None = None if args.no_correction else args.updated_questions_file
 
     # Initialize results file
     write_results_snapshot(
@@ -824,16 +765,8 @@ def main() -> None:
         original_question = questions[qid]
         effective_question = updated_q if updated_q else original_question
         result = score_answer(row, effective_question, original_question)
-        recall_str = (
-            f"{result['document_recall_pct']}%"
-            if result["document_recall_pct"] is not None
-            else "N/A"
-        )
-        extra_str = (
-            str(result["invalid_extra_docs"])
-            if result["invalid_extra_docs"] is not None
-            else "N/A"
-        )
+        recall_str = f"{result['document_recall_pct']}%" if result["document_recall_pct"] is not None else "N/A"
+        extra_str = str(result["invalid_extra_docs"]) if result["invalid_extra_docs"] is not None else "N/A"
         print(
             f"  {qid} score: correct={result['answer_correct']}"
             f"  completeness={result['completeness_pct']}%"
@@ -855,11 +788,7 @@ def main() -> None:
         if updated_q:
             updated_questions[qid] = updated_q
 
-        question_results[:] = [
-            existing
-            for existing in question_results
-            if existing.get("question_id") != qid
-        ]
+        question_results[:] = [existing for existing in question_results if existing.get("question_id") != qid]
         question_results.append(result)
 
         write_results_snapshot(
@@ -880,10 +809,7 @@ def main() -> None:
         print("\nAll questions already evaluated, nothing to do.")
     else:
         if args.parallelism > 1:
-            print(
-                f"\nEvaluating {remaining_count} questions with "
-                f"{args.parallelism} parallel workers "
-            )
+            print(f"\nEvaluating {remaining_count} questions with " f"{args.parallelism} parallel workers ")
         else:
             print(f"\nEvaluating {remaining_count} questions sequentially...")
 
@@ -894,10 +820,7 @@ def main() -> None:
                 handle_completed_question(updated_q, result)
         else:
             with ThreadPoolExecutor(max_workers=args.parallelism) as executor:
-                futures = {
-                    executor.submit(evaluate_single_question, row): row
-                    for row in remaining_rows
-                }
+                futures = {executor.submit(evaluate_single_question, row): row for row in remaining_rows}
                 # Workers only evaluate; main thread handles all writes
                 for future in as_completed(futures):
                     updated_q, result = future.result()
@@ -921,9 +844,7 @@ def main() -> None:
     )
 
     if args.no_correction:
-        print(
-            "  --no-correction set; skipping write of " f"{args.updated_questions_file}"
-        )
+        print("  --no-correction set; skipping write of " f"{args.updated_questions_file}")
     else:
         # Build corrected qids from results
         corrected_qids: set[str] = set()
@@ -979,20 +900,19 @@ def main() -> None:
     print(f"  Corrected questions: {aggregate_stats['num_corrected_questions']}")
     print(f"  Avg correctness:     {aggregate_stats['average_correctness_pct']}%")
     print(f"  Avg completeness:    {aggregate_stats['average_completeness_pct']}%")
-    print(
-        f"  Combined corr*comp:  "
-        f"{aggregate_stats['combined_correctness_completeness_score']}"
-    )
+    print(f"  Combined corr*comp:  " f"{aggregate_stats['combined_correctness_completeness_score']}")
     print(f"  Avg recall:          {aggregate_stats['average_recall_pct']}%")
     print(f"  Avg invalid extra:   {aggregate_stats['average_invalid_extra_docs']}")
-    
+
     # Calculate latency
-    latencies = [ans.get("latency_sec") for ans in answers if isinstance(ans, dict) and ans.get("latency_sec") is not None]
+    latencies = [
+        ans.get("latency_sec") for ans in answers if isinstance(ans, dict) and ans.get("latency_sec") is not None
+    ]
     if latencies:
         avg_latency = sum(latencies) / len(latencies)
         print(f"  Avg Latency/query:   {avg_latency:.2f}s")
     else:
-        print(f"  Avg Latency/query:   N/A (not recorded)")
+        print("  Avg Latency/query:   N/A (not recorded)")
 
 
 if __name__ == "__main__":

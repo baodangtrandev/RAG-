@@ -1,16 +1,6 @@
 from src.paths import AGENTS_MD_FILE
-from src.schemas.project_enrichment import (
-    EXPECTED_FORMAT,
-    EXPECTED_FORMAT_DESCRIPTION,
-    EXPECTED_PEOPLE_FORMAT,
-)
-from src.tools import (
-    GLOB_TOOL,
-    READ_EMPLOYEE_DIRECTORY_TOOL,
-    READ_TOOL,
-    TREE_TOOL,
-    WRITE_TOOL,
-)
+from src.schemas.project_enrichment import EXPECTED_FORMAT, EXPECTED_FORMAT_DESCRIPTION, EXPECTED_PEOPLE_FORMAT
+from src.tools import GLOB_TOOL, READ_EMPLOYEE_DIRECTORY_TOOL, READ_TOOL, TREE_TOOL, WRITE_TOOL
 
 PROJECTS_SYSTEM_PROMPT = f"""
 Help the user generate a list of realistic efforts for a company. Efforts in this scope refer to tasks, projects, workstreams, campaigns, etc. and are not limited to technical deliverables. \

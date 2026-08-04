@@ -67,6 +67,4 @@ projects_cache = GenerationCache("projects.json", "projects")
 completeness_cache = GenerationCache("completeness.json", "completeness")
 duplications_cache = GenerationCache("duplications.json", "duplications")
 misc_files_cache = GenerationCache("misc_dirs_and_files.json", "files")
-info_not_found_used_paths_cache = GenerationCache(
-    "info_not_found_used_paths.json", "paths"
-)
+info_not_found_used_paths_cache = GenerationCache("info_not_found_used_paths.json", "paths")

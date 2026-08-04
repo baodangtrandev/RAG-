@@ -71,17 +71,20 @@ def _load_env_float(key: str, default: float) -> float:
 def run(
     questions_file: str = typer.Option(
         "data/EnterpriseRAG-Bench/data/questions/test.parquet",
-        "--questions", "-q",
+        "--questions",
+        "-q",
         help="Path toi file chua cac cau hoi (parquet hoac jsonl).",
     ),
     output_file: str = typer.Option(
         "answers.jsonl",
-        "--output", "-o",
+        "--output",
+        "-o",
         help="File ket qua dau ra (JSONL).",
     ),
     model: Optional[str] = typer.Option(
         None,
-        "--model", "-m",
+        "--model",
+        "-m",
         help="HuggingFace model ID de ghi de LOCAL_LLM_MODEL trong .env.",
     ),
     tau: Optional[float] = typer.Option(
@@ -106,7 +109,8 @@ def run(
     ),
     limit: Optional[int] = typer.Option(
         None,
-        "--limit", "-l",
+        "--limit",
+        "-l",
         help="Gioi han so cau hoi de test nhanh (None = chay tat ca).",
     ),
     no_reranker: bool = typer.Option(
@@ -153,6 +157,7 @@ def run(
     # ============================================================
     logger.info("[Stage 0] Initializing vLLM Generator (loads LLM onto GPU)...")
     from src.generation.generator import VLLMGenerator
+
     generator = VLLMGenerator()
 
     pipeline_start = time.perf_counter()
@@ -170,6 +175,7 @@ def run(
 
     if qpath.suffix == ".parquet":
         import pandas as pd
+
         df = pd.read_parquet(questions_file)
         queries = df["question"].tolist()
         question_ids = df.index.tolist() if "question_id" not in df.columns else df["question_id"].tolist()
@@ -202,23 +208,18 @@ def run(
     def csep_llm_fn(prompts):
         from vllm import SamplingParams
         from vllm.sampling_params import GuidedDecodingParams
-        import json
+
         schema = {
             "type": "object",
-            "properties": {
-                "entities": {
-                    "type": "array",
-                    "items": {"type": "string"}
-                }
-            },
-            "required": ["entities"]
+            "properties": {"entities": {"type": "array", "items": {"type": "string"}}},
+            "required": ["entities"],
         }
         guided_decoding = GuidedDecodingParams(json=schema)
         entity_params = SamplingParams(
             temperature=0.0,
             max_tokens=256,
             stop=["\n\n", "\nDocuments:", "\nEntities:", "<|im_end|>", "<|endoftext|>", "NONE", ", NONE"],
-            guided_decoding=guided_decoding
+            guided_decoding=guided_decoding,
         )
         outputs = generator.llm.generate(prompts, entity_params)
         return [o.outputs[0].text.strip() for o in outputs]
@@ -228,12 +229,14 @@ def run(
     # --- Do per-query retrieval latency ---
     per_query_retrieval_times = []
     _original_retrieve = csep_retriever.retriever.retrieve
+
     def _timed_retrieve(query, top_k=20):
         t0 = time.perf_counter()
         result = _original_retrieve(query, top_k=top_k)
         elapsed = time.perf_counter() - t0
         per_query_retrieval_times.append(elapsed)
         return result
+
     csep_retriever.retriever.retrieve = _timed_retrieve
 
     all_docs = csep_retriever.retrieve_batch(queries)
@@ -251,10 +254,7 @@ def run(
         reranked_results = []
         for docs in all_docs:
             top_k_docs = docs[:top_k_final_int]
-            reranked_results.append({
-                "docs": top_k_docs,
-                "is_unanswerable": len(top_k_docs) == 0
-            })
+            reranked_results.append({"docs": top_k_docs, "is_unanswerable": len(top_k_docs) == 0})
     else:
         logger.info("[Stage 3] Starting Cross-Encoder Reranking...")
         t_s3 = time.perf_counter()
@@ -288,7 +288,6 @@ def run(
     # Tong ket thoi gian
     total_elapsed = time.perf_counter() - pipeline_start
     avg_latency = total_elapsed / max(len(queries), 1)
-    t_rerank = time.perf_counter() - t_s3 - (time.perf_counter() - t_s4 if 't_s4' in dir() else 0)
 
     # Map per-query retrieval times (Hop 1 + Hop 2 coalesced)
     # per_query_retrieval_times co the co nhieu hon N entries (do Hop 2)
@@ -304,8 +303,8 @@ def run(
             docs_for_query = all_docs[idx]
             search_space = docs_for_query[0].get("search_space_docs", 0) if docs_for_query else 0
             search_spaces.append(search_space)
-            
-            if 'do not have enough' in answer.lower() or 'i don' in answer.lower():
+
+            if "do not have enough" in answer.lower() or "i don" in answer.lower():
                 refused_count += 1
 
             record = {
@@ -314,7 +313,7 @@ def run(
                 "answer": answer,
                 "latency_sec": round(avg_latency, 4),
                 "retrieval_latency_sec": round(avg_retrieval, 4),
-                "search_space_docs": search_space
+                "search_space_docs": search_space,
             }
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 

@@ -14,10 +14,15 @@ Input:  queries + reranked docs (output tu Reranker)
 Output: List[str] answers, moi answer tuong ung voi 1 query
 """
 
-import os
 import logging
+import os
 import time
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
+
+from dotenv import load_dotenv
+from vllm import LLM, SamplingParams
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -41,10 +46,7 @@ Question: {query}
 
 Answer:"""
 
-UNANSWERABLE_RESPONSE = (
-    "I do not have enough information to answer this question "
-    "based on the available sources."
-)
+UNANSWERABLE_RESPONSE = "I do not have enough information to answer this question " "based on the available sources."
 
 
 def _load_env_float(key: str, default: float) -> float:
@@ -81,30 +83,20 @@ class VLLMGenerator:
         gpu_memory_utilization: float = None,
         top_k_final: int = None,
     ):
-        from dotenv import load_dotenv
-        load_dotenv()
-
-        self.model_name = (
-            model_name
-            or os.environ.get("LOCAL_LLM_MODEL", "meta-llama/Meta-Llama-3.1-8B-Instruct")
-        )
+        self.model_name = model_name or os.environ.get("LOCAL_LLM_MODEL", "meta-llama/Meta-Llama-3.1-8B-Instruct")
         self.gpu_memory_utilization = (
             gpu_memory_utilization
             if gpu_memory_utilization is not None
             else _load_env_float("VLLM_GPU_MEMORY_UTILIZATION", 0.8)
         )
-        self.top_k_final = (
-            top_k_final
-            if top_k_final is not None
-            else _load_env_int("RAG_TOP_K_FINAL", 5)
-        )
+        self.top_k_final = top_k_final if top_k_final is not None else _load_env_int("RAG_TOP_K_FINAL", 5)
 
         logger.info(
             "[Generator] Init vLLM: model='%s', gpu_util=%.2f, top_k_final=%d",
-            self.model_name, self.gpu_memory_utilization, self.top_k_final,
+            self.model_name,
+            self.gpu_memory_utilization,
+            self.top_k_final,
         )
-
-        from vllm import LLM, SamplingParams
 
         self.llm = LLM(
             model=self.model_name,
@@ -113,8 +105,8 @@ class VLLMGenerator:
             trust_remote_code=True,
         )
         self.sampling_params = SamplingParams(
-            temperature=0.1,   # Thap de dam bao tin cay trong Enterprise RAG
-            max_tokens=384,    # Du cho Enterprise answer, tranh babbling
+            temperature=0.1,  # Thap de dam bao tin cay trong Enterprise RAG
+            max_tokens=384,  # Du cho Enterprise answer, tranh babbling
             stop=[
                 "\n\nQuestion:",
                 "\n\nContext:",
@@ -143,18 +135,11 @@ class VLLMGenerator:
 
         context = "\n\n".join(context_parts) if context_parts else "No context available."
         user_content = RAG_USER_TEMPLATE.format(context=context, query=query)
-        
-        messages = [
-            {"role": "system", "content": RAG_SYSTEM_PROMPT},
-            {"role": "user", "content": user_content}
-        ]
-        
+
+        messages = [{"role": "system", "content": RAG_SYSTEM_PROMPT}, {"role": "user", "content": user_content}]
+
         tokenizer = self.llm.get_tokenizer()
-        prompt = tokenizer.apply_chat_template(
-            messages,
-            tokenize=False,
-            add_generation_prompt=True
-        )
+        prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
         return prompt
 
     def generate_batch(
@@ -173,9 +158,9 @@ class VLLMGenerator:
         Returns:
             List[str] dai N — moi element la cau tra loi tuong ung.
         """
-        assert len(queries) == len(reranked_results), (
-            "[Generator] Mismatch: %d queries vs %d reranked results"
-            % (len(queries), len(reranked_results))
+        assert len(queries) == len(reranked_results), "[Generator] Mismatch: %d queries vs %d reranked results" % (
+            len(queries),
+            len(reranked_results),
         )
 
         n = len(queries)
@@ -193,7 +178,7 @@ class VLLMGenerator:
             else:
                 docs = result.get("docs", [])
                 is_unanswerable = result.get("is_unanswerable", False)
-                
+
             if is_unanswerable or not docs:
                 prompts.append(None)  # Danh dau khong can goi LLM
                 logger.debug("[Generator] Query[%d] marked unanswerable, skip LLM.", i)
@@ -206,7 +191,8 @@ class VLLMGenerator:
         n_unanswerable = n - n_answerable
         logger.info(
             "[Generator] %d answerable (will call LLM) | %d unanswerable (skip LLM).",
-            n_answerable, n_unanswerable,
+            n_answerable,
+            n_unanswerable,
         )
 
         # --- Khoi tao answers voi gia tri mac dinh ---
@@ -222,7 +208,8 @@ class VLLMGenerator:
         # Log vi du prompt dau tien de debug
         logger.debug(
             "[Generator] Sample prompt[0] (first %d chars): %s",
-            200, active_prompts[0][:200],
+            200,
+            active_prompts[0][:200],
         )
 
         # --- Batch inference (mot lan duy nhat — toan dung H100) ---
@@ -230,13 +217,13 @@ class VLLMGenerator:
         vllm_outputs = self.llm.generate(active_prompts, self.sampling_params)
         elapsed = time.perf_counter() - t0
 
-        total_tokens = sum(
-            len(o.outputs[0].token_ids) for o in vllm_outputs
-        )
+        total_tokens = sum(len(o.outputs[0].token_ids) for o in vllm_outputs)
         logger.info(
-            "[Generator] vLLM inference done: %d prompts | %.2fs | "
-            "%d total tokens | %.0f tokens/s",
-            n_answerable, elapsed, total_tokens, total_tokens / max(elapsed, 1e-9),
+            "[Generator] vLLM inference done: %d prompts | %.2fs | " "%d total tokens | %.0f tokens/s",
+            n_answerable,
+            elapsed,
+            total_tokens,
+            total_tokens / max(elapsed, 1e-9),
         )
 
         # --- Map ket qua ve dung index ---
@@ -245,7 +232,8 @@ class VLLMGenerator:
             answers[original_idx] = answer_text
             logger.debug(
                 "[Generator] Query[%d] answer (first 100 chars): %s",
-                original_idx, answer_text[:100],
+                original_idx,
+                answer_text[:100],
             )
 
         logger.info("[Generator] OUTPUT: %d answers generated.", n)

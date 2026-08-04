@@ -6,10 +6,7 @@ import os
 from src.llm import Message, get_llm
 from src.paths import QUESTIONS_PATH
 from src.prompts.answer_generation import SINGLE_DOCUMENT_ANSWER_GENERATION
-from src.prompts.question_fact_extraction import (
-    ANTI_HALLUCINATION_FACT_VALIDATOR_PROMPT,
-    FACT_EXTRACTION_PROMPT,
-)
+from src.prompts.question_fact_extraction import ANTI_HALLUCINATION_FACT_VALIDATOR_PROMPT, FACT_EXTRACTION_PROMPT
 from src.utils.document_content import DocumentFieldError, extract_document_content
 from src.utils.file_io import load_json_file
 from src.utils.json_extraction import extract_json_from_response

@@ -1,12 +1,13 @@
-import os
 import argparse
+import json
 import logging
+import os
+import uuid
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 import pandas as pd
 import requests
-import json
-import uuid
 from dotenv import load_dotenv
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 
 # Configure logging
@@ -22,10 +23,8 @@ if not API_BASE_URL or not API_KEY:
     raise ValueError("Missing API configuration. Please check your .env file.")
 
 ENDPOINT = f"{API_BASE_URL}/v1/chat/completions"
-HEADERS = {
-    "Authorization": f"Bearer {API_KEY}",
-    "Content-Type": "application/json"
-}
+HEADERS = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
+
 
 def generate_queries_for_chunk(chunk_content: str, source_type: str, num_queries: int = 2) -> list[dict]:
     """
@@ -45,36 +44,39 @@ def generate_queries_for_chunk(chunk_content: str, source_type: str, num_queries
         f"Please return ONLY a valid JSON array of objects. Do not include markdown formatting blocks like ```json.\n"
         f"Each object must strictly follow this JSON schema:\n"
         f"{{\n"
-        f"  \"question\": \"The generated question\",\n"
-        f"  \"gold_answer\": \"The comprehensive answer\",\n"
-        f"  \"answer_facts\": [\"Fact 1\", \"Fact 2\"]\n"
+        f'  "question": "The generated question",\n'
+        f'  "gold_answer": "The comprehensive answer",\n'
+        f'  "answer_facts": ["Fact 1", "Fact 2"]\n'
         f"}}\n\n"
         f"--- DOCUMENT ---\n{chunk_content}"
     )
-    
+
     payload = {
         "model": "gpt-4o",
         "messages": [
-            {"role": "system", "content": "You are a helpful Enterprise assistant. Please respond with valid JSON arrays only."},
-            {"role": "user", "content": prompt}
+            {
+                "role": "system",
+                "content": "You are a helpful Enterprise assistant. Please respond with valid JSON arrays only.",
+            },
+            {"role": "user", "content": prompt},
         ],
-        "temperature": 0.7
+        "temperature": 0.7,
     }
-    
+
     try:
         response = requests.post(ENDPOINT, headers=HEADERS, json=payload, timeout=40)
         if response.status_code == 200:
             data = response.json()
-            reply = data['choices'][0]['message']['content'].strip()
-            
+            reply = data["choices"][0]["message"]["content"].strip()
+
             # Clean up potential markdown formatting
-            if reply.startswith('```json'):
+            if reply.startswith("```json"):
                 reply = reply[7:]
-            if reply.startswith('```'):
+            if reply.startswith("```"):
                 reply = reply[3:]
-            if reply.endswith('```'):
+            if reply.endswith("```"):
                 reply = reply[:-3]
-                
+
             parsed_data = json.loads(reply.strip())
             if isinstance(parsed_data, list):
                 return parsed_data
@@ -88,79 +90,88 @@ def generate_queries_for_chunk(chunk_content: str, source_type: str, num_queries
         logger.error(f"Request/Parsing failed: {str(e)}")
         return []
 
+
 def worker(row) -> list[dict]:
     """
     Hàm worker cho ThreadPool, xử lý 1 chunk và trả về list các dictionary chứa câu hỏi.
     """
-    source_type = str(row.get('source_type', ''))
-    doc_id = str(row.get('doc_id', ''))
-    content = str(row.get('content', ''))
-    
+    source_type = str(row.get("source_type", ""))
+    doc_id = str(row.get("doc_id", ""))
+    content = str(row.get("content", ""))
+
     queries_data = generate_queries_for_chunk(content, source_type, num_queries=2)
-    
+
     results = []
     for item in queries_data:
-        results.append({
-            "question_id": f"qst_{uuid.uuid4().hex[:8]}",
-            "question_type": "basic",
-            "source_types": [source_type],
-            "question": item.get("question", ""),
-            "expected_doc_ids": [doc_id],
-            "gold_answer": item.get("gold_answer", ""),
-            "answer_facts": item.get("answer_facts", [])
-        })
+        results.append(
+            {
+                "question_id": f"qst_{uuid.uuid4().hex[:8]}",
+                "question_type": "basic",
+                "source_types": [source_type],
+                "question": item.get("question", ""),
+                "expected_doc_ids": [doc_id],
+                "gold_answer": item.get("gold_answer", ""),
+                "answer_facts": item.get("answer_facts", []),
+            }
+        )
     return results
+
 
 def main(input_file: str, output_file: str, samples_per_source: int, max_workers: int):
     logger.info(f"Đọc dữ liệu từ: {input_file}")
     df = pd.read_parquet(input_file)
-    
-    source_types = df['source_type'].unique()
+
+    source_types = df["source_type"].unique()
     logger.info(f"Tìm thấy {len(source_types)} nguồn dữ liệu: {source_types}")
-    
+
     sampled_df = pd.DataFrame()
     for src in source_types:
-        subset = df[df['source_type'] == src]
+        subset = df[df["source_type"] == src]
         n_samples = min(samples_per_source, len(subset))
         sampled = subset.sample(n=n_samples, random_state=42)
         sampled_df = pd.concat([sampled_df, sampled])
-        
+
     logger.info(f"Đã chọn ra tổng cộng {len(sampled_df)} document để đưa cho AI sinh câu hỏi.")
-    
-    records = sampled_df.to_dict('records')
+
+    records = sampled_df.to_dict("records")
     training_data = []
-    
+
     logger.info(f"Bắt đầu gọi API tới GPT-4o với {max_workers} luồng...")
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(worker, row): row for row in records}
-        
+
         for future in tqdm(as_completed(futures), total=len(futures), desc="Generating Queries"):
             result = future.result()
             if result:
                 training_data.extend(result)
-                
+
     if not training_data:
         logger.error("Quá trình sinh dữ liệu thất bại hoặc trả về 0 kết quả.")
         return
-        
+
     # Đảm bảo lưu đúng định dạng JSONL như tập test mẫu
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
-    with open(output_file, 'w', encoding='utf-8') as f:
+    with open(output_file, "w", encoding="utf-8") as f:
         for record in training_data:
-            f.write(json.dumps(record, ensure_ascii=False) + '\n')
-    
+            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+
     logger.info(f"Đã sinh thành công {len(training_data)} câu hỏi huấn luyện!")
     logger.info(f"Dữ liệu JSONL đã được lưu chuẩn xác vào: {output_file}")
-    
+
     print("\n--- [Preview Data] ---")
     print(json.dumps(training_data[0], indent=2, ensure_ascii=False))
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Synthetic Router Data Generation")
     parser.add_argument("--input-file", type=str, default="data/EnterpriseRAG-Bench/data/documents/test.parquet")
     parser.add_argument("--output-file", type=str, default="data/router_training_data_v1.jsonl")
-    parser.add_argument("--samples-per-source", type=int, default=600, help="Số lượng chunks lấy từ mỗi nguồn để sinh câu hỏi")
-    parser.add_argument("--max-workers", type=int, default=15, help="Số luồng gọi API song song (Tăng lên nếu API mạnh)")
-    
+    parser.add_argument(
+        "--samples-per-source", type=int, default=600, help="Số lượng chunks lấy từ mỗi nguồn để sinh câu hỏi"
+    )
+    parser.add_argument(
+        "--max-workers", type=int, default=15, help="Số luồng gọi API song song (Tăng lên nếu API mạnh)"
+    )
+
     args = parser.parse_args()
     main(args.input_file, args.output_file, args.samples_per_source, args.max_workers)

@@ -246,9 +246,7 @@ SELECT_DOC_TOOL_SCHEMA = {
             },
             "remove": {
                 "type": "string",
-                "description": (
-                    "The dataset_doc_uuid (format: dsid_ followed by a UUID) of the document to remove."
-                ),
+                "description": ("The dataset_doc_uuid (format: dsid_ followed by a UUID) of the document to remove."),
             },
         },
     },

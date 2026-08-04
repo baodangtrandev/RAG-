@@ -111,9 +111,7 @@ class PathResolver:
             return ""
 
         if not abs_path.startswith(base_with_sep):
-            raise ValueError(
-                f"Path '{path}' is not under base directory '{self._base_dir}'"
-            )
+            raise ValueError(f"Path '{path}' is not under base directory '{self._base_dir}'")
 
         rel_path = abs_path[len(base_with_sep) :]
         # Normalize to forward slashes for consistency
@@ -249,9 +247,7 @@ def validate_source_path(
 
     # Check file doesn't already exist
     if os.path.exists(abs_path):
-        return (
-            f"File already exists at {file_path}. Please choose a different filename."
-        )
+        return f"File already exists at {file_path}. Please choose a different filename."
 
     return None
 

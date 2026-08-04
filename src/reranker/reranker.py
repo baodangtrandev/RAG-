@@ -8,10 +8,16 @@ Input:  List[str] queries, List[List[dict]] docs_per_query
 Output: List[dict] — moi entry co "docs" (da rerank) va "is_unanswerable" flag
 """
 
-import os
 import logging
+import os
 import time
-from typing import List, Dict, Any, Tuple
+from typing import Any, Dict, List, Tuple
+
+import torch
+from dotenv import load_dotenv
+from sentence_transformers import CrossEncoder
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -23,48 +29,25 @@ def _load_env_float(key: str, default: float) -> float:
     except ValueError:
         logger.warning(
             "[Reranker] Gia tri '%s' cua %s khong hop le. Dung mac dinh: %s",
-            os.environ.get(key), key, default,
+            os.environ.get(key),
+            key,
+            default,
         )
         return default
 
 
 class CrossEncoderReranker:
-    """
-    Cross-Encoder Reranker voi kha nang batch inference tren GPU.
-
-    Config doc tu .env (voi fallback):
-        RERANKER_MODEL     -- ten model HuggingFace
-                              (mac dinh: cross-encoder/ms-marco-MiniLM-L-6-v2)
-        RERANKER_THRESHOLD -- nguong loc score, float (mac dinh: 0.0 = khong loc)
-
-    Cach dung:
-        reranker = CrossEncoderReranker()
-        results  = reranker.rerank_batch(queries, docs_per_query)
-        # results[i]["docs"]            -> list docs da sort theo rerank_score
-        # results[i]["is_unanswerable"] -> True neu khong con doc nao
-    """
+    """Cross-Encoder Reranker voi kha nang batch inference tren GPU."""
 
     def __init__(self, model_name: str = None, threshold: float = None):
-        from dotenv import load_dotenv
-        load_dotenv()
-
-        self.model_name = (
-            model_name
-            or os.environ.get("RERANKER_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2")
-        )
-        self.threshold = (
-            threshold
-            if threshold is not None
-            else _load_env_float("RERANKER_THRESHOLD", 0.0)
-        )
+        self.model_name = model_name or os.environ.get("RERANKER_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2")
+        self.threshold = threshold if threshold is not None else _load_env_float("RERANKER_THRESHOLD", 0.0)
 
         logger.info(
             "[Reranker] Khoi tao CrossEncoder: model='%s', threshold=%s",
-            self.model_name, self.threshold,
+            self.model_name,
+            self.threshold,
         )
-
-        from sentence_transformers import CrossEncoder
-        import torch
 
         device = "cuda" if torch.cuda.is_available() else "cpu"
         self.model = CrossEncoder(self.model_name, device=device)
@@ -88,9 +71,9 @@ class CrossEncoderReranker:
                 "docs"            : List[dict] sorted theo rerank_score giam dan
                 "is_unanswerable" : bool -- True neu khong con doc nao sau loc
         """
-        assert len(queries) == len(docs_per_query), (
-            "[Reranker] Mismatch: %d queries nhung %d doc lists"
-            % (len(queries), len(docs_per_query))
+        assert len(queries) == len(docs_per_query), "[Reranker] Mismatch: %d queries nhung %d doc lists" % (
+            len(queries),
+            len(docs_per_query),
         )
 
         n_queries = len(queries)
@@ -98,7 +81,9 @@ class CrossEncoderReranker:
 
         logger.info(
             "[Reranker] INPUT: %d queries | %d pairs (query, doc) | threshold=%s",
-            n_queries, total_pairs, self.threshold,
+            n_queries,
+            total_pairs,
+            self.threshold,
         )
 
         if total_pairs == 0:
@@ -122,13 +107,13 @@ class CrossEncoderReranker:
 
         logger.info(
             "[Reranker] Inference done: %d pairs | %.2fs | %.0f pairs/s",
-            total_pairs, elapsed, total_pairs / max(elapsed, 1e-9),
+            total_pairs,
+            elapsed,
+            total_pairs / max(elapsed, 1e-9),
         )
 
         # --- Step 3: Map scores back to each doc ---
-        score_matrix: List[List[float]] = [
-            [float("-inf")] * len(docs) for docs in docs_per_query
-        ]
+        score_matrix: List[List[float]] = [[float("-inf")] * len(docs) for docs in docs_per_query]
         for flat_idx, (q_idx, d_idx) in enumerate(pair_index):
             score_matrix[q_idx][d_idx] = float(scores[flat_idx])
 
@@ -153,13 +138,18 @@ class CrossEncoderReranker:
 
             logger.debug(
                 "[Reranker] Query[%d]: kept=%d, dropped=%d, unanswerable=%s",
-                q_idx, len(kept), dropped, is_unanswerable,
+                q_idx,
+                len(kept),
+                dropped,
+                is_unanswerable,
             )
 
         n_unanswerable = sum(1 for r in results if r["is_unanswerable"])
         logger.info(
             "[Reranker] OUTPUT: %d/%d unanswerable | total_dropped=%d docs",
-            n_unanswerable, n_queries, n_dropped_total,
+            n_unanswerable,
+            n_queries,
+            n_dropped_total,
         )
 
         return results

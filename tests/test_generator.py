@@ -3,9 +3,8 @@ Unit Tests for VLLMGenerator
 Dung sys.modules mock de tranh load vLLM that (chua install trong test env).
 """
 
-import sys
 import os
-import pytest
+import sys
 from unittest.mock import MagicMock
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -18,7 +17,7 @@ mock_vllm_module.LLM = MagicMock
 mock_vllm_module.SamplingParams = MagicMock
 sys.modules.setdefault("vllm", mock_vllm_module)
 
-from src.generation.generator import VLLMGenerator, UNANSWERABLE_RESPONSE  # noqa: E402
+from src.generation.generator import UNANSWERABLE_RESPONSE, VLLMGenerator  # noqa: E402
 
 
 def _make_generator(**kwargs) -> VLLMGenerator:
@@ -28,6 +27,10 @@ def _make_generator(**kwargs) -> VLLMGenerator:
     default_output.outputs[0].text = "  The fix is to reduce batch size.  "
     default_output.outputs[0].token_ids = [1, 2, 3, 4, 5]
     mock_llm.generate.return_value = [default_output]
+
+    mock_tokenizer = MagicMock()
+    mock_tokenizer.apply_chat_template.side_effect = lambda messages, **kwargs: str(messages)
+    mock_llm.get_tokenizer.return_value = mock_tokenizer
 
     gen = VLLMGenerator.__new__(VLLMGenerator)
     gen.model_name = kwargs.get("model_name", "mock-model")
@@ -39,6 +42,7 @@ def _make_generator(**kwargs) -> VLLMGenerator:
 
 
 # ======== Tests for build_rag_prompt ========
+
 
 def test_build_rag_prompt_includes_query():
     gen = _make_generator()
@@ -81,6 +85,7 @@ def test_build_rag_prompt_source_uppercase():
 
 
 # ======== Tests for generate_batch ========
+
 
 def test_generate_batch_unanswerable_skips_llm():
     gen = _make_generator()

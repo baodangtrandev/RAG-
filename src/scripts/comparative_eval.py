@@ -31,9 +31,12 @@ import random
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+from src.llm import Message, get_llm
+from src.prompts.comparative_answer_eval import COMPARATIVE_EVAL_PROMPT, DOCUMENT_TEMPLATE, IS_GOLD_DOCUMENT_STR
+from src.utils.document_index import DEFAULT_UUID_INDEX_CACHE_FILE, load_document_content_by_uuid
 from src.utils.eval_utils import (
-    DEFAULT_QUESTIONS_FILE,
     _MAX_LLM_RETRIES,
+    DEFAULT_QUESTIONS_FILE,
     build_type_order,
     dedupe_doc_ids,
     evaluate_documents_with_consensus,
@@ -47,16 +50,6 @@ from src.utils.eval_utils import (
     strip_answer_citations,
     update_gold_answer,
     validate_single_fact,
-)
-from src.llm import Message, get_llm
-from src.prompts.comparative_answer_eval import (
-    COMPARATIVE_EVAL_PROMPT,
-    DOCUMENT_TEMPLATE,
-    IS_GOLD_DOCUMENT_STR,
-)
-from src.utils.document_index import (
-    DEFAULT_UUID_INDEX_CACHE_FILE,
-    load_document_content_by_uuid,
 )
 from src.utils.file_io import load_json_file, write_json_file
 from src.utils.json_extraction import extract_json_from_response
@@ -115,20 +108,12 @@ def compare_answers(
     document_path_map: dict[str, str],
 ) -> dict | None:
     """Single LLM comparison of two answers. Returns parsed result or None."""
-    overlapping_text = format_document_section(
-        overlapping_doc_ids, gold_doc_ids, document_path_map
-    )
-    system_1_text = format_document_section(
-        only_1_doc_ids, gold_doc_ids, document_path_map
-    )
-    system_2_text = format_document_section(
-        only_2_doc_ids, gold_doc_ids, document_path_map
-    )
+    overlapping_text = format_document_section(overlapping_doc_ids, gold_doc_ids, document_path_map)
+    system_1_text = format_document_section(only_1_doc_ids, gold_doc_ids, document_path_map)
+    system_2_text = format_document_section(only_2_doc_ids, gold_doc_ids, document_path_map)
     presented_ids = set(overlapping_doc_ids) | set(only_1_doc_ids) | set(only_2_doc_ids)
     missing_gold_ids = [d for d in gold_doc_ids if d not in presented_ids]
-    missing_gold_text = format_document_section(
-        missing_gold_ids, gold_doc_ids, document_path_map
-    )
+    missing_gold_text = format_document_section(missing_gold_ids, gold_doc_ids, document_path_map)
 
     prompt = COMPARATIVE_EVAL_PROMPT.format(
         query=question,
@@ -268,10 +253,7 @@ def score_answer_set(
     if answer_text and answer_facts:
         max_workers = max(len(answer_facts), 1)
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = [
-                executor.submit(validate_single_fact, answer_text, fact)
-                for fact in answer_facts
-            ]
+            futures = [executor.submit(validate_single_fact, answer_text, fact) for fact in answer_facts]
             validated_count = 0
             fact_failed = False
             for future in as_completed(futures):
@@ -289,9 +271,7 @@ def score_answer_set(
 
     return {
         "completeness_pct": round(completeness_pct, 2),
-        "document_recall_pct": (
-            round(document_recall_pct, 2) if document_recall_pct is not None else None
-        ),
+        "document_recall_pct": (round(document_recall_pct, 2) if document_recall_pct is not None else None),
         "invalid_extra_docs": invalid_extra_docs,
     }
 
@@ -394,24 +374,15 @@ def process_comparative_question(
 
                     if not new_answer:
                         print(
-                            f"  [WARN] {qid}: gold answer regeneration failed. "
-                            "Falling back to original gold answer."
+                            f"  [WARN] {qid}: gold answer regeneration failed. " "Falling back to original gold answer."
                         )
                     else:
                         updated_row["gold_answer"] = new_answer
 
                         # Re-extract facts
                         original_facts = question_row.get("answer_facts", [])
-                        anti_hallucination_facts = (
-                            extract_anti_hallucination_facts(original_facts, quiet=True)
-                            or []
-                        )
-                        new_facts = (
-                            extract_answer_facts(
-                                question_row["question"], new_answer, quiet=True
-                            )
-                            or []
-                        )
+                        anti_hallucination_facts = extract_anti_hallucination_facts(original_facts, quiet=True) or []
+                        new_facts = extract_answer_facts(question_row["question"], new_answer, quiet=True) or []
                         new_facts_set = set(new_facts)
                         combined_facts = list(new_facts)
                         for fact in anti_hallucination_facts:
@@ -420,17 +391,11 @@ def process_comparative_question(
                         updated_row["answer_facts"] = combined_facts
 
                     updated_q = updated_row
-                    print(
-                        f"  {qid} docs: UPDATED ({len(gold_doc_ids)} -> "
-                        f"{len(valid_doc_ids)} docs)"
-                    )
+                    print(f"  {qid} docs: UPDATED ({len(gold_doc_ids)} -> " f"{len(valid_doc_ids)} docs)")
                 elif eval_result is not None:
                     print(f"  {qid} docs: evaluated, doc set unchanged")
             elif eval_result is None:
-                print(
-                    f"  {qid} docs: [WARN] evaluation failed ({eval_error}), "
-                    "using original gold set"
-                )
+                print(f"  {qid} docs: [WARN] evaluation failed ({eval_error}), " "using original gold set")
             else:
                 print(f"  {qid} docs: gold documents confirmed")
 
@@ -440,9 +405,7 @@ def process_comparative_question(
     effective_facts = effective_question.get("answer_facts", [])
 
     # Determine corrected status
-    gold_answer_updated = original_question.get(
-        "gold_answer"
-    ) != effective_question.get("gold_answer")
+    gold_answer_updated = original_question.get("gold_answer") != effective_question.get("gold_answer")
     docs_updated = set(original_question.get("expected_doc_ids", [])) != set(
         effective_question.get("expected_doc_ids", [])
     )
@@ -594,17 +557,9 @@ def compute_comparative_stats(
         }
 
     # Preference counts (ties still count toward preferred_system)
-    sys1_preferred = sum(
-        1
-        for r in question_results
-        if r.get("comparison", {}).get("preferred_system") == "1"
-    )
+    sys1_preferred = sum(1 for r in question_results if r.get("comparison", {}).get("preferred_system") == "1")
     sys2_preferred = n - sys1_preferred
-    ties = sum(
-        1
-        for r in question_results
-        if r.get("comparison", {}).get("effectively_equivalent") is True
-    )
+    ties = sum(1 for r in question_results if r.get("comparison", {}).get("effectively_equivalent") is True)
     num_corrected = sum(1 for r in question_results if r.get("corrected"))
 
     # Strong preference: ties don't count toward either system
@@ -624,27 +579,17 @@ def compute_comparative_stats(
     def _avg_set_stats(set_key: str) -> dict:
         completeness_vals = [r[set_key]["completeness_pct"] for r in question_results]
         recall_vals = [
-            r[set_key]["document_recall_pct"]
-            for r in question_results
-            if r[set_key]["document_recall_pct"] is not None
+            r[set_key]["document_recall_pct"] for r in question_results if r[set_key]["document_recall_pct"] is not None
         ]
         extra_vals = [
-            r[set_key]["invalid_extra_docs"]
-            for r in question_results
-            if r[set_key]["invalid_extra_docs"] is not None
+            r[set_key]["invalid_extra_docs"] for r in question_results if r[set_key]["invalid_extra_docs"] is not None
         ]
         return {
             "average_completeness_pct": (
-                round(sum(completeness_vals) / len(completeness_vals), 2)
-                if completeness_vals
-                else 0.0
+                round(sum(completeness_vals) / len(completeness_vals), 2) if completeness_vals else 0.0
             ),
-            "average_recall_pct": (
-                round(sum(recall_vals) / len(recall_vals), 2) if recall_vals else 0.0
-            ),
-            "average_extra_docs": (
-                round(sum(extra_vals) / len(extra_vals), 2) if extra_vals else 0.0
-            ),
+            "average_recall_pct": (round(sum(recall_vals) / len(recall_vals), 2) if recall_vals else 0.0),
+            "average_extra_docs": (round(sum(extra_vals) / len(extra_vals), 2) if extra_vals else 0.0),
         }
 
     return {
@@ -691,9 +636,7 @@ def write_comparative_results_snapshot(
             "skipped_rows": skip_count,
             **stats,
         },
-        "question_type_stats": build_comparative_question_type_stats(
-            question_results, type_order=type_order
-        ),
+        "question_type_stats": build_comparative_question_type_stats(question_results, type_order=type_order),
         "questions": sorted_results,
     }
     write_json_file(results_file, results_output)
@@ -705,9 +648,7 @@ def write_comparative_results_snapshot(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Compare two RAG systems' answers head-to-head"
-    )
+    parser = argparse.ArgumentParser(description="Compare two RAG systems' answers head-to-head")
     parser.add_argument(
         "--answer-file-1",
         required=True,
@@ -731,18 +672,12 @@ def main() -> None:
     parser.add_argument(
         "--updated-questions-file",
         default=DEFAULT_UPDATED_QUESTIONS_FILE,
-        help=(
-            "Path to output updated questions JSONL "
-            f"(default: {DEFAULT_UPDATED_QUESTIONS_FILE})"
-        ),
+        help=("Path to output updated questions JSONL " f"(default: {DEFAULT_UPDATED_QUESTIONS_FILE})"),
     )
     parser.add_argument(
         "--uuid-index-cache-file",
         default=DEFAULT_UUID_INDEX_CACHE_FILE,
-        help=(
-            "Path to the UUID index cache JSON file "
-            f"(default: {DEFAULT_UUID_INDEX_CACHE_FILE})"
-        ),
+        help=("Path to the UUID index cache JSON file " f"(default: {DEFAULT_UUID_INDEX_CACHE_FILE})"),
     )
     parser.add_argument(
         "--parallelism",
@@ -768,9 +703,7 @@ def main() -> None:
         action="store_true",
         help="Skip questions already in results file",
     )
-    parser.add_argument(
-        "--limit", type=int, default=None, help="Max questions to process"
-    )
+    parser.add_argument("--limit", type=int, default=None, help="Max questions to process")
     args = parser.parse_args()
 
     # Validate input files exist
@@ -843,10 +776,7 @@ def main() -> None:
 
     if args.question_id:
         if args.question_id not in common_qids:
-            print(
-                f"Error: question_id '{args.question_id}' not found in "
-                "common question set"
-            )
+            print(f"Error: question_id '{args.question_id}' not found in " "common question set")
             sys.exit(1)
         valid_qids = [args.question_id]
         print(f"  Targeting single question: {args.question_id}")
@@ -868,10 +798,7 @@ def main() -> None:
                     if rqid and rqid != args.question_id:
                         completed_qids.add(rqid)
             except Exception:
-                print(
-                    f"  [WARN] Could not load existing results from "
-                    f"{args.results_file}, starting fresh"
-                )
+                print(f"  [WARN] Could not load existing results from " f"{args.results_file}, starting fresh")
     elif args.resume and os.path.exists(args.results_file):
         try:
             existing_results = load_json_file(args.results_file)
@@ -881,10 +808,7 @@ def main() -> None:
                 if rqid:
                     completed_qids.add(rqid)
         except Exception:
-            print(
-                f"  [WARN] Could not load existing results from "
-                f"{args.results_file}, starting fresh"
-            )
+            print(f"  [WARN] Could not load existing results from " f"{args.results_file}, starting fresh")
 
     valid_qids_set = set(valid_qids)
     new_qids = valid_qids_set - completed_qids
@@ -892,10 +816,7 @@ def main() -> None:
 
     if completed_qids and not args.question_id:
         overlapping_qids = valid_qids_set & completed_qids
-        print(
-            f"\n  Found {len(completed_qids)} already-evaluated questions "
-            f"in {args.results_file}"
-        )
+        print(f"\n  Found {len(completed_qids)} already-evaluated questions " f"in {args.results_file}")
         print(f"  {len(overlapping_qids)} overlapping with current answer set")
         print(f"  {len(new_qids)} new questions to evaluate")
 
@@ -914,10 +835,7 @@ def main() -> None:
 
     updated_questions = load_updated_questions(args.updated_questions_file)
     if updated_questions:
-        print(
-            f"  Loaded {len(updated_questions)} updated questions from "
-            f"{args.updated_questions_file}"
-        )
+        print(f"  Loaded {len(updated_questions)} updated questions from " f"{args.updated_questions_file}")
     if args.question_id:
         updated_questions.pop(args.question_id, None)
 
@@ -980,11 +898,7 @@ def main() -> None:
         if updated_q:
             updated_questions[qid] = updated_q
 
-        question_results[:] = [
-            existing
-            for existing in question_results
-            if existing.get("question_id") != qid
-        ]
+        question_results[:] = [existing for existing in question_results if existing.get("question_id") != qid]
         question_results.append(result)
 
         write_comparative_results_snapshot(
@@ -1007,10 +921,7 @@ def main() -> None:
         print("\nAll questions already evaluated, nothing to do.")
     else:
         if args.parallelism > 1:
-            print(
-                f"\nEvaluating {remaining_count} questions with "
-                f"{args.parallelism} parallel workers"
-            )
+            print(f"\nEvaluating {remaining_count} questions with " f"{args.parallelism} parallel workers")
         else:
             print(f"\nEvaluating {remaining_count} questions sequentially...")
 
@@ -1021,10 +932,7 @@ def main() -> None:
                 handle_completed_question(updated_q, result)
         else:
             with ThreadPoolExecutor(max_workers=args.parallelism) as executor:
-                futures = {
-                    executor.submit(evaluate_single_question, qid): qid
-                    for qid in remaining_qids
-                }
+                futures = {executor.submit(evaluate_single_question, qid): qid for qid in remaining_qids}
                 for future in as_completed(futures):
                     updated_q, result = future.result()
                     handle_completed_question(updated_q, result)
@@ -1099,14 +1007,10 @@ def main() -> None:
     print(f"  System 1 strongly preferred: {stats['system_1_strongly_preferred_pct']}%")
     print(f"  System 2 strongly preferred: {stats['system_2_strongly_preferred_pct']}%")
     print(f"  Tie percentage:              {stats['tie_pct']}%")
-    print(
-        f"  Set 1 avg completeness: {stats['answer_set_1']['average_completeness_pct']}%"
-    )
+    print(f"  Set 1 avg completeness: {stats['answer_set_1']['average_completeness_pct']}%")
     print(f"  Set 1 avg recall:       {stats['answer_set_1']['average_recall_pct']}%")
     print(f"  Set 1 avg extra docs:   {stats['answer_set_1']['average_extra_docs']}")
-    print(
-        f"  Set 2 avg completeness: {stats['answer_set_2']['average_completeness_pct']}%"
-    )
+    print(f"  Set 2 avg completeness: {stats['answer_set_2']['average_completeness_pct']}%")
     print(f"  Set 2 avg recall:       {stats['answer_set_2']['average_recall_pct']}%")
     print(f"  Set 2 avg extra docs:   {stats['answer_set_2']['average_extra_docs']}")
 

@@ -1,4 +1,3 @@
-import json
 import os
 from collections.abc import Generator
 from typing import Any
@@ -9,6 +8,7 @@ from src.llm.interface import LLMInterface, Message, ReasoningLevel, ToolCall
 
 LLM_MODEL_NAME = os.environ.get("JUDGE_LLM_MODEL", "Qwen/Qwen2.5-14B-Instruct")
 CHEAP_LLM_MODEL_NAME = os.environ.get("JUDGE_LLM_MODEL", "Qwen/Qwen2.5-14B-Instruct")
+
 
 class OpenAILLM(LLMInterface):
     """OpenAI implementation of the LLM interface using the standard Chat Completions API for vLLM compatibility."""
@@ -42,9 +42,7 @@ class OpenAILLM(LLMInterface):
                 input_items.append({"role": "assistant", "content": msg.content})
         return input_items
 
-    def generate(
-        self, messages: list[Message]
-    ) -> Generator[str | ToolCall, None, None]:
+    def generate(self, messages: list[Message]) -> Generator[str | ToolCall, None, None]:
         if not self.quiet:
             print(f"Waiting on LLM ({self.model})...", flush=True)
 
