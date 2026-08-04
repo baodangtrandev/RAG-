@@ -17,7 +17,10 @@ export JUDGE_LLM_MODEL="Qwen/Qwen2.5-14B-Instruct"
 
 SRC_DIR="results6.2-model"
 OUT_DIR="results6.2-model-qwen_judge"
-PYTHON="/network-volume/miniconda3/envs/trag/bin/python"
+PYTHON="${PYTHON:-python}"
+if [ -x "/network-volume/miniconda3/envs/trag/bin/python" ]; then
+    PYTHON="/network-volume/miniconda3/envs/trag/bin/python"
+fi
 
 # Tạo thư mục đầu ra
 mkdir -p "$OUT_DIR"

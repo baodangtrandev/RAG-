@@ -24,7 +24,10 @@ LIMIT_CMD="$@"
 # Tạo thư mục lưu kết quả
 mkdir -p results6.2-model
 
-PYTHON="/network-volume/miniconda3/envs/trag/bin/python"
+PYTHON="${PYTHON:-python}"
+if [ -x "/network-volume/miniconda3/envs/trag/bin/python" ]; then
+    PYTHON="/network-volume/miniconda3/envs/trag/bin/python"
+fi
 BENCH_V1="src/run_benchmark.py"
 BENCH_V2="src/trag_v2/run_benchmark_v2.py"
 OUT="results6.2-model"
